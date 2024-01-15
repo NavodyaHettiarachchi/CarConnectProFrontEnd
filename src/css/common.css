@@ -1,0 +1,11 @@
+.card-container {
+  width: 550px;
+  height: 350px;
+  background-color: #f5f3f3e3;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Small shadow */
+  display: flex;
+  flex-direction: column;
+  margin-top: 25px;
+}
