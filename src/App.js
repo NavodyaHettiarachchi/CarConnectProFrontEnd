@@ -1,9 +1,11 @@
 import LineBarChart from './components/lineBarChartComponent';
-import Footer from'./components/footerComponent';
+// import Footer from './components/footerComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import './css/common.css';
+import Sidebar from './components/sideNav';
 
 
 function App() {
@@ -30,7 +32,9 @@ function App() {
 
   return (
     <div className="App" >
-      <Container>
+      {/* <Header position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}  /> */}
+      <Sidebar />
+      {/* <Container style={{ paddingTop: '60px' }}>
         <Row className="justify-content-center">
           <Col xs={12} md={6}>
             <div className='card-container'>
@@ -43,8 +47,8 @@ function App() {
             </div>
           </Col>
         </Row>
-      </Container>
-      <Footer />
+      </Container> */}
+      {/* <Footer /> */}
     </div>
   );
 }

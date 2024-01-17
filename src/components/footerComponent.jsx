@@ -1,20 +1,19 @@
-import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
 
-const Footer = () => {
+export default function MenuAppBar() {
+
   return (
-    <footer className=" footer" >
-      <Container>
-        <Row>
-          <Col className="center-text">
-            <p>&copy; 2023 CarConnectPRO | All Rights Reserved. Designed, Build & Maintained by Group 5</p>
-          </Col>
-        </Row>
-      </Container>
-    </footer>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="fixed" style={{ background: '#f5f3f3e3', height: '40px', color: '#000' }} sx={{ top: 'auto', bottom: 0, zIndex: (theme) => theme.zIndex.drawer + 1 }} className="footer center-text" >
+        <Toolbar style={{  textAlign: 'center'  }}>
+          <p>
+            &copy; 2023 Car Connect Pro | All Rights Reserved. Designed, Built & Maintained by Group 5
+          </p>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
-};
-
-export default Footer;
+}
