@@ -1,3 +1,9 @@
+
+import './App.css';
+import LoginPage from '../src/routes/LoginPage';
+import SignupPage from '../src/routes/SignupPage';
+import { Route, Routes } from "react-router-dom";
+
 import LineBarChart from './components/lineBarChartComponent';
 // import Footer from './components/footerComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -31,6 +37,12 @@ function App() {
   ];
 
   return (
+
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+    </Routes>
+
     <div className="App" >
       {/* <Header position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}  /> */}
       <Sidebar />
@@ -50,7 +62,8 @@ function App() {
       </Container> */}
       {/* <Footer /> */}
     </div>
+
   );
-}
+} 
 
 export default App;
