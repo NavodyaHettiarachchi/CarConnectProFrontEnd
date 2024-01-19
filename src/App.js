@@ -1,17 +1,15 @@
 
 import './App.css';
-import LoginPage from '../src/routes/LoginPage';
-import SignupPage from '../src/routes/SignupPage';
+import LoginPage from '../src/Pages/LoginPage';
+import SignupPage from '../src/Pages/SignupPage';
 import { Route, Routes } from "react-router-dom";
 
-import LineBarChart from './components/lineBarChartComponent';
-// import Footer from './components/footerComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './css/common.css';
-import Sidebar from './components/sideNav';
+
 
 
 function App() {
@@ -39,30 +37,11 @@ function App() {
   return (
 
     <Routes>
-      <Route path="/" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/" element={<SignupPage />} />
+      {/* <Route path="/signup" element={<SignupPage />} /> */}
     </Routes>
 
-    <div className="App" >
-      {/* <Header position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}  /> */}
-      <Sidebar />
-      {/* <Container style={{ paddingTop: '60px' }}>
-        <Row className="justify-content-center">
-          <Col xs={12} md={6}>
-            <div className='card-container'>
-              <LineBarChart chartOptions={options1} chartData={chartData1} chartType="line" />
-            </div>
-          </Col>
-          <Col xs={12} md={6}>
-            <div className='card-container'>
-              <LineBarChart chartOptions={options2} chartData={chartData2} chartType="bar" />
-            </div>
-          </Col>
-        </Row>
-      </Container> */}
-      {/* <Footer /> */}
-    </div>
-
+    
   );
 } 
 
