@@ -43,26 +43,6 @@ function App() {
       <Route path="/signup" element={<SignupPage />} />
     </Routes>
 
-    <div className="App" >
-      {/* <Header position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}  /> */}
-      <Sidebar />
-      {/* <Container style={{ paddingTop: '60px' }}>
-        <Row className="justify-content-center">
-          <Col xs={12} md={6}>
-            <div className='card-container'>
-              <LineBarChart chartOptions={options1} chartData={chartData1} chartType="line" />
-            </div>
-          </Col>
-          <Col xs={12} md={6}>
-            <div className='card-container'>
-              <LineBarChart chartOptions={options2} chartData={chartData2} chartType="bar" />
-            </div>
-          </Col>
-        </Row>
-      </Container> */}
-      {/* <Footer /> */}
-    </div>
-
   );
 } 
 
