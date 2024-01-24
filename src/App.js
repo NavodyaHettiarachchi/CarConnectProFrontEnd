@@ -1,7 +1,7 @@
 
 import './App.css';
 import LoginPage from '../src/Pages/LoginPage';
-import SignupPage from '../src/Pages/SignupPage';
+import SignupPage from '../src/Pages/LoginPage';
 import { Route, Routes } from "react-router-dom";
 
 import 'bootstrap/dist/css/bootstrap.min.css';

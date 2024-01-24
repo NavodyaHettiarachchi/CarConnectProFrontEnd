@@ -1,12 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './LoginStyles.css';
 import landingimg from '../../../src/Images/sidelogin.jpg';
 import Minilogo from '../../../src/Images/sidelogin.svg';
 import Heading from '../Page-Header/header';
+import axios from 'axios';
+import { useNavigate,Link } from 'react-router-dom';
 
 function Login() {
+
+  const [username,setUsername] = useState('');
+  const [password,setPassword] = useState('');
+
+  async function submitform(e){
+
+    e.preventDefault();
+    try{
+        await axios.post('http://localhost:3000/users/login',{
+          username,password
+        });
+
+        
+    }catch(e){
+      console.log(e);
+    }
+
+  }
+
+
   return (
     <div className='hero-landing'>
+      
       <div className='hero-img'>
         <img src={landingimg} alt="" />
       </div>
@@ -15,13 +38,13 @@ function Login() {
        <img src={Minilogo} alt="" />
         <Heading title="Welcome to Car Connect Pro"/>
         <form className='form-container' action="" method='POST'>
-          <label htmlFor="" className='left-aligned'>Enter your name</label>
+          <label htmlFor="" className='left-aligned'>Enter your Email</label>
           <br />
-          <input type="text" className='name-field ' />
+          <input type="text" onChange={(e)=>{setUsername(e.target.value)}} className='name-field ' />
           <br />
-          <label htmlFor="" className=' left-aligned top-spacer'>Enter your Email</label>
+          <label htmlFor="" className=' left-aligned top-spacer'>Enter your Password</label>
           <br />
-          <input type="text" className='name-field ' />
+          <input type="text" onChange={(e)=>{setPassword(e.target.value)}}  className='name-field ' />
           <br />
           <span className='left-aligned'>
             <div>
@@ -35,7 +58,7 @@ function Login() {
             </div>
           </span>
 
-          <input className='sub-btn' type="submit" value="LOGIN" />
+          <input className='sub-btn' onClick={submitform} type="submit" value="LOGIN" />
           <br />
           <div className="signup  top-spacer">Not a member? <a className='link-text' href="/signup">Signup</a></div>
         </form>
