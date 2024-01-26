@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
-import '../css/common.css';
+import '../../css/common.css';
 
 const ChartComponent = ({ chartOptions, chartData, chartType }) => {
   
