@@ -1,6 +1,6 @@
 import React from "react";
 import { BsFillArchiveFill } from "react-icons/bs";
-import "../css/card.css";
+import "./card.css";
 
 function Card() {
   return (
