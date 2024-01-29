@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import './SearchResult.css'
+import AddRecordForm from './AddRecordForm';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 function SearchResult({ searchResult, onBackClick }) {
     const classes = useStyles();
+    const [isAddRecordFormOpen, setAddRecordFormOpen] = useState(false)
 
     const [newRecord, setNewRecord] = useState({
         dateofservice: '',
@@ -45,7 +47,6 @@ function SearchResult({ searchResult, onBackClick }) {
         receipt: '',
         note: '',
       });
-
 
 // array of service records named 'serviceRecords'
 const [serviceRecords, setServiceRecords] = useState(
@@ -90,23 +91,27 @@ const handleInputChange = (event) => {
   };
 
   const handleAddRecord = () => {
-    setServiceRecords((prevRecords) => [...prevRecords, newRecord]);
+
+    const newRecordWithArray = { ...newRecord, workperformed: newRecord.workperformed.split(', ') };
+
+    setServiceRecords((prevRecords) => [...prevRecords, newRecordWithArray]);
     setNewRecord({
-      dateofservice: '',
-      mileageatservice: '',
-      workperformed: '',
-      performedby: '',
-      cost: '',
-      receipt: '',
-      note: '',
+        dateofservice: '',
+        mileageatservice: '',
+        workperformed: '',
+        performedby: '',
+        cost: '',
+        receipt: '',
+        note: '',
     });
-  };
+    setAddRecordFormOpen(false); // Close the form after adding the record
+    };
 
 
 
   if (!searchResult){
     return null;
-}
+    }
 
 
 
@@ -236,68 +241,21 @@ const handleInputChange = (event) => {
                     autoComplete='off'
                     >
                     <div>
-                        <TextField
-                        id='dateofservice'
-                        label='Date of Service'
-                        variant='outlined'
-                        name='dateofservice'
-                        value={newRecord.dateofservice}
-                        onChange={handleInputChange}
-                        />
-                        <TextField
-                        id='mileageatservice'
-                        label='Mileage at Service'
-                        variant='outlined'
-                        name='mileageatservice'
-                        value={newRecord.mileageatservice}
-                        onChange={handleInputChange}
-                        />
-                        <TextField
-                        id='workperformed'
-                        label='Work Performed'
-                        variant='outlined'
-                        name='workperformed'
-                        value={newRecord.workperformed}
-                        onChange={handleInputChange}
-                        />
-                        <TextField
-                        id='performedby'
-                        label='Performed by'
-                        variant='outlined'
-                        name='performedby'
-                        value={newRecord.performedby}
-                        onChange={handleInputChange}
-                        />
-                        <TextField
-                        id='cost'
-                        label='Cost'
-                        variant='outlined'
-                        name='cost'
-                        value={newRecord.cost}
-                        onChange={handleInputChange}
-                        />
-                        <TextField
-                        id='receipt'
-                        label='Invoice/Receipt#'
-                        variant='outlined'
-                        name='receipt'
-                        value={newRecord.receipt}
-                        onChange={handleInputChange}
-                        />
-                        <TextField
-                        id='note'
-                        label='Notes'
-                        variant='outlined'
-                        name='note'
-                        value={newRecord.note}
-                        onChange={handleInputChange}
-                        />
-                        <Button variant='contained' color='primary' onClick={handleAddRecord}>
+                        <Button variant='contained' color='primary' onClick={() => setAddRecordFormOpen(true)}>
                         Add New Record
                         </Button>
                     </div>
                 </Box>     
-        </div>      
+        </div>    
+
+        {/* AddRecordForm component as a modal */}
+        <AddRecordForm
+            open={isAddRecordFormOpen}
+            onClose={() => setAddRecordFormOpen(false)}
+            onAddRecord={handleAddRecord}
+            newRecord={newRecord} // Pass the new record state
+            handleInputChange={handleInputChange} // Pass the input change handler
+            />
     </div>
   )
 }
