@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-// import Dialog from '@mui/material/Dialog';
-// import DialogTitle from '@mui/material/DialogTitle';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogActions from '@mui/material/DialogActions';
 import { TextField, Box, Button, DialogActions, DialogContent, DialogTitle, Dialog  } from '@mui/material';
 
 function AddRecordForm({ open, onClose, onAddRecord }) {
+    
   const [newRecord, setNewRecord] = useState({
     dateofservice: '',
     mileageatservice: '',
