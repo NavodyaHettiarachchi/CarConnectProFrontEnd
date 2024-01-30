@@ -26,7 +26,7 @@ function App() {
   const shouldShowSidebar = () => {
     const { pathname } = location;
     console.log(pathname);
-    return !['/login/', '/signup'].includes(pathname);
+    return !['/login', '/signup'].includes(pathname);
   };
 
   return (

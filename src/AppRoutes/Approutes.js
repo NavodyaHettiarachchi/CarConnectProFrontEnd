@@ -9,8 +9,8 @@ import RegisterPage from "../Pages/Register/RegisterPage";
 
 export const AppRoutes={
    
-    "login":{ path: "/login/", component: (<LoginPage />)},
-    "signup":{ path: "/signup/", component: (<RegisterPage />)},
+    "login":{ path: "/login", component: (<LoginPage />)},
+    "signup":{ path: "/signup", component: (<RegisterPage />)},
     "ongoing_services": { path: "/service/", component: (<OnGoingServices type="admin" />)},
     "repairs": { path: "/repairs/", component: (<RepairPage />)},
     "add_service": { path: "/addservice/", component: (<AddServicePage />)},
