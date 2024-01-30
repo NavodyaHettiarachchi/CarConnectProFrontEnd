@@ -3,8 +3,7 @@ import ViewClientel from "../Components/Clientel-Component/ViewClientel";
 import OnGoingServices from "../Pages/OnGoingServices/OnGoingServices";
 import RepairPage from "../Pages/Repairs/RepairPage";
 import AddServicePage from "../Pages/AddService/AddService";
-import Employees from "../Pages/EmployeePage/ViewEmployeePage";
-// import ViewClientsPage from "../Pages/ClientelPage/ViewClientsPage";
+import ViewClientsPage from "../Pages/ClientelPage/ViewClientsPage";
 import LoginPage from "../Pages/LoginPage/LoginPage";
 
 export const AppRoutes={
@@ -13,7 +12,5 @@ export const AppRoutes={
     "ongoing_services": { path: "/service/", component: (<OnGoingServices type="admin" />)},
     "repairs": { path: "/repairs/", component: (<RepairPage />)},
     "add_service": { path: "/addservice/", component: (<AddServicePage />)},
-    "view_clients": { path: "/clientel/", component: (<ViewClientel />)},
-    "view_employees": { path: "/employees/", component: (<Employees />)}
-
+    "view_clients": { path: "/clientel/", component: (<ViewClientel />)}
 }
