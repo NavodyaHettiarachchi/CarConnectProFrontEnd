@@ -9,7 +9,8 @@ export const menus = [
         icon: <PersonOutline />,
         subMenu: [
             { name: "On going services", path: Routes.ongoing_services.path, component: Routes.ongoing_services.component },
-            { name: "Repairs", path: Routes.repairs.path, component: Routes.repairs.component }
+            { name: "Repairs", path: Routes.repairs.path, component: Routes.repairs.component },
+            { name: "Add Service", path: Routes.add_service.path, component: Routes.add_service.component }
         ],
        
     }, {
