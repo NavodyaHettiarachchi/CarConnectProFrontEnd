@@ -9,6 +9,11 @@ import Header from "../src/Components/Header-Component/headerComponent";
 import Footer from "./Components/Footer-Component/footerComponent";
 import { menus } from "../src/Data/SideBarData";
 
+import AddClient from "./Components/Add-Clients/AddClient";
+import ViewClientel from "./Components/Clientel-Component/ViewClientel";
+import Inventory from "./Components/Inventory/Inventory";
+
+
 function App() {
   const location = useLocation();
   let routes = [];

@@ -42,5 +42,16 @@ export const menus = [
       },
     ],
   },
-];
+  {
+    name: "Inventory",
+    icon: <PersonOutline />,
 
+    subMenu: [
+      {
+        name: "View Inventory",
+        path: Routes.inventory.path,
+        component: Routes.inventory.component,
+      },
+    ],
+  },
+];
