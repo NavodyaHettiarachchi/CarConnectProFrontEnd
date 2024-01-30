@@ -25,17 +25,7 @@ export const menus = [
       },
     ],
   },
-  {
-    name: "Vehicles",
-    icon: <PersonOutline />,
-    subMenu: [
-      {
-        name: "Edit Vehicle",
-        path: Routes.ongoing_services.path,
-        component: Routes.ongoing_services.component,
-      },
-    ],
-  },
+  
   {
     name: "Clientel",
     icon: <PersonOutline />,

@@ -1,36 +1,36 @@
 import React, { useState } from "react";
 import "./ViewClientel.css";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Avatar,
-  Grid,
-  Typography,
-  TablePagination,
-  TableFooter,
-  TextField,
-  Button,
-} from "@mui/material";
+          Table,
+          TableBody,
+          TableCell,
+          TableContainer,
+          TableHead,
+          TableRow,
+          Paper,
+          Avatar,
+          Grid,
+          Typography,
+          TablePagination,
+          TableFooter,
+          TextField,
+          Button,
+        } from "@mui/material";
 import {
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControlLabel,
-  IconButton,
-  Stack,
-  RadioGroup,
-  Radio,
-  FormLabel,
-  FormControl,
-} from "@mui/material";
+          Checkbox,
+          Dialog,
+          DialogActions,
+          DialogContent,
+          DialogContentText,
+          DialogTitle,
+          FormControlLabel,
+          IconButton,
+          Stack,
+          RadioGroup,
+          Radio,
+          FormLabel,
+          FormControl,
+        } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 //sample data set
@@ -39,6 +39,8 @@ let USERS = [],
 for (let i = 0; i < 14; i++) {
   USERS[i] = {
     name: `User${i + 1}`,
+    nic: `99344037${i + 1}`,
+    address: `no${i + 1},road${i + 1}, city${i + 1} `,
     email: `user${i + 1}@example.com`,
     phone: `123-456-789${i}`,
     vehicleID: `V${i + 1}`,
@@ -57,7 +59,7 @@ function ViewClientel() {
     openchange(false);
   };
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(4);
   const [searchName, setSearchName] = useState("");
   const [searchVehicleID, setSearchVehicleID] = useState("");
 
@@ -86,8 +88,8 @@ function ViewClientel() {
 
   return (
     <div>
-      <div className="div" style={{ textAlign: "center" }}>
-        <TextField
+      <div className="div" style={{ textAlign: "center",marginTop:70 }}>
+        <TextField sx={{marginLeft:10}}
           className="TextField"
           id="standard-basic"
           variant="standard"
@@ -95,7 +97,7 @@ function ViewClientel() {
           value={searchName}
           onChange={handleNameChange}
         />
-        <TextField
+        <TextField sx={{marginLeft:5}}
           className="TextField"
           id="standard-basic"
           variant="standard"
@@ -103,7 +105,7 @@ function ViewClientel() {
           value={searchVehicleID}
           onChange={handleVehicleIDChange}
         />
-        <Button
+        <Button sx={{marginLeft:5}}
           variant="contained"
           color="primary"
           className="Button"
@@ -181,10 +183,10 @@ function ViewClientel() {
         <Table className="table" aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell className="tableHeaderCell">Client Info</TableCell>
-              <TableCell className="tableHeaderCell">Vehicle Info</TableCell>
-              <TableCell className="tableHeaderCell">Joining Date</TableCell>
-              <TableCell className="tableHeaderCell">Status</TableCell>
+              <TableCell className="tableHeaderCell" style={{ backgroundColor: '#2222', fontWeight: 'bold' }}>Client Info</TableCell>
+              <TableCell className="tableHeaderCell" style={{ backgroundColor: '#2222', fontWeight: 'bold' }}>Vehicle Info</TableCell>
+              <TableCell className="tableHeaderCell" style={{ backgroundColor: '#2222', fontWeight: 'bold' }}>Joining Date</TableCell>
+              <TableCell className="tableHeaderCell" style={{ backgroundColor: '#2222', fontWeight: 'bold' }}>Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -195,10 +197,16 @@ function ViewClientel() {
                   <TableCell>
                     <Grid container>
                       <Grid item lg={2}>
-                        <Avatar alt={row.name} src="." className="Avatar" />
+                        <Avatar style={{ backgroundColor: '#6756d6'}} alt={row.name} src="." className="Avatar" />
                       </Grid>
                       <Grid item lg={10}>
                         <Typography className="name">{row.name}</Typography>
+                        <Typography color="textSecondary" variant="body2">
+                          {row.nic}
+                        </Typography>
+                        <Typography color="textSecondary" variant="body2">
+                          {row.address}
+                        </Typography>
                         <Typography color="textSecondary" variant="body2">
                           {row.email}
                         </Typography>
@@ -223,7 +231,7 @@ function ViewClientel() {
           </TableBody>
           <TableFooter>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 50, 100]}
+              rowsPerPageOptions={[6, 10, 50, 100]}
               component="div"
               count={USERS.length}
               rowsPerPage={rowsPerPage}
