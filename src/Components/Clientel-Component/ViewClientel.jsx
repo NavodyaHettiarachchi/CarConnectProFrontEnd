@@ -127,10 +127,12 @@ function ViewClientel() {
           <DialogContent>
             {/* <DialogContentText>Do you want remove this user?</DialogContentText> */}
             <Stack spacing={2} margin={2}>
-              <TextField variant="outlined" label="ID Number"></TextField>
+              <TextField variant="outlined" label="NIC"></TextField>
               <TextField variant="outlined" label="Nick Name"></TextField>
               <TextField variant="outlined" label="Full Name"></TextField>
-              <TextField variant="outlined" label="Address"></TextField>
+              <TextField variant="outlined" label="Address Line 1"></TextField>
+              <TextField variant="outlined" label="Address Line 2"></TextField>
+              <TextField variant="outlined" label="City"></TextField>
               <TextField variant="outlined" label="Email"></TextField>
               <TextField variant="outlined" label="Phone"></TextField>
 
