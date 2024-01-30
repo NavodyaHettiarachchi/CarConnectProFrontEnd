@@ -86,8 +86,8 @@ function ViewClientel() {
 
   return (
     <div>
-      <div className="div" style={{ textAlign: "center" }}>
-        <TextField
+      <div className="div" style={{ textAlign: "center",marginTop:70 }}>
+        <TextField sx={{marginLeft:10}}
           className="TextField"
           id="standard-basic"
           variant="standard"
@@ -95,7 +95,7 @@ function ViewClientel() {
           value={searchName}
           onChange={handleNameChange}
         />
-        <TextField
+        <TextField sx={{marginLeft:5}}
           className="TextField"
           id="standard-basic"
           variant="standard"
@@ -103,7 +103,7 @@ function ViewClientel() {
           value={searchVehicleID}
           onChange={handleVehicleIDChange}
         />
-        <Button
+        <Button sx={{marginLeft:5}}
           variant="contained"
           color="primary"
           className="Button"

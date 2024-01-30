@@ -28,7 +28,7 @@ const AddClient = () => {
     openchange(false);
   };
   return (
-    <div style={{ textAlign: "center" }}>
+    <div sx={{ textAlign: "center" }}>
       <h1>ADD CLIENT</h1>
       <Button onClick={functionopenpopup} color="primary" variant="contained">
         Open Popup

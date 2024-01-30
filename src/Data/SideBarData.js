@@ -25,25 +25,15 @@ export const menus = [
       },
     ],
   },
-  {
-    name: "Vehicles",
-    icon: <PersonOutline />,
-    subMenu: [
-      {
-        name: "Edit Vehicle",
-        path: Routes.ongoing_services.path,
-        component: Routes.ongoing_services.component,
-      },
-    ],
-  },
+  
   {
     name: "Clientel",
     icon: <PersonOutline />,
     subMenu: [
       {
         name: "View clients",
-        path: Routes.view_client.path,
-        component: Routes.view_client.component,
+        path: Routes.view_clients.path,
+        component: Routes.view_clients.component,
       },
       {
         name: "Edit Clients",
