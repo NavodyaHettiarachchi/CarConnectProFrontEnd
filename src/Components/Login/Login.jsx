@@ -85,7 +85,7 @@ function Login() {
 
             <input className='sub-btn' onClick={handleSubmit} type="submit" value="LOGIN" />
             <br />
-            <div className="signup  top-spacer">Not a member? <a className='link-text' href="/signup">Signup</a></div>
+            <div className="signup-btn  top-spacer">Not a member? <a className='link-text' href="/signup">Signup</a></div>
           </form>
         </div>
       </div>
