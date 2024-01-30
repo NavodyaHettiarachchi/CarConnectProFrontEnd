@@ -1,11 +1,12 @@
-import AddClient from "../Components/Add-Clients/AddClient";
+
 import ViewClientel from "../Components/Clientel-Component/ViewClientel";
 import OnGoingServices from "../Pages/OnGoingServices/OnGoingServices";
 import RepairPage from "../Pages/Repairs/RepairPage";
+import AddServicePage from "../Pages/AddService/AddService";
 
-export const AppRoutes = {
-  ongoing_services: { path: "/services/", component: <OnGoingServices /> },
-  repairs: { path: "/repairs/", component: <RepairPage /> },
-  add_client: { path: "/add_client/", component: <AddClient /> },
-  view_client: { path: "/client/", component: <ViewClientel /> },
-};
+export const AppRoutes={
+    "ongoing_services": { path: "/service/", component: (<OnGoingServices type="admin" />)},
+    "repairs": { path: "/repairs/", component: (<RepairPage />)},
+    "add_service": { path: "/addservice/", component: (<AddServicePage />)},
+    "view_clients": { path: "/clientel/", component: (<ViewClientsPage />)}
+}

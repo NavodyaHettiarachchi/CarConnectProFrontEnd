@@ -46,11 +46,6 @@ export const menus = [
         component: Routes.view_client.component,
       },
       {
-        name: "Add Clients",
-        path: Routes.add_client.path,
-        component: Routes.add_client.component,
-      },
-      {
         name: "Edit Clients",
         path: Routes.repairs.path,
         component: Routes.repairs.component,
@@ -58,3 +53,4 @@ export const menus = [
     ],
   },
 ];
+

@@ -3,39 +3,40 @@
 }
 
 .TableContainer {
-  border-radius: 15px;
-  margin: 20px 30px 10px 30px;
-  /* max-width: 1340px; */
+    border-radius: 15px;
+    margin: 20px 30px 10px 30px;
+    /* max-width: 1340px; */
 }
 
 .tableHeaderCell {
-  font-weight: bold;
-  background-color: rgb(54, 54, 226);
-  color: aliceblue;
+    font-weight: bold;
+    background-color: rgb(54, 54, 226);
+    color: aliceblue;
 }
 
 .Avatar {
-  background-color: rgb(111, 111, 227);
-  color: aliceblue;
+    background-color: rgb(111, 111, 227);
+    color: aliceblue;
 }
 
 .name {
-  font-weight: bold;
-  color: blue;
+    font-weight: bold;
+    color: blue;
 }
 
 .TextField {
-  margin: 15px 30px 5px 80px;
-  width: 400;
+    margin: 15px 30px 5px 80px;
+    width: 400;
 }
 
 .Button {
-  margin: 30px 30px 0 230px;
-  width: 200;
-  border-radius: 5px;
+    margin: 30px 30px 0 230px;
+    width: 200;
+    border-radius: 5px;
 }
 
 .div {
-  max-width: 1700;
-  display: flex;
+    max-width: 1700;
+    display: flex;
 }
+
