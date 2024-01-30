@@ -25,7 +25,7 @@ export const menus = [
         name: "Clientel",
         icon: <PersonOutline />,
         subMenu: [
-            { name: "View clients", path: Routes.ongoing_services.path, component: Routes.ongoing_services.component },
+            { name: "View clients", path: Routes.view_clients.path, component: Routes.view_clients.component },
             { name: "Add Clients", path: Routes.repairs.path, component: Routes.repairs.component },
             { name: "Edit Clients", path: Routes.repairs.path, component: Routes.repairs.component }
         ],

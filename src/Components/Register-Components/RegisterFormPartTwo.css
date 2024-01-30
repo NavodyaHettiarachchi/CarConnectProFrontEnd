@@ -1,0 +1,91 @@
+.login-heading {
+    font-weight: 300;
+    letter-spacing: 0.25rem;
+    font-size: medium;
+}
+
+.login-welcome {
+    color: blueviolet;
+    font-size: medium;
+}
+
+.form-container {
+    align-items: center;
+    justify-content: center;
+}
+
+
+.checkbox {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.link-text{
+    color: #8459C8;
+    text-decoration: none;
+}
+
+.top-spacer {
+    margin-top: 5px;
+}
+
+.fgt-pwd {
+    margin-right: 4rem;
+    padding-top: 2px;
+    display: inline-block;
+}
+
+
+.sub-btn {
+    width: 40%;
+    height: 40px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    background-color: #8459C8;
+    color: white;
+    font-size: 1rem;
+    
+}
+
+.hori-ruler {
+    width: 80%;
+    display: block;
+    height: 2px;
+    background-image: linear-gradient(rgba(255, 0, 208, 0.72), rgb(119, 0, 255));
+    margin: 10px auto;
+}
+
+.signup {
+    margin-top: 10px;
+    width: 40%;
+    height: 40px;
+    border-radius: 25px;
+    background-color: #8459C8;
+    color: white;
+    font-size: 1rem;
+}
+
+@media screen and (max-width: 1200px) {
+
+    .left-aligned {
+
+        display: flex;
+        justify-content: space-between;
+        margin-left: 2rem;
+    }
+
+    .fgt-pwd {
+        margin-right: 4rem;
+        padding-top: 2px;
+        display: inline-block;
+    }
+    .fgt-pwd {
+        margin-right: 1rem;
+        padding-top: 2px;
+        display: inline-block;
+    }
+    .name-field {
+        line-height: 2;
+        width: 90%;
+    }
+}
