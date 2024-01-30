@@ -54,4 +54,16 @@ export const menus = [
       },
     ],
   },
+  {
+    name: "Employee",
+    icon: <PersonOutline />,
+
+    subMenu: [
+      {
+        name: "View Employees",
+        path: Routes.view_employee.path,
+        component: Routes.view_employee.component,
+      },
+    ],
+  },
 ];
