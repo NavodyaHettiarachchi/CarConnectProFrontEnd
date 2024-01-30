@@ -1,0 +1,9 @@
+.searchBox {
+    max-width: 1400px;
+    max-height: 100vh;
+}
+
+.text {
+    padding: 0 0 20px 455px;
+    font-family: sans-serif;
+}
