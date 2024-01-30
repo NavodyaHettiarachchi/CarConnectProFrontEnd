@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import SearchVehicleId from '../../Components/OnGoingServices-Component/SearchVehicleId';
 import CardContent from '@mui/material/CardContent';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+// import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import { Dialog, DialogContent } from '@mui/material';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -23,6 +25,16 @@ var cardStyle = {
 };
 
 function OnGoingServices() {
+    const [isSearchDialogOpen, setSearchDialogOpen] = useState(false);
+
+    const handleOpenSearchDialog = () => {
+      setSearchDialogOpen(true);
+    };
+
+    const handleCloseSearchDialog = () => {
+      setSearchDialogOpen(false);
+    };
+
     return (
         <div>
 
@@ -36,8 +48,8 @@ function OnGoingServices() {
                         padding: '20px',
                     }}>
                         <Typography sx={{ fontSize: 80 }} color="text.secondary" gutterBottom>
-                            <Button sx={{ "&:hover": { backgroundColor: "transparent" } }} >
-                                <Typography sx={{ fontSize: 80 }}>
+                            <Button sx={{ "&:hover": { backgroundColor: "transparent" } }}  onClick={handleOpenSearchDialog}>
+                                <Typography sx={{ fontSize: 80 }} >
                                     +
                                 </Typography>
                             </Button>
@@ -84,6 +96,13 @@ function OnGoingServices() {
                     </CardContent></Item>
                 </Grid>
             </Grid>
+
+
+            <Dialog open={isSearchDialogOpen} onClose={handleCloseSearchDialog} maxWidth="lg" fullWidth>
+              <DialogContent>
+                <SearchVehicleId onClose={handleCloseSearchDialog} />
+              </DialogContent>
+            </Dialog>
         </div>
     )
 }

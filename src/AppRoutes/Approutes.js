@@ -3,7 +3,7 @@ import ViewClientel from "../Components/Clientel-Component/ViewClientel";
 import OnGoingServices from "../Pages/OnGoingServices/OnGoingServices";
 import RepairPage from "../Pages/Repairs/RepairPage";
 import AddServicePage from "../Pages/AddService/AddService";
-import ViewClientsPage from "../Pages/ClientelPage/ViewClientsPage";
+// import ViewClientsPage from "../Pages/ClientelPage/ViewClientsPage";
 import LoginPage from "../Pages/LoginPage/LoginPage";
 
 export const AppRoutes={
