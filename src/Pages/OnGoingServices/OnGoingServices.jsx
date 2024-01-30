@@ -8,91 +8,91 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(5),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(5),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
 }));
 
 const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
+    <Box
+        component="span"
+        sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
+    >
+        •
+    </Box>
 );
 
 var cardStyle = {
-    
-    
     transitionDuration: '0.3s',
-    height: '14vw'
+    height: '15vh',
+    color: 'red',
 };
 
 function OnGoingServices() {
-  return (
-    <div>
+    return (
+        <div>
 
-      <Grid container spacing={2} sx={{
-        padding: '20px',
-      }} >
-        <Grid item xs={4}>
-          <Item > <CardContent  style={cardStyle} sx={{
-            padding: '20px',
-          }}>
-            <Typography sx={{ fontSize: 91 }} color="text.secondary" gutterBottom>
-              <Button sx={{ "&:hover": { backgroundColor: "transparent" }} } >
-               <Typography  sx={{ fontSize: 91 }}>
-                +
-               </Typography>
-              </Button>
-            </Typography>
-            
-           
-          </CardContent></Item>
-        </Grid>
-        <Grid item xs={4}>
-          <Item> <CardContent  style={cardStyle}>
-            <Typography sx={{ fontSize: 40 }} color="text.secondary" gutterBottom>
-              Service
-            </Typography>
-            <Typography variant="h5" component="div">
-              Pending at 100000km
-            </Typography>
-           
-          </CardContent></Item>
-        </Grid>
-        <Grid item xs={4}>
-          <Item> <CardContent  style={cardStyle}>
-            <Typography sx={{ fontSize: 40 }} color="text.secondary" gutterBottom>
-              Body Wash
-            </Typography>
-            <Typography variant="h5" component="div">
-              Pending at 100000km
-            </Typography>
-            <Button  >
-                <Typography>
-                    Remove
-                </Typography>
-            </Button>
-          </CardContent></Item>
-        </Grid>
-        <Grid item xs={4}>
-          <Item> <CardContent style={cardStyle}>
-            <Typography sx={{ fontSize: 40 }} color="text.secondary" gutterBottom>
-              Under Carriage wash
-            </Typography>
-            <Typography variant="h5" component="div">
-              Pending at 100000km
-            </Typography>
-           
-          </CardContent></Item>
-        </Grid>
-      </Grid>
-    </div>
-  )
+            <Grid container spacing={2} sx={{
+                padding: '20px',
+            }} >
+
+                <Grid item xs={4}>
+                    <Item > <CardContent style={cardStyle} sx={{
+                        padding: '20px',
+                    }}>
+                        <Typography sx={{ fontSize: 80 }} color="text.secondary" gutterBottom>
+                            <Button sx={{ "&:hover": { backgroundColor: "transparent" } }} >
+                                <Typography sx={{ fontSize: 80 }}>
+                                    +
+                                </Typography>
+                            </Button>
+                        </Typography>
+
+
+                    </CardContent></Item>
+                </Grid>
+                <Grid item xs={4}>
+                    <Item> <CardContent style={cardStyle}>
+                        <Typography sx={{ fontSize: 30 }} color="text.secondary" gutterBottom>
+                            Service
+                        </Typography>
+                        <Typography variant="h5" component="div">
+                            Pending at 100000km
+                        </Typography>
+
+                    </CardContent></Item>
+                </Grid>
+                <Grid item xs={4}>
+                    <Item> <CardContent style={cardStyle}>
+                        <Typography sx={{ fontSize: 30 }} color="text.secondary" gutterBottom>
+                            Body Wash
+                        </Typography>
+                        <Typography variant="h5" component="div">
+                            Pending at 100000km
+                        </Typography>
+                        <Button  >
+                            <Typography>
+                                Remove
+                            </Typography>
+                        </Button>
+                    </CardContent></Item>
+                </Grid>
+                <Grid item xs={4}>
+                    <Item> <CardContent style={cardStyle}>
+                        <Typography sx={{ fontSize: 30 }} color="text.secondary" gutterBottom>
+                            Under Carriage wash
+                        </Typography>
+                        <Typography variant="h5" component="div">
+                            Pending at 100000km
+                        </Typography>
+
+                    </CardContent></Item>
+                </Grid>
+            </Grid>
+        </div>
+    )
 }
 
 export default OnGoingServices
