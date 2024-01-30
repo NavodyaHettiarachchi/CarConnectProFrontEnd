@@ -7,7 +7,7 @@ import Toolbar from '@mui/material/Toolbar';
 export default function MenuAppBar() {
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box >
       <AppBar position="fixed" style={{ background: '#f5f3f3e3', height: '40px', color: '#000' }} sx={{ top: 'auto', bottom: 0, zIndex: (theme) => theme.zIndex.drawer + 1 }} className="footer center-text" >
         <Toolbar style={{  textAlign: 'center'  }}>
           <p>
