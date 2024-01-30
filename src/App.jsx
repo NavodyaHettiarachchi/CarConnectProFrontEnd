@@ -13,6 +13,7 @@ import Header from "../src/Components/Header-Component/headerComponent";
 import { menus } from "../src/Data/SideBarData";
 import AddClient from "./Components/Add-Clients/AddClient";
 import ViewClientel from "./Components/Clientel-Component/ViewClientel";
+import Inventory from "./Components/Inventory/Inventory";
 
 function App() {
   let routes = [];
