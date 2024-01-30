@@ -28,13 +28,13 @@ function SearchVehicleId({ onClose }) {
       ) : (
         <div className='container'>
           <div className='searchBox'>
-            <p className='text'>Ongoing Service Records</p>
+            <p className='text'>Find Ongoing Service Records by Vehicle Id</p>
 
             <Box
               sx={{
-                width: 800,
+                // width: 800,
                 maxWidth: '100%',
-                padding: '20px 0 50px 330px',
+                padding: '20px 0 20px 0',
               }}
             >
               <TextField
@@ -46,10 +46,11 @@ function SearchVehicleId({ onClose }) {
               />
             </Box>
             <Button
+              className='searchbtn'
               variant="contained"
               startIcon={<SearchIcon />}
               sx={{
-                marginLeft: '480px',
+                // marginLeft: '480px',
               }}
               onClick={handleSearch}
             >

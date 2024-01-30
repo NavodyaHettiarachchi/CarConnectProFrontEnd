@@ -1,9 +1,26 @@
+.SearchVehicleId {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .searchBox {
-    max-width: 1400px;
-    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .text {
-    padding: 0 0 20px 455px;
-    font-family: sans-serif;
+    padding: 20px 0 0 0;
+    font-size: large;
+}
+
+.searchbtn{
+    padding: 0 0 20px 0;
 }
