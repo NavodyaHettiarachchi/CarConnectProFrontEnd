@@ -8,5 +8,5 @@ export const AppRoutes={
     "ongoing_services": { path: "/service/", component: (<OnGoingServices type="admin" />)},
     "repairs": { path: "/repairs/", component: (<RepairPage />)},
     "add_service": { path: "/addservice/", component: (<AddServicePage />)},
-    "view_clients": { path: "/clientel/", component: (<ViewClientsPage />)}
+    "view_clients": { path: "/clientel/", component: (<ViewClientel />)}
 }

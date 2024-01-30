@@ -42,8 +42,8 @@ export const menus = [
     subMenu: [
       {
         name: "View clients",
-        path: Routes.view_client.path,
-        component: Routes.view_client.component,
+        path: Routes.view_clients.path,
+        component: Routes.view_clients.component,
       },
       {
         name: "Edit Clients",
