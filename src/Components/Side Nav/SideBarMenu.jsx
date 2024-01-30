@@ -33,7 +33,7 @@ export default function SideBarMenu( {name, icon, subMenu } ) {
                         subMenu.map((subItem) => (
                             <ListItemButton onClick={() => (navigate(subItem.path))} selected={location.pathname === subItem.path}>
                                 <ListItemText primary={subItem.name} />
-                            </ListItemButton>
+                            </ListItemButton> 
                         ))
                     }
                 </List>
