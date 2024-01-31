@@ -1,6 +1,6 @@
 import React from "react";
 import { Box } from "@mui/material";
-import { BrowserRouter as Router, Routes, Route,useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/common.css";
 import { AppRoutes } from "./AppRoutes/Approutes";
@@ -30,23 +30,22 @@ function App() {
   };
 
   return (
-    
+
     <div>
-     
+
       <Box display="flex" className="App">
-      {shouldShowSidebar() && <Sidenav data={menus} />}
-      {shouldShowSidebar() && <Header  />}
+        {shouldShowSidebar() && <Sidenav data={menus} />}
+        {shouldShowSidebar() && <Header />}
         <Routes>
           {routes.map((route, i) => {
             return (
-              
               <Route key={i} path={route.path} element={route.component} />
             );
           })}
         </Routes>
-        <Footer/>
+        <Footer />
       </Box>
-      </div>
+    </div>
   );
 }
 

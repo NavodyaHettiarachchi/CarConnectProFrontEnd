@@ -3,12 +3,19 @@ import {
   Person2Outlined,
   Shop2Outlined,
   WorkOutline,
-  HelpCenterOutlined,
+  HelpCenterOutlined,HomeMaxOutlined
 } from "@mui/icons-material";
 
 import { AppRoutes as Routes } from "../AppRoutes/Approutes";
 
 export const menus = [
+  {
+    name: "Home",
+    icon: <HomeMaxOutlined/>,
+    subMenu: [
+     
+    ],
+  },
   {
     name: "Services",
     icon: <PersonOutline />,
