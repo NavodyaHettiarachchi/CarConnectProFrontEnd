@@ -20,7 +20,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 var cardStyle = {
     transitionDuration: '0.3s',
-    height: '15vh',
+    height: '12em',
     color: 'red',
 };
 
@@ -82,7 +82,8 @@ function OnGoingServices() {
                                 Remove
                             </Typography>
                         </Button>
-                    </CardContent></Item>
+                    </CardContent>
+                    </Item>
                 </Grid>
                 <Grid item xs={4}>
                     <Item> <CardContent style={cardStyle}>
