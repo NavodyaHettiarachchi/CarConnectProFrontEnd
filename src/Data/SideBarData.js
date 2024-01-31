@@ -30,6 +30,11 @@ export const menus = [
         path: Routes.repairs.path,
         component: Routes.repairs.component,
       },
+      {
+        name: "Add Service",
+        path: Routes.add_service.path,
+        component: Routes.add_service.component,
+      },
     ],
   },
   
