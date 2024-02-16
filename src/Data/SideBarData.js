@@ -54,4 +54,16 @@ export const menus = [
       },
     ],
   },
+  {
+    name: "Center-Admin",
+    icon: <PersonOutline />,
+
+    subMenu: [
+      {
+        name: "Add Role",
+        path: Routes.admin.path,
+        component: Routes.admin.component,
+      },
+    ],
+  },
 ];

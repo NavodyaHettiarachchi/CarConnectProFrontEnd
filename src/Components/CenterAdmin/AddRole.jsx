@@ -12,23 +12,26 @@ function AddEditRole(props) {
   //   openAddRoleChange(false);
   // };
 
-  let openAddRoleChange = props.show;
-  const closePopup = () => { 
-    props.show = false;
-    openAddRoleChange = false;
-  }
+  // let openAddRoleChanges = props.show;
+  // const closePopup = () => { 
+  //   props.show = false;
+  //   openAddRoleChange = false;
+  // }
+
+  const { setOpenPopup, handleClose } = props;
+
   return (
     <div>
       <Dialog
         // fullScreen
-        open={openAddRoleChange}
-        onClose={closePopup}
+        Open={setOpenPopup}
+        onClose={handleClose}
         fullWidth
         maxWidth="sm"
       >
         <DialogTitle>
           ADD ROLE {" "}
-          <IconButton onClick={closePopup} style={{ float: "right" }}>
+          <IconButton onClick={handleClose} style={{ float: "right" }}>
             <CloseIcon color="primary"></CloseIcon>
           </IconButton>{" "}
         </DialogTitle>
