@@ -9,7 +9,6 @@ import Header from "../src/Components/Header-Component/headerComponent";
 import Footer from "./Components/Footer-Component/footerComponent";
 import { menus } from "../src/Data/SideBarData";
 
-
 function App() {
   const location = useLocation();
   let routes = [];
@@ -24,6 +23,13 @@ function App() {
     console.log(pathname);
     return !['/login', '/signup'].includes(pathname);
   };
+  // user role has to be extracted from login
+  const userRole = "admin"; // Example role
+
+  const menuItems = menus.filter((subItem) => {
+    // Replace 'admin' with the role that should have access to this menu item
+    return subItem.allowedRoles.includes(userRole);
+  });
 
   return (
 
@@ -31,14 +37,15 @@ function App() {
     <div sx={{ backgroundColor: '#d3d3d3'}}>
       {shouldShowSidebar() && <Header />}
       <Box display="flex" className="App" sx={{ paddingTop: 9, paddingX: 2, paddingBottom: 7, backgroundColor: '#f6f5f5', width: '100vw' }}>
-      {shouldShowSidebar() && <Sidenav data={menus} />}
+      {shouldShowSidebar() && <Sidenav data={menuItems} />}
       
 
     <div>
-
+      {shouldShowSidebar() && <Header />}
       <Box display="flex" className="App">
-        {shouldShowSidebar() && <Sidenav data={menus} />}
-        {shouldShowSidebar() && <Header />}
+
+//         {shouldShowSidebar() && <Sidenav data={menuItems} />}
+//         {shouldShowSidebar() && <Header />}
 
         <Routes>
           {routes.map((route, i) => {
