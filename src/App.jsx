@@ -9,11 +9,6 @@ import Header from "../src/Components/Header-Component/headerComponent";
 import Footer from "./Components/Footer-Component/footerComponent";
 import { menus } from "../src/Data/SideBarData";
 
-import AddClient from "./Components/Add-Clients/AddClient";
-import ViewClientel from "./Components/Clientel-Component/ViewClientel";
-import Inventory from "./Components/Inventory/Inventory";
-
-
 function App() {
   const location = useLocation();
   let routes = [];
@@ -28,14 +23,20 @@ function App() {
     console.log(pathname);
     return !['/login', '/signup'].includes(pathname);
   };
+  // user role has to be extracted from login
+  const userRole = "admin"; // Example role
+
+  const menuItems = menus.filter((subItem) => {
+    // Replace 'admin' with the role that should have access to this menu item
+    return subItem.allowedRoles.includes(userRole);
+  });
 
   return (
 
     <div>
-
+      {shouldShowSidebar() && <Header />}
       <Box display="flex" className="App">
-        {shouldShowSidebar() && <Sidenav data={menus} />}
-        {shouldShowSidebar() && <Header />}
+        {shouldShowSidebar() && <Sidenav data={menuItems} />}
         <Routes>
           {routes.map((route, i) => {
             return (

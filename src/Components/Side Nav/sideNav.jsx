@@ -25,7 +25,7 @@ export default function ClippedDrawer({ data }) {
     >
      
       <List>
-        {data.map((item) => (<SideBarMenu name={item.name} icon={item.icon} subMenu={item.subMenu} />))}
+        {data.map((item) => (<SideBarMenu name={item.name}  icon={item.icon} subMenu={item.subMenu} />))}
         
       </List>
     </Drawer>

@@ -1,9 +1,6 @@
 import {
   PersonOutline,
-  Person2Outlined,
-  Shop2Outlined,
-  WorkOutline,
-  HelpCenterOutlined,HomeMaxOutlined
+ HomeMaxOutlined
 } from "@mui/icons-material";
 
 import { AppRoutes as Routes } from "../AppRoutes/Approutes";
@@ -11,22 +8,26 @@ import { AppRoutes as Routes } from "../AppRoutes/Approutes";
 export const menus = [
   {
     name: "Home",
-    icon: <HomeMaxOutlined/>,
+    icon: <HomeMaxOutlined />,
+    allowedRoles: ["user", "admin","service_provider"],
     subMenu: [
-     
+        
     ],
   },
   {
     name: "Services",
     icon: <PersonOutline />,
+    allowedRoles: ["user","admin"],
     subMenu: [
       {
         name: "On going services",
+       
         path: Routes.ongoing_services.path,
         component: Routes.ongoing_services.component,
       },
       {
         name: "Repairs",
+        allowedRoles: ["admin"],
         path: Routes.repairs.path,
         component: Routes.repairs.component,
       },
@@ -37,10 +38,11 @@ export const menus = [
       },
     ],
   },
-  
+
   {
     name: "Clientel",
     icon: <PersonOutline />,
+    allowedRoles: ["service_provider"],
     subMenu: [
       {
         name: "View clients",
@@ -57,7 +59,7 @@ export const menus = [
   {
     name: "Inventory",
     icon: <PersonOutline />,
-
+    allowedRoles: ["admin"],
     subMenu: [
       {
         name: "View Inventory",
@@ -69,12 +71,25 @@ export const menus = [
   {
     name: "Employee",
     icon: <PersonOutline />,
-
+    allowedRoles: ["admin"],
     subMenu: [
       {
         name: "View Employees",
+
         path: Routes.view_employee.path,
         component: Routes.view_employee.component,
+      },
+    ],
+  },
+  {
+    name: "Vehicles",
+    icon: <PersonOutline />,
+    allowedRoles: ["user","admin"],
+    subMenu: [
+      {
+        name: "My vehicles",
+        path: Routes.view_vehicle.path,
+        component: Routes.view_vehicle.component,
       },
     ],
   },
