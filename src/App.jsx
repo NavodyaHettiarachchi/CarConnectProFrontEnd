@@ -41,11 +41,10 @@ function App() {
       
 
     <div>
-      {shouldShowSidebar() && <Header />}
+
       <Box display="flex" className="App">
 
-//         {shouldShowSidebar() && <Sidenav data={menuItems} />}
-//         {shouldShowSidebar() && <Header />}
+    
 
         <Routes>
           {routes.map((route, i) => {
@@ -58,7 +57,7 @@ function App() {
       </Box>
       <Footer />
       </div>
-        <Footer />
+      
       </Box>
     </div>
   );
