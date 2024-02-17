@@ -93,6 +93,9 @@ const VirtuosoTableComponents = {
 
 
 
+
+
+
 function CenterAdminPage() {
 
   const [openPopup, setOpenPopup] = useState(false);
@@ -104,6 +107,18 @@ function CenterAdminPage() {
   const handleCloseAddRolePopup = () => {
     setOpenPopup(false);
   };
+
+
+  //filers methods
+  const [searchName, setSearchName] = useState("")
+  const [searchRole, setSearchRole] = useState("")
+
+  const filteredRows = rows.filter(row => {
+    return (
+      row.Name.toLowerCase().includes(searchName.toLowerCase()) &&
+      row.Role.toLowerCase().includes(searchRole.toLowerCase())
+    );
+  });
 
   return (
     <div style={{display: 'flex', justifyContent: 'space-around'}}>
@@ -163,20 +178,24 @@ function CenterAdminPage() {
         <CardContent>
           <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
             <b>Employees</b>
-            <b><TextField sx={{marginLeft:10}}
-          className="TextField"
-          id="standard-basic"
-          variant="standard"
-          label="Search by Name"
-          
-        />
-        <TextField sx={{marginLeft:5}}
-          className="TextField"
-          id="standard-basic"
-          variant="standard"
-          label="Search by Vehicle ID"
-          
-        /></b>
+            <b>
+              <TextField sx={{marginLeft:10}}
+                          className="TextField"
+                          id="standard-basic"
+                          variant="standard"
+                          label="Search by Name"
+                          value={searchName}
+                          onChange={(e) => setSearchName(e.target.value)}            
+               />
+              <TextField sx={{marginLeft:5}}
+                          className="TextField"
+                          id="standard-basic"
+                          variant="standard"
+                          label="Search by Role"
+                          value={searchRole}
+                          onChange={(e) => setSearchRole(e.target.value)}
+              />
+          </b>
           </Typography>
           <Grid container spacing={2}>
             {/* employee table */}
@@ -197,9 +216,9 @@ function CenterAdminPage() {
                 ))}
               </TableRow>
             </TableHead>  
-              <Paper style={{ height: 690, width: '100%', marginLeft: '1%'  }}>
+              <Paper style={{ height: 620, width: '100%', marginLeft: '1%'  }}>
                   <TableVirtuoso
-                    data={rows}
+                    data={filteredRows}
                     components={VirtuosoTableComponents}
                     CenterAdminPage={CenterAdminPage}
                     itemContent={rowContent}
