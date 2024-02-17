@@ -29,6 +29,7 @@
     "react-icons": "^4.3.1",
     "react-router-dom": "^6.21.2",
     "react-scripts": "5.0.1",
+    "react-virtuoso": "^4.6.3",
     "styled-components": "^6.1.8",
     "web-vitals": "^2.1.4"
   },
@@ -59,6 +60,4 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
-
-  
 }
