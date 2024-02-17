@@ -10,7 +10,7 @@ import Menu from '@mui/material/Menu';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Tooltip from '@mui/material/Tooltip';
 
-export default function MenuAppBar() {
+export default function Header() {
   const [auth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
