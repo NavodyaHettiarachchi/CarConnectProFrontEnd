@@ -20,7 +20,7 @@ export const AppRoutes={
     "add_service": { path: "/addservice/", component: (<AddServicePage />)},
     "view_clients": { path: "/clientel/", component: (<ViewClientel />)},
     "inventory": { path: "/inventory", component: <Inventory /> },
-    "admin": { path: "/admin", component: <CenterAdmin /> }
+    "admin": { path: "/admin", component: <CenterAdmin /> },
     "view_employee": { path: "/employee", component: <Employees /> },
     "view_vehicle": { path: "/vehicle", component: <Vehicle /> },
 }
