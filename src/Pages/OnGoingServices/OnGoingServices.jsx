@@ -20,8 +20,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 var cardStyle = {
     transitionDuration: '0.3s',
-    height: '15vh',
-    color: 'red',
+    height: '12em',
+    color: 'black',
 };
 
 function OnGoingServices() {
@@ -64,9 +64,9 @@ function OnGoingServices() {
                             Service
                         </Typography>
                         <Typography variant="h5" component="div">
-                            Pending at 100000km
+                           For vehicle number KY-8375
                         </Typography>
-
+                       
                     </CardContent></Item>
                 </Grid>
                 <Grid item xs={4}>
@@ -75,14 +75,15 @@ function OnGoingServices() {
                             Body Wash
                         </Typography>
                         <Typography variant="h5" component="div">
-                            Pending at 100000km
+                           For vehicle number KY-1222
                         </Typography>
                         <Button  >
                             <Typography>
                                 Remove
                             </Typography>
                         </Button>
-                    </CardContent></Item>
+                    </CardContent>
+                    </Item>
                 </Grid>
                 <Grid item xs={4}>
                     <Item> <CardContent style={cardStyle}>

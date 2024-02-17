@@ -44,7 +44,8 @@ function AddService() {
             <Box
                 component="form"
                 sx={{
-                    '& > :not(style)': { m: 1, width: '25ch' },
+                    '& > :not(style)': { m: 1, width: '45ch' },
+                    marginTop:7
                 }}
                 noValidate
                 autoComplete="off"
@@ -76,7 +77,7 @@ function AddService() {
                     </FormControl>
                 </FormControl>
                 
-                <TextField sx={{}} id="standard-basic" label="Text Field 1" variant="standard" />
+              
                 <TextField id="standard-basic" label="Text Field 2" variant="standard" />
                 <TextField id="standard-basic" label="Text Field 3" variant="standard" />
 
