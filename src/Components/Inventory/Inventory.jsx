@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import Headerfile from '../../Components/Page-Header/CardHeader';
 
 function Inventory() {
   const [price, setPrice] = useState(0);
@@ -56,7 +57,7 @@ function Inventory() {
 
   return (
     <div class="container-fluid bg-2 text-center">
-      <h1>Inventory</h1>
+     <Headerfile title="Inventory" />
       <br />
       <div class="row">
         <div class="col-sm-8">

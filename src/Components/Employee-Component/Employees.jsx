@@ -14,7 +14,7 @@ import {    Table,
     TableFooter,
     TextField,
     Button } from '@mui/material'
-
+    import Headerfile from '../../Components/Page-Header/CardHeader';
 
 //sample data set
 let EMPLOYEES = [];
@@ -63,27 +63,28 @@ function Employees() {
 
   return (
     <div>
+        <Headerfile title="Employees" />
        <div>
-        <div className='div' style={{ textAlign: "center",marginTop:70 }}>
-            <TextField className='TextField1'
+        <div className='div' style={{ textAlign: "center",marginTop:30 }}>
+            <TextField sx={{marginRight:20, marginLeft:5 ,width:200}} className='TextField1'
                 id="standard-basic"
                 variant="standard" 
                 label="Search by Employee Name"
                 value={searchName}
                 onChange={handleNameChange}
             />
-            <TextField className='TextField1'
+            <TextField sx={{marginRight:20, marginLeft:5 ,width:200}} className='TextField1'
                 id="standard-basic"
                 variant="standard"
                 label="Search by Employee ID"
                 value={searchEmpID}
                 onChange={handleEmpIDChange}
             />
-            <Button variant="contained" color="primary" className='Button'>
+            <Button variant="contained" color="primary" className='Button' sx={{right:0,left:'auto'}}>
                 New Employee
             </Button>
         </div>
-           <TableContainer component={Paper} className='TableContainer'>
+           <TableContainer component={Paper} className='TableContainer' sx={{width:'95%'}}>
             <Table className='table' aria-label="simple table">
                 <TableHead>
                 <TableRow>

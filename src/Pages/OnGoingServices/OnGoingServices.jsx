@@ -8,6 +8,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { Dialog, DialogContent } from '@mui/material';
+import Headerfile from '../../Components/Page-Header/CardHeader';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -36,11 +37,11 @@ function OnGoingServices() {
     };
 
     return (
-        <div>
+        <div><Headerfile title="On going Services" />
 
             <Grid container spacing={2} sx={{
                 padding: '20px',
-                marginTop:5
+                width: '140ch',
             }} >
 
                 <Grid item xs={4}>
