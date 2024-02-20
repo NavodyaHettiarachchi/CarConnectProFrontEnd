@@ -9,7 +9,7 @@ export default function MenuAppBar() {
   return (
     <Box >
       <AppBar position="fixed" style={{ background: '#f5f3f3e3', height: '40px', color: '#000' }} sx={{ top: 'auto', bottom: 0, zIndex: (theme) => theme.zIndex.drawer + 1 }} className="footer center-text" >
-        <Toolbar style={{  textAlign: 'center'  }}>
+        <Toolbar style={{  textAlign: 'center' ,alignContent:"center" }}>
           <p>
             &copy; 2023 Car Connect Pro | All Rights Reserved. Designed, Built & Maintained by Group 5
           </p>

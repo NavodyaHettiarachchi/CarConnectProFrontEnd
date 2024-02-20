@@ -1,0 +1,44 @@
+.sideBar{
+    position:fixed;
+    width:3%; /* Set width 6vh*/
+    height:95%; /* Set height 95vh*/
+    background-color: #D9D9D9;
+    top: 0;
+    left: 0px;
+    display:flex;
+    /* flex-direction: row;   */
+}
+
+.sideBar .head{
+    display: flex;
+    position:fixed;
+    width:100%;
+    background-color: #D9D9D9;
+    height:4%;
+    top: 0;
+    display:none;
+    align-items: center;
+    justify-content:space-between;
+}
+
+@media screen and (max-width:1024px){
+    .sideBar{width:4%;order:1};
+    
+}
+
+@media screen and (max-width:800px){
+    .sideBar{width:6%;order:1};
+    
+}
+
+
+@media screen and (max-width:450px){
+    .sideBar{width:100%;height:6%;order:2;flex-direction:row;top:88%;}
+    .sideBar .profile{display:none} 
+    .sideBar .head{width: 100%;display:flex;}
+    
+}
+
+
+
+
