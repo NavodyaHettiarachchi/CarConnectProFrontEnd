@@ -1,0 +1,36 @@
+/* Header.css */
+
+.header {
+    display: flex;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    width:97%;/*196vh*/
+    height:7%;/*7vh;*/
+    left:3%; /*6vh*/
+    top: 0em;
+    align-items: center;
+    justify-content:space-between;
+  }
+
+.menu{
+    padding-left:2vh;
+  }
+
+.noti{
+    padding-right:2vh;
+}
+
+@media screen and  (max-width:1024px) {
+    .header{width:96%;left:4%;}
+}
+
+@media screen and (max-width:800px){
+    .header{width:94%;left:6%};
+    
+}
+
+@media screen and (max-width:450px) {
+    .header{width: 100%;left: 0%;top:4%}
+}
+
