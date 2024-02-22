@@ -25,8 +25,8 @@ export default function VBarChart() {
   return (
     <Chart
       chartType="Bar"
-      width="100%"
-      height="350px"
+      width="1000px"
+      height="400px"
       data={data}
       options={options}
     />

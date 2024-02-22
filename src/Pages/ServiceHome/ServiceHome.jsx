@@ -21,11 +21,11 @@ export default function Home() {
         <Box sx={{ display: "flex" }}>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={8}>
+              <Grid item xs={12} md={8}>
                 <Stack direction="row" spacing={2}>
                   <Card
                     className="gradient"
-                    sx={{ minWidth: 49 + "%", height: 140 }}
+                    sx={{ width: "100%", height: "100%" }}
                   >
                     <div className="iconstylewhite">
                       <CreditCardIcon />
@@ -50,7 +50,7 @@ export default function Home() {
                   </Card>
                   <Card
                     className="gradientlight"
-                    sx={{ minWidth: 49 + "%", height: 140 }}
+                    sx={{ width: "100%", height: "100%" }}
                   >
                     <div className="iconstylewhite">
                       <ShoppingBagIcon />
@@ -75,9 +75,9 @@ export default function Home() {
                   </Card>
                 </Stack>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <Stack spacing={2}>
-                  <Card className="gradientlight">
+                  <Card className="gradientlight" sx={{ width: "100%" }}>
                     <Stack spacing={2} direction="row">
                       <div className="iconstylewhite">
                         <StorefrontIcon />
@@ -91,7 +91,7 @@ export default function Home() {
                       </div>
                     </Stack>
                   </Card>
-                  <Card>
+                  <Card sx={{ width: "100%" }}>
                     <Stack spacing={2} direction="row">
                       <div className="iconstyle">
                         <StorefrontIcon />
@@ -110,15 +110,15 @@ export default function Home() {
             <Box height={20} />
 
             <Grid container spacing={2}>
-              <Grid item xs={8}>
-                <Card sx={{ height: 60 + "vh" }}>
+              <Grid item xs={12} md={8}>
+                <Card sx={{ height: "60vh", width: "100%" }}>
                   <CardContent>
                     <VBarChart />
                   </CardContent>
                 </Card>
               </Grid>
               <Grid item xs={4}>
-                <Card sx={{ height: 60 + "vh" }}>
+                <Card sx={{ height: "60vh", width: "100%" }}>
                   <CardContent>
                     <div className="paddingall">
                       <span className="pricetitle">Popular Products</span>
