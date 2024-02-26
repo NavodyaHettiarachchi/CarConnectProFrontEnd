@@ -34,7 +34,7 @@ function App() {
   return (
     <div sx={{ backgroundColor: '#d3d3d3'}}>
       {shouldShowSidebar() && <Header />}
-      <Box display="flex" className="App" sx={{overflowX:'hidden', paddingTop: 9, paddingX: 2, paddingBottom: 7, backgroundColor: '#f6f5f5', width: '100vw' }}>
+      <Box display="flex" className="App" sx={{overflowX:'hidden', paddingTop: 8, paddingX: 2, paddingBottom: 7, backgroundColor: '#f6f5f5', width: '100vw', height: '100vh' }}>
       {shouldShowSidebar() && <Sidenav data={menuItems} />}
     <div>
       <Box display="flex" className="App" sx={{overflow:'hidden'}}>

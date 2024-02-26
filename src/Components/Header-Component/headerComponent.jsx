@@ -25,12 +25,12 @@ export default function MenuAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style={{ background: '#7758D1' }} className="header" >
-        <Toolbar style={{ marginTop: '-5px' }} >
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
+        <Toolbar style={{ marginTop: '-0.4%' }} >
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} style={{ height: '40px' }} >
             CarConnectPro
           </Typography>
           {auth && (
-            <div>
+            <div style={{ marginTop: '-0.25%' }}>
               <Tooltip title="No notifications">
                 <IconButton
                   size="large"

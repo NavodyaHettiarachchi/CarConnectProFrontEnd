@@ -1,5 +1,7 @@
 import React from "react";
 import { useState } from "react";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import Headerfile from '../../Components/Page-Header/CardHeader';
 
 function Inventory() {
@@ -56,98 +58,101 @@ function Inventory() {
   }
 
   return (
-    <div class="container-fluid bg-2 text-center">
+    <div class="bg-2 text-center">
      <Headerfile title="Inventory" />
-      <br />
-      <div class="row">
-        <div class="col-sm-8">
-          <table class="table table-bordered">
-            <h3 align="left"> Add Products </h3>
-            <tr>
-              <th>Product Name</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Amount</th>
-              <th>Option</th>
-            </tr>
-            <tr>
-              <td>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Item Name"
-                  value={name}
-                  onChange={(event) => {
-                    setName(event.target.value);
-                  }}
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Enter Price"
-                  value={price}
-                  onChange={handlePriceChange}
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  class="form-control"
-                  placeholder="Enter Qty"
-                  value={qty}
-                  onChange={handleQuantityChange}
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  value={sum}
-                  class="form-control"
-                  placeholder="Enter Total"
-                  id="total_cost"
-                  name="total_cost"
-                  disabled
-                />
-              </td>
-              <td>
-                <button
-                  class="btn btn-success"
-                  type="submit"
-                  onClick={Calculation}
-                >
-                  Add
-                </button>
-              </td>
-            </tr>
-          </table>
-          <h3 align="left"> Products </h3>
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Item Name</th>
-
-                <th>Price</th>
-                <th>Qty</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {users.map((row, index) => (
-                <tr key={index}>
-                  <td>{row.name}</td>
-                  <td>{row.price}</td>
-
-                  <td>{row.qty}</td>
-                  <td>{row.sum}</td>
+      <Card style={{height: '80vh'}}>
+        <CardContent>
+          <div class="row">
+            <div class="col-sm-8">
+              <table class="table table-bordered">
+                <h3 align="left"> Add Products </h3>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Amount</th>
+                  <th>Option</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                <tr>
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Item Name"
+                      value={name}
+                      onChange={(event) => {
+                        setName(event.target.value);
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter Price"
+                      value={price}
+                      onChange={handlePriceChange}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      class="form-control"
+                      placeholder="Enter Qty"
+                      value={qty}
+                      onChange={handleQuantityChange}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={sum}
+                      class="form-control"
+                      placeholder="Enter Total"
+                      id="total_cost"
+                      name="total_cost"
+                      disabled
+                    />
+                  </td>
+                  <td>
+                    <button
+                      class="btn btn-success"
+                      type="submit"
+                      onClick={Calculation}
+                    >
+                      Add
+                    </button>
+                  </td>
+                </tr>
+              </table>
+              <h3 align="left"> Products </h3>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Item Name</th>
+
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {users.map((row, index) => (
+                    <tr key={index}>
+                      <td>{row.name}</td>
+                      <td>{row.price}</td>
+
+                      <td>{row.qty}</td>
+                      <td>{row.sum}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
