@@ -1,7 +1,4 @@
-import {
-  PersonOutline,
- HomeMaxOutlined
-} from "@mui/icons-material";
+import { PersonOutline, HomeMaxOutlined } from "@mui/icons-material";
 
 import { AppRoutes as Routes } from "../AppRoutes/Approutes";
 
@@ -9,19 +6,24 @@ export const menus = [
   {
     name: "Home",
     icon: <HomeMaxOutlined />,
-    allowedRoles: ["user", "admin","service_provider"],
+    allowedRoles: ["user", "admin", "service_provider"],
     subMenu: [
-        
+      {
+        name: "Home",
+
+        path: Routes.home.path,
+        component: Routes.home.component,
+      },
     ],
   },
   {
     name: "Services",
     icon: <PersonOutline />,
-    allowedRoles: ["user","admin"],
+    allowedRoles: ["user", "admin"],
     subMenu: [
       {
         name: "On going services",
-       
+
         path: Routes.ongoing_services.path,
         component: Routes.ongoing_services.component,
       },
@@ -69,14 +71,12 @@ export const menus = [
     ],
   },
   {
-
     name: "Center-Admin",
     name: "Employee",
     icon: <PersonOutline />,
     allowedRoles: ["admin"],
     subMenu: [
       {
-
         name: "Add Role",
         path: Routes.admin.path,
         component: Routes.admin.component,
@@ -90,7 +90,7 @@ export const menus = [
   {
     name: "Vehicles",
     icon: <PersonOutline />,
-    allowedRoles: ["user","admin"],
+    allowedRoles: ["user", "admin"],
     subMenu: [
       {
         name: "My vehicles",
