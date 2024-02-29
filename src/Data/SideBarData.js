@@ -1,35 +1,24 @@
-import { PersonOutline, HomeMaxOutlined } from "@mui/icons-material";
+import {
+  PersonOutline,
+  HomeMaxOutlined
+} from "@mui/icons-material";
 
 import { AppRoutes as Routes } from "../AppRoutes/Approutes";
 
 export const menus = [
-  {
-    name: "Home",
-    icon: <HomeMaxOutlined />,
-    allowedRoles: ["user", "admin", "service_provider"],
-    subMenu: [
-      {
-        name: "Home",
 
-        path: Routes.home.path,
-        component: Routes.home.component,
-      },
-    ],
-  },
   {
     name: "Services",
     icon: <PersonOutline />,
-    allowedRoles: ["user", "admin"],
+    allowedRoles: ["mv:ad"],
     subMenu: [
       {
         name: "On going services",
-
         path: Routes.ongoing_services.path,
         component: Routes.ongoing_services.component,
       },
       {
         name: "Repairs",
-        allowedRoles: ["admin"],
         path: Routes.repairs.path,
         component: Routes.repairs.component,
       },
@@ -44,7 +33,7 @@ export const menus = [
   {
     name: "Clientel",
     icon: <PersonOutline />,
-    allowedRoles: ["service_provider"],
+    allowedRoles: ["mv:ad"],
     subMenu: [
       {
         name: "View clients",
@@ -61,7 +50,7 @@ export const menus = [
   {
     name: "Inventory",
     icon: <PersonOutline />,
-    allowedRoles: ["admin"],
+    allowedRoles: ["mv:ad"],
     subMenu: [
       {
         name: "View Inventory",
@@ -72,16 +61,17 @@ export const menus = [
   },
   {
     name: "Center-Admin",
-    name: "Employee",
+    // name: "Employee",
     icon: <PersonOutline />,
-    allowedRoles: ["admin"],
+    allowedRoles: ["admin", "service_provider"],
     subMenu: [
       {
         name: "Add Role",
         path: Routes.admin.path,
         component: Routes.admin.component,
+      },
+      {
         name: "View Employees",
-
         path: Routes.view_employee.path,
         component: Routes.view_employee.component,
       },
@@ -90,7 +80,7 @@ export const menus = [
   {
     name: "Vehicles",
     icon: <PersonOutline />,
-    allowedRoles: ["user", "admin"],
+    allowedRoles: ["mv:ad"],
     subMenu: [
       {
         name: "My vehicles",

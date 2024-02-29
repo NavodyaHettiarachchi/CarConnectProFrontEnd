@@ -14,8 +14,8 @@ import { menus } from "../src/Data/SideBarData";
 
 function App() {
 
- 
-  
+
+
 
   const location = useLocation();
   let routes = [];
@@ -32,7 +32,7 @@ function App() {
   };
 
   // user role has to be extracted from login
-  const userRole = "admin"; 
+  const userRole = "admin";
 
   const [role, setUserRole] = useState('admin');//make this in profiles role
 
@@ -43,36 +43,24 @@ function App() {
 
 
   return (
-    
-    <div sx={{ backgroundColor: '#d3d3d3'}}>
-
-      {shouldShowSidebar() && <Header UserRole={role}/>}
-      <Box display="flex" className="App" sx={{overflowX:'hidden', paddingTop: 9, paddingX: 2, paddingBottom: 7, backgroundColor: '#f6f5f5', width: '100vw' }}>
-
+    <div sx={{ backgroundColor: '#d3d3d3' }}>
       {shouldShowSidebar() && <Header />}
-      <Box display="flex" className="App" sx={{overflowX:'hidden', paddingTop: 8, paddingX: 2, paddingBottom: 7, backgroundColor: '#f6f5f5', width: '100vw', height: '100vh' }}>
-
-      {shouldShowSidebar() && <Sidenav data={menuItems} />}
-    <div>
-      <Box display="flex" className="App" sx={{overflow:'hidden'}}>
-        <Routes>
-          {routes.map((route, i) => {
-            return (
-              <Route key={i} path={route.path} element={route.component} />
-            );
-          })}
-        </Routes>
+      <Box display="flex" className="App" sx={{ overflowX: 'hidden', paddingTop: 9, paddingX: 2, paddingBottom: 7, backgroundColor: '#f6f5f5', width: '100vw' }}>
+        {shouldShowSidebar() && <Sidenav data={menuItems} />}
+        <div>
+          <Box className="App" sx={{}}>
+            <Routes>
+              {routes.map((route, i) => {
+                return (
+                  <Route key={i} path={route.path} element={route.component} />
+                );
+              })}
+            </Routes>
+          </Box>
+          <Footer />
+        </div>
       </Box>
-      <Footer />
-      </div>
-      </Box>
-    </div>   
-
-    // <div>
-     
-    //   <Profile role={userRole} />
-
-    // </div>
+    </div>
   );
 }
 
