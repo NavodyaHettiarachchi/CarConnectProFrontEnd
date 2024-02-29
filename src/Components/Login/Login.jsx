@@ -19,7 +19,7 @@ function Login() {
     event.preventDefault();
     try {
       const respone = await axios.post('http://localhost:4000/login/', {username, password});
-      const loginData = respone.data.userData.roles;
+      const loginData = respone.data.data.user.roles;
       login(loginData);
       window.localStorage.setItem('user', JSON.stringify(loginData));
       window.localStorage.setItem('IsLoggedIn', true);

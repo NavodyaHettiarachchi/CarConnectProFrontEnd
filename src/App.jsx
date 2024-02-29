@@ -9,9 +9,6 @@ import Sidenav from "./Components/Side Nav/sideNav";
 import Header from "../src/Components/Header-Component/headerComponent";
 import Footer from "./Components/Footer-Component/footerComponent";
 import { menus } from "../src/Data/SideBarData";
-import RedirectPage from "./Pages/Redirect/RedirectPage";
-import { Feed } from "@mui/icons-material";
-import Feedback from "./Pages/FeedbackPage/Feedback";
 
 
 function App() {
@@ -37,9 +34,9 @@ function App() {
   const islogged = window.localStorage.getItem('IsLoggedIn');
   const sep_roles = userRole?.split(', ');
   const menuItems = menus.filter((subItem) => {
-    for (let i = 0; i <= sep_roles.length; i++) {
+    for (let i = 0; i <= sep_roles?.length; i++) {
       console.log(i);
-      console.log(sep_roles.length);
+      console.log(sep_roles?.length);
       return islogged && subItem.allowedRoles.includes(sep_roles[i]);
     }
 
