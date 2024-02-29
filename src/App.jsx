@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { Box } from "@mui/material";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -9,7 +10,13 @@ import Header from "../src/Components/Header-Component/headerComponent";
 import Footer from "./Components/Footer-Component/footerComponent";
 import { menus } from "../src/Data/SideBarData";
 
+
+
 function App() {
+
+ 
+  
+
   const location = useLocation();
   let routes = [];
 
@@ -23,18 +30,28 @@ function App() {
     console.log(pathname);
     return !['/login', '/signup'].includes(pathname);
   };
+
   // user role has to be extracted from login
-  const userRole = "admin"; // Example role
+  const userRole = "admin"; 
+
+  const [role, setUserRole] = useState('admin');//make this in profiles role
 
   const menuItems = menus.filter((subItem) => {
     // Replace 'admin' with the role that should have access to this menu item
     return subItem.allowedRoles.includes(userRole);
   });
 
+
   return (
+    
     <div sx={{ backgroundColor: '#d3d3d3'}}>
+
+      {shouldShowSidebar() && <Header UserRole={role}/>}
+      <Box display="flex" className="App" sx={{overflowX:'hidden', paddingTop: 9, paddingX: 2, paddingBottom: 7, backgroundColor: '#f6f5f5', width: '100vw' }}>
+
       {shouldShowSidebar() && <Header />}
       <Box display="flex" className="App" sx={{overflowX:'hidden', paddingTop: 8, paddingX: 2, paddingBottom: 7, backgroundColor: '#f6f5f5', width: '100vw', height: '100vh' }}>
+
       {shouldShowSidebar() && <Sidenav data={menuItems} />}
     <div>
       <Box display="flex" className="App" sx={{overflow:'hidden'}}>
@@ -48,9 +65,14 @@ function App() {
       </Box>
       <Footer />
       </div>
-      
       </Box>
-    </div>
+    </div>   
+
+    // <div>
+     
+    //   <Profile role={userRole} />
+
+    // </div>
   );
 }
 
