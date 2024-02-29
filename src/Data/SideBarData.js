@@ -6,28 +6,19 @@ import {
 import { AppRoutes as Routes } from "../AppRoutes/Approutes";
 
 export const menus = [
-  {
-    name: "Home",
-    icon: <HomeMaxOutlined />,
-    allowedRoles: ["user", "admin","service_provider"],
-    subMenu: [
-        
-    ],
-  },
+  
   {
     name: "Services",
     icon: <PersonOutline />,
-    allowedRoles: ["user","admin"],
+    allowedRoles: ["mv:ad"],
     subMenu: [
       {
         name: "On going services",
-       
         path: Routes.ongoing_services.path,
         component: Routes.ongoing_services.component,
       },
       {
         name: "Repairs",
-        allowedRoles: ["admin"],
         path: Routes.repairs.path,
         component: Routes.repairs.component,
       },
@@ -42,7 +33,7 @@ export const menus = [
   {
     name: "Clientel",
     icon: <PersonOutline />,
-    allowedRoles: ["service_provider"],
+    allowedRoles: ["mv:ad"],
     subMenu: [
       {
         name: "View clients",
@@ -59,7 +50,7 @@ export const menus = [
   {
     name: "Inventory",
     icon: <PersonOutline />,
-    allowedRoles: ["admin"],
+    allowedRoles: ["mv:ad"],
     subMenu: [
       {
         name: "View Inventory",
@@ -90,7 +81,7 @@ export const menus = [
   {
     name: "Vehicles",
     icon: <PersonOutline />,
-    allowedRoles: ["user","admin"],
+    allowedRoles: ["mv:ad"],
     subMenu: [
       {
         name: "My vehicles",

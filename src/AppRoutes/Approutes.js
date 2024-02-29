@@ -9,11 +9,17 @@ import RegisterPage from "../Pages/Register/RegisterPage";
 import CenterAdmin from "../Pages/CenterAdminPage/CenterAdminPage";
 import Employees from "../Pages/EmployeePage/ViewEmployeePage";
 import Vehicle from "../Pages/VehiclePage/Vehicle";
+import Feedback from "../Pages/FeedbackPage/Feedback";
+import { useState } from "react";
+
 
 
 export const AppRoutes={
-   
-    "login":{ path: "/login", component: (<LoginPage />)},
+
+    
+
+    // "home": { path: "/", component: (islogged?  null: <Feedback/> )},
+    "login": { path: "/login", component: <LoginPage />},
     "signup":{ path: "/signup", component: (<RegisterPage />)},
     "ongoing_services": { path: "/service/", component: (<OnGoingServices/>)},
     "repairs": { path: "/repairs/", component: (<RepairPage />)},
@@ -24,4 +30,3 @@ export const AppRoutes={
     "view_employee": { path: "/employee", component: <Employees /> },
     "view_vehicle": { path: "/vehicle", component: <Vehicle /> },
 }
-

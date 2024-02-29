@@ -9,6 +9,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
+import Cookies from 'js-cookie';
 
 export default function MenuAppBar() {
   const [auth] = React.useState(true);
@@ -19,6 +21,9 @@ export default function MenuAppBar() {
   };
 
   const handleClose = () => {
+    window.localStorage.removeItem('user');
+    window.localStorage.removeItem('IsLoggedIn');
+    window.location.href = '/login';
     setAnchorEl(null);
   };
 
@@ -29,6 +34,7 @@ export default function MenuAppBar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
             CarConnectPro
           </Typography>
+         
           {auth && (
             <div>
               <Tooltip title="No notifications">

@@ -25,15 +25,6 @@ export default function SideBarMenu({ name, icon, subMenu }) {
         }
     }
 
-    // Replace this with your logic to determine the user's role
-    const userRole = "user"; // Example role
-
-    // Define the menu items based on the user's role
-    // const menuItems = subMenu.filter((subItem) => {
-    //     // Replace 'admin' with the role that should have access to this menu item
-    //     return subItem.allowedRoles.includes(userRole);
-    // });
-
     return (
         <>
             <ListItemButton onClick={handleClick} selected={open}>

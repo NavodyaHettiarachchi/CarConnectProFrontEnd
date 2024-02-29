@@ -1,60 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState,useContext,useEffect } from 'react';
 import './LoginStyles.css';
 import landingimg from '../../../src/Images/sidelogin.jpg';
 import Minilogo from '../../../src/Images/sidelogin.svg';
 import Heading from '../Page-Header/header';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
+import UserContext from '../UserContext/usercontext';
+import Cookies from 'js-cookie';
 
 function Login() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const navigate = useNavigate();
-  async function submitform(e) {
+  const { login } = useContext(UserContext);
 
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
-      await axios.post('http://localhost:3000/users/login', {
-        username, password
-      });
-
-
+      const respone = await axios.post('http://localhost:4000/login/', {username, password});
+      const loginData = respone.data.userData.roles;
+      login(loginData);
+      window.localStorage.setItem('user', JSON.stringify(loginData));
+      window.localStorage.setItem('IsLoggedIn', true);
+      if(respone.status==200){
+        navigate('/'); 
+        console.log(respone);
+      }else{
+        alert("Invalid Credentials");
+        window.localStorage.setItem('IsLoggedIn', false);
+      }
     } catch (e) {
       console.log(e);
     }
-
-  }
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (authenticate(username, password)) {
-      console.log("true");
-      navigate('/');
-    } else {
-      console.log("false");
-      return false;
-      
-    }
   };
-
-   function authenticate(username, password) {
-    // Hardcoded values for demonstration purposes
-    const hardcodedUsername = 'admin';
-    const hardcodedPassword = 'password';
-
-    if (username == hardcodedUsername && password == hardcodedPassword) {
-      // Authentication successful
-      return true;
-    } else {
-      // Authentication failed
-      return false;
-    }
-  }
 
   return (
     <div className='hero-landing'>
-
       <div className='hero-img'>
         <img src={landingimg} alt="" />
       </div>
@@ -65,7 +47,7 @@ function Login() {
           <form className='form-container' onSubmit={handleSubmit}>
             <label htmlFor="" className='left-aligned'>Enter your Email</label>
             <br />
-            <input type="text" onChange={(e) => { setUsername(e.target.value) }} className='name-field ' />
+            <input type="text"onChange={(e) => { setUsername(e.target.value) }} className='name-field ' />
             <br />
             <label htmlFor="" className=' left-aligned top-spacer'>Enter your Password</label>
             <br />
@@ -77,12 +59,9 @@ function Login() {
                 <label className='top-spacer checkbox' for="remember-me">Remember Me</label>
               </div>
               <div>
-
                 <label htmlFor="" className='fgt-pwd top-spacer link-text'> Forgot password</label>
-
               </div>
             </span>
-
             <input className='sub-btn' onClick={handleSubmit} type="submit" value="LOGIN" />
             <br />
             <div className="signup-btn  top-spacer">Not a member? <a className='link-text' href="/signup">Signup</a></div>
