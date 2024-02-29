@@ -2,17 +2,16 @@
     min-width: 1340px;
   }
   
-  .TableContainer {
+  /* .TableContainer {
       border-radius: 15px;
       margin: 20px 30px 10px 30px;
-      /* max-width: 1340px; */
   }
   
   .tableHeaderCell {
       font-weight: bold;
       background-color: rgb(54, 54, 226);
       color: aliceblue;
-  }
+  } */
   
   .Avatar {
       background-color: rgb(111, 111, 227);
