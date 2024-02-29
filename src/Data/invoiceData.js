@@ -1,0 +1,48 @@
+export const invoiceData = {
+    totalAmount: 5000,
+    billNumber: "INV-001",
+    formattedDate: "2024-02-27",
+    formattedTime: "14:30",
+    selectedCustomerName: "John Doe",
+    selectedCustomerContact: "123-456-7890",
+    vehicleId: "BSC XXXX",
+    // CompanyLogo: "companyLogoImage", // Assuming you have the image imported or defined
+    // qrCodeImage: "qrCodeImage", // Assuming you have the image imported or defined
+    selectedItems: [
+      {
+        itemName: "Item 1",
+        itemCode: "ITM-001",
+        unitPrice: 1000,
+        quantity: 2,
+        totalPrice: 2000,
+      },
+      {
+        itemName: "Item 2",
+        itemCode: "ITM-002",
+        unitPrice: 1500,
+        quantity: 1,
+        totalPrice: 1500,
+      },
+      {
+        itemName: "Item 2",
+        itemCode: "ITM-002",
+        unitPrice: 1500,
+        quantity: 1,
+        totalPrice: 1500,
+      },
+    ],
+    subTotal: 3500,
+    discount: 10,
+    cash: 4000,
+    balance: 500,
+    noteText1: "Thank you for your business.",
+    noteText2: "Payment is due within 30 days.",
+    noteText3: "For any inquiries, please contact us at example@example.com.",
+    CompanyName: "ABC Center",
+    street_1: "Ab",
+    street_2: "abc Road", 
+    city: "Wellamadama", 
+    province: "Matara", 
+    phone: "0372222222",
+    email: "example@example.com",
+  };

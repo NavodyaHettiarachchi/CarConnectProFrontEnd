@@ -4,13 +4,19 @@ import RepairPage from "../Pages/Repairs/RepairPage";
 import AddServicePage from "../Pages/AddService/AddService";
 import Inventory from "../Components/Inventory/Inventory";
 // import ViewClientsPage from "../Pages/ClientelPage/ViewClientsPage";
-import LoginPage from "../Pages/LoginPage/LoginPage";
+import LoginPage from "../Components/Login/Login";
 import RegisterPage from "../Pages/Register/RegisterPage";
 import CenterAdmin from "../Pages/CenterAdminPage/CenterAdminPage";
 import Employees from "../Pages/EmployeePage/ViewEmployeePage";
 import Vehicle from "../Pages/VehiclePage/Vehicle";
 import Feedback from "../Pages/FeedbackPage/Feedback";
 import { useState } from "react";
+import ServiceHome from "../Pages/ServiceHome/ServiceHome";
+import EmployeeProfile from "../Pages/Profile/EmployeeProfile";
+import CenterProfile from "../Pages/Profile/CenterProfile";
+import OwnerProfile from "../Pages/Profile/OwnerProfie";
+import AdminProfile from "../Pages/Profile/AdminProfile";
+
 
 
 
@@ -29,4 +35,11 @@ export const AppRoutes={
     "admin": { path: "/admin", component: <CenterAdmin /> },
     "view_employee": { path: "/employee", component: <Employees /> },
     "view_vehicle": { path: "/vehicle", component: <Vehicle /> },
+
+    "EmployeeProfile": { path: "/employee/profile", component: < EmployeeProfile/> },
+    "CenterProfile": { path: "/center/profile", component: <CenterProfile/> },
+    "OwnerProfile": { path: "/owner/profile", component: <OwnerProfile/> },
+    "AdminProfile": { path: "/admin/profile", component: <AdminProfile/> },
+    
+    
 }

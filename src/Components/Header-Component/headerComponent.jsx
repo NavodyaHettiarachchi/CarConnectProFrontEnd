@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,10 +12,16 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import Cookies from 'js-cookie';
+import ChangePassword from '../../Pages/Profile/ChangePassword';
+import LogoutConfirmation from '../../Pages/Profile/LogoutConfirmation';
+import { Link } from 'react-router-dom';
 
-export default function MenuAppBar() {
+export default function Header({ UserRole }) {
+ 
   const [auth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -27,16 +34,41 @@ export default function MenuAppBar() {
     setAnchorEl(null);
   };
 
+  const handleOpenChangePassword = () => {
+    handleClose();
+    setShowChangePassword(true);
+  };
+
+  const handleOpenLogoutConfirmation = () => {
+    handleClose();
+    setShowLogoutConfirmation(true);
+  };
+
+  const handleProfileClick = () => {
+    handleClose();
+  };
+
+  const handleConfirmLogout = () => {
+    // Perform logout actions here
+    // For example, redirect to logout endpoint
+    setShowLogoutConfirmation(false);
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutConfirmation(false);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style={{ background: '#7758D1' }} className="header" >
-        <Toolbar style={{ marginTop: '-5px' }} >
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
+        <Toolbar style={{ marginTop: '-0.4%' }} >
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} style={{ height: '40px' }} >
+
             CarConnectPro
           </Typography>
          
           {auth && (
-            <div>
+            <div style={{ marginTop: '-0.25%' }}>
               <Tooltip title="No notifications">
                 <IconButton
                   size="large"
@@ -73,13 +105,22 @@ export default function MenuAppBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>LogOut</MenuItem>
+                <MenuItem
+                  component={Link} 
+                  to={`/${UserRole}/profile`}
+                  onClick={handleProfileClick}
+                  sx={{ justifyContent: 'center' }}
+                >
+                </MenuItem>
+                <MenuItem onClick={handleOpenChangePassword} sx={{ justifyContent: 'center' }}>Change Password</MenuItem>
+                <MenuItem onClick={handleOpenLogoutConfirmation} sx={{ justifyContent: 'center' }}>Logout</MenuItem>
               </Menu>
             </div>
           )}
         </Toolbar>
       </AppBar>
+      {showChangePassword && <ChangePassword onClose={() => setShowChangePassword(false)} />}
+      {showLogoutConfirmation && <LogoutConfirmation onConfirm={handleConfirmLogout} onCancel={handleCancelLogout} />}
     </Box>
   );
 }
