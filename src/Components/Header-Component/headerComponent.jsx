@@ -55,13 +55,18 @@ export default function Header({ UserRole }) {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
+
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style={{ background: '#7758D1' }} className="header">
         <Toolbar style={{ marginTop: '-5px' }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style={{ background: '#7758D1' }} className="header" >
+        <Toolbar style={{ marginTop: '-0.4%' }} >
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} style={{ height: '40px' }} >
+
             CarConnectPro
           </Typography>
           {auth && (
-            <div>
+            <div style={{ marginTop: '-0.25%' }}>
               <Tooltip title="No notifications">
                 <IconButton
                   size="large"
@@ -104,7 +109,6 @@ export default function Header({ UserRole }) {
                   onClick={handleProfileClick}
                   sx={{ justifyContent: 'center' }}
                 >
-                  Profile
                 </MenuItem>
                 <MenuItem onClick={handleOpenChangePassword} sx={{ justifyContent: 'center' }}>Change Password</MenuItem>
                 <MenuItem onClick={handleOpenLogoutConfirmation} sx={{ justifyContent: 'center' }}>Logout</MenuItem>
