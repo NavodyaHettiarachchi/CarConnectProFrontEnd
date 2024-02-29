@@ -6,11 +6,12 @@ import {
 import { AppRoutes as Routes } from "../AppRoutes/Approutes";
 
 export const menus = [
+  
 
   {
     name: "Services",
     icon: <PersonOutline />,
-    allowedRoles: ["mv:ad"],
+    allowedRoles: ["mv:ad","s:ad"],
     subMenu: [
       {
         name: "On going services",
@@ -33,7 +34,7 @@ export const menus = [
   {
     name: "Clientel",
     icon: <PersonOutline />,
-    allowedRoles: ["mv:ad"],
+    allowedRoles: ["cv:ad","cv:v","s:ad"],
     subMenu: [
       {
         name: "View clients",
@@ -50,7 +51,7 @@ export const menus = [
   {
     name: "Inventory",
     icon: <PersonOutline />,
-    allowedRoles: ["mv:ad"],
+    allowedRoles: ["mv:ad","s:ad"],
     subMenu: [
       {
         name: "View Inventory",
@@ -63,7 +64,7 @@ export const menus = [
     name: "Center-Admin",
     // name: "Employee",
     icon: <PersonOutline />,
-    allowedRoles: ["admin", "service_provider"],
+    allowedRoles: ["s:ad"],
     subMenu: [
       {
         name: "Add Role",

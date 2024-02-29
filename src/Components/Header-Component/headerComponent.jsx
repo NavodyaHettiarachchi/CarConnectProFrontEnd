@@ -10,6 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
+import Cookies from 'js-cookie';
 import ChangePassword from '../../Pages/Profile/ChangePassword';
 import LogoutConfirmation from '../../Pages/Profile/LogoutConfirmation';
 import { Link } from 'react-router-dom';
@@ -26,6 +28,9 @@ export default function Header({ UserRole }) {
   };
 
   const handleClose = () => {
+    window.localStorage.removeItem('user');
+    window.localStorage.removeItem('IsLoggedIn');
+    window.location.href = '/login';
     setAnchorEl(null);
   };
 
@@ -61,6 +66,7 @@ export default function Header({ UserRole }) {
 
             CarConnectPro
           </Typography>
+         
           {auth && (
             <div style={{ marginTop: '-0.25%' }}>
               <Tooltip title="No notifications">

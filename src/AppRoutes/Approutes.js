@@ -9,6 +9,8 @@ import RegisterPage from "../Pages/Register/RegisterPage";
 import CenterAdmin from "../Pages/CenterAdminPage/CenterAdminPage";
 import Employees from "../Pages/EmployeePage/ViewEmployeePage";
 import Vehicle from "../Pages/VehiclePage/Vehicle";
+import Feedback from "../Pages/FeedbackPage/Feedback";
+import { useState } from "react";
 import ServiceHome from "../Pages/ServiceHome/ServiceHome";
 import EmployeeProfile from "../Pages/Profile/EmployeeProfile";
 import CenterProfile from "../Pages/Profile/CenterProfile";
@@ -19,8 +21,11 @@ import AdminProfile from "../Pages/Profile/AdminProfile";
 
 
 export const AppRoutes={
-   
-    "login":{ path: "/login", component: (<LoginPage />)},
+
+    
+
+    // "home": { path: "/", component: (islogged?  null: <Feedback/> )},
+    "login": { path: "/login", component: <LoginPage />},
     "signup":{ path: "/signup", component: (<RegisterPage />)},
     "ongoing_services": { path: "/service/", component: (<OnGoingServices/>)},
     "repairs": { path: "/repairs/", component: (<RepairPage />)},

@@ -1,7 +1,9 @@
+import { React, useEffect, useState } from "react";
+import { useContext } from "react";
 import React from "react";
 import { useState } from "react";
 import { Box } from "@mui/material";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Switch, Routes, Route, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/common.css";
 import { AppRoutes } from "./AppRoutes/Approutes";
@@ -11,13 +13,13 @@ import Footer from "./Components/Footer-Component/footerComponent";
 import { menus } from "../src/Data/SideBarData";
 
 
-
 function App() {
 
 
 
 
   const location = useLocation();
+  const [userRole, setUserRole] = useState('');
   let routes = [];
 
   Object.keys(AppRoutes).forEach((key) => {
@@ -27,21 +29,24 @@ function App() {
   // Function to check if the current location matches certain paths
   const shouldShowSidebar = () => {
     const { pathname } = location;
-    console.log(pathname);
     return !['/login', '/signup'].includes(pathname);
   };
 
-  // user role has to be extracted from login
-  const userRole = "admin";
-
-  const [role, setUserRole] = useState('admin');//make this in profiles role
-
-  const menuItems = menus.filter((subItem) => {
-    // Replace 'admin' with the role that should have access to this menu item
-    return subItem.allowedRoles.includes(userRole);
+  useEffect(() => {
+    const role = window.localStorage.getItem('user');
+    setUserRole(JSON.parse(role));
   });
 
+  const islogged = window.localStorage.getItem('IsLoggedIn');
+  const sep_roles = userRole?.split(', ');
+  const menuItems = menus.filter((subItem) => {
+    for (let i = 0; i <= sep_roles?.length; i++) {
+      console.log(i);
+      console.log(sep_roles?.length);
+      return islogged && subItem.allowedRoles.includes(sep_roles[i]);
+    }
 
+  });
   return (
     <div sx={{ backgroundColor: '#d3d3d3' }}>
       {shouldShowSidebar() && <Header />}
@@ -63,5 +68,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
