@@ -5,22 +5,17 @@ import Minilogo from '../../../src/Images/sidelogin.svg';
 import Heading from '../Page-Header/header';
 import axios from 'axios';
 import { useNavigate,Link } from 'react-router-dom';
-import UserContext from '../UserContext/usercontext';
-import Cookies from 'js-cookie';
 
 function Login() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { login } = useContext(UserContext);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const respone = await axios.post('http://localhost:4000/login/', {username, password});
       const loginData = respone.data.data.user.roles;
-      login(loginData);
       window.localStorage.setItem('user', JSON.stringify(loginData));
       window.localStorage.setItem('IsLoggedIn', true);
       if(respone.status==200){
