@@ -35,20 +35,9 @@ const columns = [
 
 function Employees() {
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(6);
   const [searchName, setSearchName] = useState('');
   const [searchEmpNIC, setSearchEmpNIC] = useState('');
   const [empData, setEmpData] = useState([]);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
 
   const handleNameChange = (event) => {
     setSearchName(event.target.value);

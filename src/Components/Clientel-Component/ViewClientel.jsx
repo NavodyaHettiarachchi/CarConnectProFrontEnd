@@ -80,6 +80,9 @@ function ViewClientel() {
   };
 
 
+  const handleMileageChange = (event) => { 
+    setClient((client) => ({ ...client, mileage_on_reg: event.target.value }));
+  }
 
 
   const handleNameChange = (event) => {
@@ -265,7 +268,7 @@ function ViewClientel() {
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <TextField id="standard-basic"  value={client.mileage_on_reg} label="Mileage On Registration" fullWidth variant="standard" />
+                  <TextField id="standard-basic" onChange={handleMileageChange} value={client.mileage_on_reg} label="Mileage On Registration" fullWidth variant="standard" />
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
