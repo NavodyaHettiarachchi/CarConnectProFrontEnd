@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField,Paper} from '@mui/material';
 import Headerfile from '../../Components/Page-Header/CardHeader';
 import { Link } from 'react-router-dom';
+import ChangePassword from './ChangePassword';
 
 const CenterForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
-    username: 'Harindu',
-    email: 'ashenharindu@gmail.com',
+    username: '',
+    email: '',
     name: '',
     phone: '',
     center: '',
@@ -41,7 +42,10 @@ const CenterForm = ({ onSubmit }) => {
 
         <Paper style={{ padding:15,top:5,maxWidth:1200,display:'flex'}}>
 
+        <Grid container spacing={2}>
+        <Grid item xs={12}>
         <form onSubmit={handleSubmit}>
+
 
         <Grid container rowSpacing={6} columnSpacing={2} sx={{paddingTop:2}}>
 
@@ -73,7 +77,7 @@ const CenterForm = ({ onSubmit }) => {
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
-            label="Name"
+            label="Center Name"
             name="name"
             value={formData.name}
             onChange={handleChange}
@@ -143,65 +147,57 @@ const CenterForm = ({ onSubmit }) => {
           />
         </Grid>
 
-            <Grid item xs={0} sm={6}>
-                  
-                <Grid container spacing={2}>
-
-                    <Grid item xs={0} sm={6}>
-                      <TextField
-                      fullWidth
-                      label="City"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleChange}
-                      required
-                      />
-                    </Grid>
-
-
-                    <Grid item xs={0} sm={6}>
-                      <TextField
-                      fullWidth
-                      label="Province"
-                      name="province"
-                      value={formData.province}
-                      onChange={handleChange}
-                      required
-                      />
-                    </Grid>
-
-                </Grid>
-
-            </Grid>
-
 
         <Grid item xs={12} sm={6}>
-          <div style={{ marginLeft: '36%', marginTop: '1%' }}>
-            <Grid container spacing={3}>
+         <TextField
+            fullWidth
+            label="City"
+            name="city"
+            value={formData.city}
+            onChange={handleChange}
+            required
+           />
+        </Grid>
 
-                        <Grid item xs={3}>
-                          <Button variant="contained" color="primary"  type="submit">
-                            Save   
-                          </Button>
-                        </Grid>
+        <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Province"
+              name="province"
+              value={formData.province}
+              onChange={handleChange}
+              required
+              />
+        </Grid>
 
-                        <Grid item xs={3}>
-                          <Button variant="contained" color="secondary" type="button" component={Link} to="/">
-                            Back
-                          </Button>
-                        </Grid>
+            <div style={{ marginLeft: '68%', marginTop: '1%' }}>
+              <Grid container spacing={5}>
+                  <Grid item xs={6}>
+                    <Button variant="contained" color="primary" type="submit">
+                      Save
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button variant="contained" color="secondary" type="button" component={Link} to="/">
+                      Back
+                    </Button>
+                  </Grid>
+                </Grid>
+              </div>
 
             </Grid>
+            </form>  
+            </Grid>
 
-        </div>
+            <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
+              <Grid item xs={12} sm={12}>
+                <ChangePassword/>
+              </Grid>
+            </div>
 
-      </Grid>
+        </Grid>
 
-    </Grid>
-
-    </form>
-
-    </Paper>
+      </Paper>
 
     </div>
 
@@ -209,3 +205,4 @@ const CenterForm = ({ onSubmit }) => {
 };
 
 export default CenterForm;
+ 

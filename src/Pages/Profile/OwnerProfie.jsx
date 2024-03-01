@@ -5,20 +5,22 @@ import { Link } from 'react-router-dom';
 
 import Avatar from '@mui/material/Avatar';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
-import UploadIcon from '@mui/icons-material/FileUpload';
 import AccountIcon from '@mui/icons-material/AccountCircle';
+
+
+import ChangePassword from './ChangePassword';
 
 function OwnerForm() {
   const [formData, setFormData] = useState({
-    username: 'Harindu',
-    email: 'ashenharindu714@gmail.com',
+    username: '',
+    email: '',
     phone: '',
     name: '',
     dob: '',
     gender: '',
-    nic: '993041254v',
-    managerName: 'harindu',
-    designation: 'labour',
+    nic: '',
+    city:'',
+    province:'',
     image: ''
   });
 
@@ -72,9 +74,12 @@ function OwnerForm() {
     <div>
       <Headerfile title="Owner Profile"/>
       <Paper style={{ padding: 15, top: 5, maxWidth: 1200, display: 'flex' }}>
-        <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item sm={6} xs={12}>
+            <Grid item  xs={12}>
+            <form onSubmit={handleSubmit}>
+                <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+
               <Paper style={{ padding: 5 }}>
                 <div style={{
                   width: 200,
@@ -103,15 +108,9 @@ function OwnerForm() {
                   type="file"
                   onChange={handleImageChange}
                 />
-
-                {/* <label htmlFor="contained-button-file">
-                  <Button variant="contained" component="span" sx={{ left: 200 }}>
-                    <UploadIcon/>
-                  </Button>
-                </label> */}
-
               </Paper>
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <Grid container spacing={4.8} sx={{paddingTop:2}}>
                 <Grid item xs={12}>
@@ -149,6 +148,7 @@ function OwnerForm() {
                 </Grid>
               </Grid>
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -159,6 +159,7 @@ function OwnerForm() {
                 required
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -176,6 +177,7 @@ function OwnerForm() {
                 }}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
@@ -194,6 +196,7 @@ function OwnerForm() {
                     </Select>
                   </FormControl>
                 </Grid>
+
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
@@ -207,20 +210,10 @@ function OwnerForm() {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Desigantion Details"
-                value={`${formData.managerName} | ${formData.designation}`}
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
+           
             <Grid item xs={12} sm={6}>
           
                     <Grid container spacing={2}>
-
                     <Grid item xs={12} sm={6}>
                         <TextField
                         fullWidth
@@ -242,30 +235,40 @@ function OwnerForm() {
                         required
                         />
                     </Grid>
-
-                    </Grid>
-
+                  </Grid>
                 </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <div style={{ marginLeft: '36%', marginTop: '1%' }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={3}>
+           
+            <div style={{ marginLeft: '68%', marginTop: '1%' }}>
+              <Grid container spacing={5}>
+                  <Grid item xs={6}>
                     <Button variant="contained" color="primary" type="submit">
                       Save
                     </Button>
                   </Grid>
-                  <Grid item xs={3}>
+
+                  <Grid item xs={6}>
                     <Button variant="contained" color="secondary" type="button" component={Link} to="/">
                       Back
                     </Button>
                   </Grid>
+
                 </Grid>
               </div>
+
+             </Grid>
+             </form>   
             </Grid>
+
+            <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
+            <Grid item xs={12} sm={12}>
+              <ChangePassword/>
+            </Grid>
+            </div>
+
           </Grid>
-        </form>
       </Paper>
+
     </div>
   );
 }
