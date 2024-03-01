@@ -35,7 +35,6 @@ export const AppRoutes={
     "admin": { path: "/admin", component: <CenterAdmin /> },
     "view_employee": { path: "/employee", component: <Employees /> },
     "view_vehicle": { path: "/vehicle", component: <Vehicle /> },
-
     "EmployeeProfile": { path: "/employee/profile", component: < EmployeeProfile/> },
     "CenterProfile": { path: "/center/profile", component: <CenterProfile/> },
     "OwnerProfile": { path: "/owner/profile", component: <OwnerProfile/> },

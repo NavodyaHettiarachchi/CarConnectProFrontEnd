@@ -1,7 +1,4 @@
 import { React, useEffect, useState } from "react";
-import { useContext } from "react";
-import React from "react";
-import { useState } from "react";
 import { Box } from "@mui/material";
 import { BrowserRouter as Switch, Routes, Route, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
