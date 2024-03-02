@@ -23,7 +23,7 @@ function Register() {
 
 
   return (
-    <div className='hero-landing'>
+    <div className='hero-landing-login'>
         <div className='hero-img'>
             <img src={landingimg} alt="" />
         </div>

@@ -17,7 +17,7 @@ function CardHeader(props) {
     const classes = useStyles();
     return (
         <div>
-            <Box sx={{ width: '85vw' }}>
+            <Box sx={{ width: '85vw',marginTop:5 }}>
                 <Typography className={classes.typo} variant="h4" gutterBottom>
                     {props.title}
                 </Typography>

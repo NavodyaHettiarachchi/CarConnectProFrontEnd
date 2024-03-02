@@ -35,12 +35,10 @@ export default function Header({ UserRole }) {
   };
 
   const handleOpenChangePassword = () => {
-    handleClose();
     setShowChangePassword(true);
   };
 
   const handleOpenLogoutConfirmation = () => {
-    handleClose();
     setShowLogoutConfirmation(true);
   };
 
@@ -113,7 +111,7 @@ export default function Header({ UserRole }) {
                 >
                 </MenuItem>
                 <MenuItem onClick={handleOpenChangePassword} sx={{ justifyContent: 'center' }}>Change Password</MenuItem>
-                <MenuItem onClick={handleOpenLogoutConfirmation} sx={{ justifyContent: 'center' }}>Logout</MenuItem>
+                <MenuItem onClick={handleClose} sx={{ justifyContent: 'center' }}>Logout</MenuItem>
               </Menu>
             </div>
           )}

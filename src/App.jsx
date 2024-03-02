@@ -48,10 +48,10 @@ function App() {
   return (
     <div sx={{ backgroundColor: '#d3d3d3' }}>
       {shouldShowSidebar() && <Header />}
-      <Box display="flex" className="App" sx={{ overflowX: 'hidden', paddingTop: 9, paddingX: 2, paddingBottom: 7, backgroundColor: '#f6f5f5', width: '100vw' }}>
+      <Box display="flex" className="App" sx={{ overflowX: 'hidden', paddingTop: 2, paddingX: 2, paddingBottom: 7, backgroundColor: '#f6f5f5' }}>
         {shouldShowSidebar() && <Sidenav data={menuItems} />}
         <div>
-          <Box className="App" sx={{}}>
+          {/* <Box className="App" sx={{}}> */}
             <Routes>
               {routes.map((route, i) => {
                 return (
@@ -59,7 +59,7 @@ function App() {
                 );
               })}
             </Routes>
-          </Box>
+          {/* </Box> */}
           <Footer />
         </div>
       </Box>
