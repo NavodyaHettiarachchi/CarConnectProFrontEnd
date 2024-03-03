@@ -12,10 +12,6 @@ import { menus } from "../src/Data/SideBarData";
 
 
 function App() {
-
-
-
-
   const location = useLocation();
   const [userRole, setUserRole] = useState('');
   let routes = [];
@@ -39,19 +35,17 @@ function App() {
   const sep_roles = userRole?.split(', ');
   const menuItems = menus.filter((subItem) => {
     for (let i = 0; i <= sep_roles?.length; i++) {
-      console.log(i);
-      console.log(sep_roles?.length);
       return islogged && subItem.allowedRoles.includes(sep_roles[i]);
     }
 
   });
   return (
-    <div sx={{ backgroundColor: '#d3d3d3' }}>
+    <div sx={shouldShowSidebar() ? { backgroundColor: '#d3d3d3' } : { backgroundColor: '#ffffff' }}>
       {shouldShowSidebar() && <Header />}
-      <Box display="flex" className="App" sx={{ overflowX: 'hidden', paddingTop: 9, paddingX: 2, paddingBottom: 7, backgroundColor: '#f6f5f5', width: '100vw' }}>
+      <Box display="flex" className="App" sx={{ overflowX: 'hidden', paddingTop: 2, paddingX: 2, paddingBottom: 7, backgroundColor: '#ffffff' }}>
         {shouldShowSidebar() && <Sidenav data={menuItems} />}
         <div>
-          <Box className="App" sx={{}}>
+          {/* <Box className="App" sx={{}}> */}
             <Routes>
               {routes.map((route, i) => {
                 return (
@@ -59,7 +53,7 @@ function App() {
                 );
               })}
             </Routes>
-          </Box>
+          {/* </Box> */}
           <Footer />
         </div>
       </Box>
