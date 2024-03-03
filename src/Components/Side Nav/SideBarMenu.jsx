@@ -9,7 +9,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function SideBarMenu({ name, icon, subMenu }) {
+export default function SideBarMenu({ key, name, icon, subMenu }) {
     const [open, setOpen] = useState(false);
 
     const navigate = useNavigate();
@@ -21,7 +21,6 @@ export default function SideBarMenu({ name, icon, subMenu }) {
 
     const handlehomedrop=()=>{
         if(name.includes("Home"||"home")){
-            console.log("true");
             return false;
         }
     }
@@ -39,8 +38,8 @@ export default function SideBarMenu({ name, icon, subMenu }) {
                 <List component="div" disablePadding>
                     {
                         subMenu.map((subItem) => (
-                            <ListItemButton onClick={() => (navigate(subItem.path))} selected={location.pathname === subItem.path}>
-                                <ListItemText primary={subItem.name} />
+                            <ListItemButton key={subItem.key} onClick={() => (navigate(subItem.path))} selected={location.pathname === subItem.path}>
+                                <ListItemText primary={subItem.name} key={subItem.key} />
                             </ListItemButton>
                         ))
                     }
