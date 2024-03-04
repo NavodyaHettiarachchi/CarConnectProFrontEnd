@@ -20,7 +20,6 @@ function Login() {
       window.localStorage.setItem('IsLoggedIn', true);
       if(respone.status==200){
         navigate('/'); 
-        console.log(respone);
       }else{
         alert("Invalid Credentials");
         window.localStorage.setItem('IsLoggedIn', false);
