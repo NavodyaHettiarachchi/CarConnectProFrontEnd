@@ -14,13 +14,12 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const respone = await axios.post('http://localhost:5000/login/', {username, password});
+      const respone = await axios.post('https://localhost:443/login/', {username, password});
       const loginData = respone.data.data.user.roles;
       window.localStorage.setItem('user', JSON.stringify(loginData));
       window.localStorage.setItem('IsLoggedIn', true);
       if(respone.status==200){
         navigate('/'); 
-        console.log(respone);
       }else{
         alert("Invalid Credentials");
         window.localStorage.setItem('IsLoggedIn', false);
