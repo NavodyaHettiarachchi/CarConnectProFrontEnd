@@ -35,7 +35,7 @@ export const menus = [
   {
     name: "Clientel",
     icon: <PersonOutline />,
-    allowedRoles: ["cv:ad","cv:v","s:ad"],
+    allowedRoles: ["cv:ad","cv:v","s:ad","mv:ad"],
     subMenu: [
       {
         name: "View clients",
