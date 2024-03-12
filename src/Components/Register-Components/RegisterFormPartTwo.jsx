@@ -3,22 +3,22 @@ import Heading from '../Page-Header/header'
 import GoogleIcon from '@mui/icons-material/Google';
 import './RegisterFormPartTwo.css'
 
-function RegisterFormPartTwo() {
+function RegisterFormPartTwo({data, setData}) {
   return (
     <div>
         <Heading title="Create a password"/>    
         <form className='form-container'>
-          <label htmlFor="" className='left-aligned'>Your Email</label>
+          <label htmlFor="" className='left-aligned'>Username</label>
           
-          <input type="text" className='name-field ' />
+          <input onChange={(e) => setData({...data, username: e.target.value})} type="text" className='name-field ' />
           <br />
           <label htmlFor="" className='left-aligned top-spacer'>Password</label>
           
-          <input type="password" className='name-field ' />
+          <input onChange={(e) => setData({...data, password: e.target.value})} type="password" className='name-field ' />
           <br />
           <label htmlFor="" className='left-aligned top-spacer'>Confirmed Password</label>
           
-          <input type="password" className='name-field ' />
+          <input onChange={(e) => setData({...data, confirmpassword: e.target.value})} type="password" className='name-field ' />
           <span className='left-aligned space-between'>
             <div>
               <input type="checkbox" name="remember-me" className='top-spacer checkbox' id="" />
@@ -32,7 +32,7 @@ function RegisterFormPartTwo() {
                </p>
             </div>
           </span>
-          <input className='sub-btn' type="submit" value="Create" />
+          <input className='sub-btn' type="submit" value="Create" onClick={console.log(data)} />
           <br />
           <span className="link-text top-spacer">or</span>
           <br />

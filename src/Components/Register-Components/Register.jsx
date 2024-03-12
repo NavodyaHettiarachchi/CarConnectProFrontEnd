@@ -10,6 +10,22 @@ import './Register.css'
 
 function Register() {
   const [page, setPage] = useState(0)
+  const [data, setData] = useState({
+    username: '',
+    password: '',
+    confirmpassword: '',
+    name: '',
+    gender: '',
+    dob: '',
+    email: '',
+    phone: '',
+    street_1: '',
+    street_2: '',
+    city: '',
+    province: '',
+    nic: '',
+    type: '',
+  })
 
 
   
@@ -17,9 +33,9 @@ function Register() {
 
   const registerpartDisplay = () => {
     if (page === 0) {
-      return <RegisterFormPartOne />
+      return <RegisterFormPartOne data={data} setData={setData}/>
     } else {
-      return <RegisterFormPartTwo />
+      return <RegisterFormPartTwo data={data} setData={setData}/>
     }
   }
 
