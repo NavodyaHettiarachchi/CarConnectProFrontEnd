@@ -69,7 +69,7 @@ function Register() {
                 }}
               ><ArrowForwardIcon /></button>
             </div>
-            <div className='stage-31'>
+            <div className='stage-32'>
               <p className="already-a-member">
                 <span className="text-wrapper-3">Already a member? </span>
                 <span className="text-wrapper-4"><a href='/login'>Login!</a></span>

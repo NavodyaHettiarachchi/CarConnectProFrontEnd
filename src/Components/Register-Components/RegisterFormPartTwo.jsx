@@ -26,12 +26,10 @@ function RegisterFormPartTwo({data, setData}) {
     <div>
         <Heading title="Create a password"/>    
         <form className='form-container' onSubmit={handleSubmit}>
-          <label htmlFor="" className='left-aligned'>Username</label>
-          
+          <label htmlFor="" className='left-aligned top-spacer'>Username</label>
           <input onChange={(e) => setData({...data, username: e.target.value})} type="text" className='name-field ' />
           <br />
           <label htmlFor="" className='left-aligned top-spacer'>Password</label>
-          
           <input onChange={(e) => setData({...data, password: e.target.value})} type="password" className='name-field ' />
           <br />
           {/* <label htmlFor="" className='left-aligned top-spacer'>Confirmed Password</label>
@@ -50,7 +48,7 @@ function RegisterFormPartTwo({data, setData}) {
                </p>
             </div>
           </span>
-          <input className='sub-btn' type="submit" value="Create" onClick={handleSubmit} />
+          <input className='sub-btn' type="submit" value="CREATE ACCOUNT" onClick={handleSubmit} />
           <br />
           <span className="link-text top-spacer">or</span>
           <br />
