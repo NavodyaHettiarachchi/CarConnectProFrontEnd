@@ -1,13 +1,31 @@
 import React from 'react'
+import axios from 'axios';
 import Heading from '../Page-Header/header'
 import GoogleIcon from '@mui/icons-material/Google';
 import './RegisterFormPartTwo.css'
 
+
 function RegisterFormPartTwo({data, setData}) {
+
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post('/register', data);
+      console.log(response.data);
+
+    } catch (error) {
+      console.error('Error submitting registration:', error);
+    }
+  }
+
+
   return (
     <div>
         <Heading title="Create a password"/>    
-        <form className='form-container'>
+        <form className='form-container' onSubmit={handleSubmit}>
           <label htmlFor="" className='left-aligned'>Username</label>
           
           <input onChange={(e) => setData({...data, username: e.target.value})} type="text" className='name-field ' />
@@ -16,9 +34,9 @@ function RegisterFormPartTwo({data, setData}) {
           
           <input onChange={(e) => setData({...data, password: e.target.value})} type="password" className='name-field ' />
           <br />
-          <label htmlFor="" className='left-aligned top-spacer'>Confirmed Password</label>
+          {/* <label htmlFor="" className='left-aligned top-spacer'>Confirmed Password</label>
           
-          <input onChange={(e) => setData({...data, confirmpassword: e.target.value})} type="password" className='name-field ' />
+          <input onChange={(e) => setData({...data, confirmpassword: e.target.value})} type="password" className='name-field ' /> */}
           <span className='left-aligned space-between'>
             <div>
               <input type="checkbox" name="remember-me" className='top-spacer checkbox' id="" />
@@ -32,7 +50,7 @@ function RegisterFormPartTwo({data, setData}) {
                </p>
             </div>
           </span>
-          <input className='sub-btn' type="submit" value="Create" onClick={console.log(data)} />
+          <input className='sub-btn' type="submit" value="Create" onClick={handleSubmit} />
           <br />
           <span className="link-text top-spacer">or</span>
           <br />

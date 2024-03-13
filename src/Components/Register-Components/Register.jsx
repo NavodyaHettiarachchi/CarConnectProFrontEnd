@@ -13,7 +13,7 @@ function Register() {
   const [data, setData] = useState({
     username: '',
     password: '',
-    confirmpassword: '',
+    // confirmpassword: '',
     name: '',
     gender: '',
     dob: '',
@@ -24,10 +24,10 @@ function Register() {
     city: '',
     province: '',
     nic: '',
-    type: '',
+    center_type: '',
   })
 
-
+  console.log(data);
   
   const titles = { RegisterFormPartOne, RegisterFormPartTwo };
 
