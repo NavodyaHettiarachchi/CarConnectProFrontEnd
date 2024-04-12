@@ -19,11 +19,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-function AddEditRole({ open, openedit, roleData, closeAddRole, CloseEditRole }) {
+function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEditRole }) {
 
-  const [name, setName] = useState(roleData ? roleData.name : '');
-  const [description, setDescription] = useState(roleData ? roleData.description : '');
-  const [privileges, setPrivileges] = useState(roleData ? roleData.privileges : '');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [privileges, setPrivileges] = useState('');
   const [addRoleBodyCols, setRows] = useState([
     { name: 'ongoing', label: 'On Going Services', view: false, edit: false, viewVal: 'os:v', editVal: 'os:ad' },
     { name: 'employees', label: 'Employees', view: false, edit: false, viewVal: 'ep:v', editVal: 'ep:ad' },
@@ -37,27 +37,47 @@ function AddEditRole({ open, openedit, roleData, closeAddRole, CloseEditRole }) 
   ]
 
   useEffect(() => {
-    console.log('HEEEE')
     updateFields();
   }, [open]);
 
-  const updateFields = () => { 
-    console.log(roleData);
-    if (roleData) {
-      const priv = privileges.split(', ');
+
+  // UPDATE ROLE DATA TO FIELDS 
+  const updateFields = () => {
+    console.log('roleData: ', roleData, 'isEdit: ', isEdit);
+    if (isEdit) {
+      const priv = roleData.privileges.split(', ');
+      console.log('priv: ', priv);
       const updatedRows = addRoleBodyCols.map(row => {
-        if (priv.includes(row.edit) || priv.includes(row.view)) {
-          return { ...row, view: true, edit: true }; // Update both view and edit properties
+        if (priv.includes(row.editVal)) {
+          return { ...row, view: true, edit: true };
+        } else if (priv.includes(row.viewVal)) {
+          return { ...row, view: true, edit: false };
         } else {
           return row; // Keep the row unchanged
         }
       });
+      setName(roleData.name);
+      setDescription(roleData.description);
+      setPrivileges(roleData.privileges);
       setRows(updatedRows);
+    } else { 
+      setName('');
+      setDescription('');
+      setPrivileges('');
     }
   }
 
   const handleClose = () => {
     setPrivileges('');
+    setName('');
+    setDescription('');
+    setRows([
+      { name: 'ongoing', label: 'On Going Services', view: false, edit: false, viewVal: 'os:v', editVal: 'os:ad' },
+      { name: 'employees', label: 'Employees', view: false, edit: false, viewVal: 'ep:v', editVal: 'ep:ad' },
+      { name: 'inventory', label: 'Inventory', view: false, edit: false, viewVal: 'ip:v', editVal: 'ip:ad' },
+      { name: 'settings', label: 'Settings', view: false, edit: false, viewVal: 'sp:v', editVal: 'sp:ad' },
+      { name: 'profile', label: 'Profile', view: false, edit: false, viewVal: 'pp:v', editVal: 'pp:ad' },
+    ]);
     closeAddRole();
     CloseEditRole();
   }
@@ -96,6 +116,7 @@ function AddEditRole({ open, openedit, roleData, closeAddRole, CloseEditRole }) 
         setRows(prevRows => prevRows.map(prevRow => prevRow.name === row.name ? { ...prevRow, edit: false } : prevRow));
       }
     }
+    console.log('Rows: ', addRoleBodyCols);
 
   };
 
@@ -105,6 +126,7 @@ function AddEditRole({ open, openedit, roleData, closeAddRole, CloseEditRole }) 
 
   const submitRole = async () => {
     if (isValidRole()) {
+      console.log('privileges: ', privileges)
       try {
         const roleId = roleData ? roleData.id : null;
         const url = roleId ? `http://localhost:5000/center/settings/roles/${roleId}` : 'http://localhost:5000/center/settings/addroles';
@@ -116,6 +138,7 @@ function AddEditRole({ open, openedit, roleData, closeAddRole, CloseEditRole }) 
             'Content-type': 'application/json',
           },
           body: JSON.stringify({
+            //schema: window.sessionStorage.getItem('schema'),
             schema: 'service_pqr_service_center',
             name: name,
             description: description,

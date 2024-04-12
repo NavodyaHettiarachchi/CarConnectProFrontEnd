@@ -42,6 +42,7 @@ function CenterAdmin() {
 	const [searchdesignation, setSearchdesignation] = useState("");
 	const [searchRole, setSearchRole] = useState("");
 	const [selectedRole, setSelectedRole] = useState(null);
+	const [isEditVal, setIsEditVal] = useState(false);
 
 	let filteredempRows = empData ? empData.filter((user) =>
 		user.name.toLowerCase().includes(searchName.toLowerCase()) &&
@@ -71,6 +72,7 @@ function CenterAdmin() {
 				'Content-type': 'application/json'
 			},
 			body: JSON.stringify({
+				//schema: window.sessionStorage.getItem('schema'),
 				schema: 'service_pqr_service_center',
 			}),
 		})
@@ -90,6 +92,7 @@ function CenterAdmin() {
 				'Content-type': 'application/json'
 			},
 			body: JSON.stringify({
+				//schema: window.sessionStorage.getItem('schema'),
 				schema: 'service_pqr_service_center',
 			}),
 		})
@@ -110,6 +113,10 @@ function CenterAdmin() {
 			headers: {
 				'Content-Type': 'application/json',
 			},
+			body: JSON.stringify({
+				//schema: window.sessionStorage.getItem('schema'),
+				schema: 'service_pqr_service_center',
+			})
 			// body: JSON.stringify({
 			//   schema: schema,
 			// }),
@@ -137,6 +144,8 @@ function CenterAdmin() {
 
 
 	const handleEditRole = (role) => {
+		setIsEditVal(true);
+		console.log('center admin is edit ', isEditVal);
 		setAddEditRoleOpen(true);
 		setSelectedRole(role);
 		setAddEditRoleOpen(true);
@@ -160,6 +169,7 @@ function CenterAdmin() {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
+				//schema: window.sessionStorage.getItem('schema'),
 				schema: 'service_pqr_service_center',
 				isActive: false
 			}),
@@ -209,9 +219,9 @@ function CenterAdmin() {
 									<Table stickyHeader size="small" aria-label="a dense table">
 										<TableHead>
 											<TableRow>
-												{roleCols.map((column) => (
+												{roleCols.map((column, index) => (
 													<TableCell
-														key={column.id}
+														key={index}
 														align={column.id === 'name' ? 'left' : 'center'}
 														style={{ minWidth: column.minWidth,  maxWidth: column.maxWidth }}
 													>
@@ -224,14 +234,14 @@ function CenterAdmin() {
 											{filteredroleRows.map((row) => {
 												return (
 													<TableRow hover role="checkbox" tabIndex={-1} key={row.id} >
-														{roleCols.map((column) => {
+														{roleCols.map((column, index) => {
 															const value = row[column.id];
 															return (
 																column.id === 'name' ?
-																	<TableCell key={column.id} align='left'>
+																	<TableCell key={index} align='left'>
 																		{ value }
 																	</TableCell> :
-																	<TableCell key={column.id} align='center'>
+																	<TableCell key={index} align='center'>
 																		<div style={{ display: 'flex' }}>
 																			{row.id !== 1 && <IconButton aira-label="edit" onClick={() => handleEditRole(row)} >
 																				<EditOutlinedIcon></EditOutlinedIcon>
@@ -268,9 +278,9 @@ function CenterAdmin() {
 									<Table stickyHeader>
 										<TableHead>
 											<TableRow>
-												{serviceCols.map((col) => (
+												{serviceCols.map((col, indexc) => (
 													<TableCell
-														key={col.id}
+														key={indexc}
 														align={col.id !== 'actions' ? 'left' : 'center'}
 														style={{ minWidth: col.minWidth, maxWidth: col.maxWidth }}
 													>
@@ -331,23 +341,23 @@ function CenterAdmin() {
 											</TableRow>
 										</TableHead>
 										<TableBody>
-											{filteredempRows.map((row) => {
+											{filteredempRows.map((row, indexr) => {
 												return (
 													<TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-														{empcolumns.map((column) => {
+														{empcolumns.map((column, indexc) => {
 															const value = row[column.id];
 															return (
-																column.id !== 'isActive' ? (<TableCell key={row.id} align={column.align}>
+																column.id !== 'isActive' ? (<TableCell key={column.id + '-' +indexr} align={column.align}>
 																	{column.format && row.manager_id !== null ? column.format(row) : value}
 																</TableCell>
 																) : (
 																	<>
-																		<TableCell key={column.id} align={column.align}>
+																		<TableCell key={indexc} align={column.align}>
 																			<FormGroup>
 																				<FormControlLabel disabled control={<Switch />} checked={value} label={value ? 'Active' : 'Inactive'} />
 																			</FormGroup>
 																		</TableCell>
-																		<TableCell key={column.id} align={column.align}>
+																		<TableCell key={indexc} align={column.align}>
 																			<div style={{ display: 'flex', justifyContent: 'center' }}>
 																				<Grid item xs={1} >
 																					<IconButton aria-label="edit"
@@ -358,7 +368,7 @@ function CenterAdmin() {
 																				</Grid>
 																				<Grid item xs={1} sx={{ marginLeft: 5 }}>
 																					<IconButton aria-label="delete"
-																						onClick={() => handleStatusEpm(row.id)}
+																						onClick={() => handleStatusEpm(indexr)}
 																					>
 																						<DeleteOutlinedIcon></DeleteOutlinedIcon>
 																					</IconButton>
@@ -390,8 +400,9 @@ function CenterAdmin() {
 					open={addEditroleOpen}
 					openedit={editRoleOpen}
 					roleData={selectedRole}
-					closeAddRole={() => { setAddEditRoleOpen(false) }}
-					CloseEditRole={() => { setEditRoleOpen(false) }}
+					isEdit={isEditVal}
+					closeAddRole={() => { setAddEditRoleOpen(false); setSelectedRole(null) }}
+					CloseEditRole={() => { setIsEditVal(false); setEditRoleOpen(false); setSelectedRole(null) }}
 				/>
 
 
