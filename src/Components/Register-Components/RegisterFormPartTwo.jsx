@@ -1,8 +1,7 @@
-import React from 'react'
-import axios from 'axios';
-import Heading from '../Page-Header/header'
+import React from 'react';
+import Heading from '../Page-Header/header';
 import GoogleIcon from '@mui/icons-material/Google';
-import './RegisterFormPartTwo.css'
+import './RegisterFormPartTwo.css';
 
 
 function RegisterFormPartTwo({data, setData}) {
@@ -11,11 +10,22 @@ function RegisterFormPartTwo({data, setData}) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post('/register', data);
-      console.log(response.data);
-
+      const response = await fetch("http://localhost:5000/register/", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify(data), 
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const resData = await response.json();
+      console.log(resData);
+  
     } catch (error) {
       console.error('Error submitting registration:', error);
     }

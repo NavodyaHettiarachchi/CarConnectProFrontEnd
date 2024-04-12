@@ -8,13 +8,19 @@ import FormControl from '@mui/material/FormControl';
 
 
 function RegisterFormPartOne({ data, setData }) {
-  const [value, setValue] = React.useState('user');
-  const [selectedType, setSelectedType] = useState('user');
+
+  const [selectedType, setSelectedType] = useState('');
 
   const handleChange = (event) => {
-    setValue(event.target.value);
-    setSelectedType(event.target.value);
+    const type = event.target.value;
+    setSelectedType(type);
+    setData({ ...data, isOwner: type === 'user' ? 'true' : 'false', 
+                       center_type: type === 'user' ? 'null' : '', 
+                       gender: type === 'center' ? 'null' : '', 
+                       dob: type === 'center' ? '0000-00-00' : '', 
+                       nic: type === 'center' ? 'null' : '' });
   };
+
 
   return (
     <div>
@@ -24,7 +30,7 @@ function RegisterFormPartOne({ data, setData }) {
           <RadioGroup
             aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
-            value={value}
+            value={selectedType}
             onChange={handleChange}
           >
             <FormControlLabel value="user" control={<Radio />} label="Register as a User" />

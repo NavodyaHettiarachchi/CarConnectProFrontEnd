@@ -11,6 +11,7 @@ import './Register.css'
 function Register() {
   const [page, setPage] = useState(0)
   const [data, setData] = useState({
+    isOwner: '',
     username: '',
     password: '',
     // confirmpassword: '',
