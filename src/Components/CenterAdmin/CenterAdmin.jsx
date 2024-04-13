@@ -24,7 +24,7 @@ import Switch from '@mui/material/Switch';
 import EditEmployee from './EditEmployee';
 import AddEditRole from './AddEditRole';
 import AddEditServiceType from './AddEditServiceType';
-import { columnMenuStateInitializer } from '@mui/x-data-grid/internals';
+import Tooltip from '@mui/material/Tooltip';
 
 function CenterAdmin() {
 
@@ -47,7 +47,7 @@ function CenterAdmin() {
 	const [empData, setEmpData] = useState([]);
 	const [editEmployeeOpen, setEditEmployeeOpen] = useState(false);
 	const [selectedEmployee, setSelectedEmployee] = useState(null);
-	
+
 
 	const empcolumns = [
 		{ id: 'profile_pic', label: '', minWidth: 50, maxWidth: 50 },
@@ -59,14 +59,14 @@ function CenterAdmin() {
 		{ id: 'actions', label: 'Actions', minWidth: 70, maxWidth: 70 }
 	]
 
-	const setManagerValue = (value) => { 
-		if (value?.manager_id) { 
+	const setManagerValue = (value) => {
+		if (value?.manager_id) {
 			return `${value.manager_name}, ${value.manager_designation}`;
 		}
 		return '';
 	}
 
-	const setRoleName = (value) => { 
+	const setRoleName = (value) => {
 		const role = roles.find((role) => role.id === value.roles);
 		return role?.name || '';
 	}
@@ -127,7 +127,7 @@ function CenterAdmin() {
 			.catch((error => { console.log(error) }));
 	}, [isUpdated]);
 
-	useEffect(() => { 
+	useEffect(() => {
 		fetch(`http://localhost:5000/center/settings/serviceTypes`, {
 			method: `POST`,
 			headers: {
@@ -179,7 +179,7 @@ function CenterAdmin() {
 		setEditEmployeeOpen(true);
 	}
 
-	const handleEditService = (row) => { 
+	const handleEditService = (row) => {
 		setSelectedServiceType(row);
 		setAddEditServiceOpen(true);
 		setIsEditVal(true);
@@ -194,13 +194,13 @@ function CenterAdmin() {
 			body: JSON.stringify({
 				schema: window.sessionStorage.getItem('schema'),
 			})
-		}).then((res) => { 
+		}).then((res) => {
 			if (res.ok) {
 				setServiceTypeData((prevData) => prevData.filter((service) => service.id !== id));
 			} else {
 				console.error('Failed to delete service.');
 			}
-		}).catch((error) => { 
+		}).catch((error) => {
 			console.log(error);
 		})
 	}
@@ -234,7 +234,7 @@ function CenterAdmin() {
 		<div>
 			<div style={{ display: 'flex', justifyContent: 'space-around', paddingTop: '50px' }}>
 				<div>
-					<Card sx={{ minWidth: '21vw', minHeight: '40vh', marginRight: '20px', marginBottom: '20px' }}>
+					<Card sx={{ width: '21vw', height: '40vh', marginRight: '20px', marginBottom: '20px' }}>
 						<CardContent>
 							<Typography sx={{ fontSize: 20, position: 'relative' }} color="text.secondary" gutterBottom>
 								<b>ROLES</b>
@@ -255,7 +255,7 @@ function CenterAdmin() {
 								</Fab>
 							</Typography>
 							<div style={{ overflowX: 'auto' }}>
-								<TableContainer component={Paper} sx={{ height: '100%', width: '100%', }} style={{ overflowX: 'auto' }}>
+								<TableContainer component={Paper} sx={{ height: '30vh', width: '100%', }} >
 									<Table stickyHeader size="small" aria-label="a dense table">
 										<TableHead>
 											<TableRow>
@@ -263,14 +263,14 @@ function CenterAdmin() {
 													<TableCell
 														key={index}
 														align={column.id === 'name' ? 'left' : 'center'}
-														style={{ minWidth: column.minWidth,  maxWidth: column.maxWidth }}
+														style={{ minWidth: column.minWidth, maxWidth: column.maxWidth }}
 													>
-														{ column.label }
+														{column.label}
 													</TableCell>
-												)) }
+												))}
 											</TableRow>
 										</TableHead>
-										<TableBody>
+										<TableBody >
 											{filteredroleRows.map((row) => {
 												return (
 													<TableRow hover role="checkbox" tabIndex={-1} key={row.id} >
@@ -279,20 +279,20 @@ function CenterAdmin() {
 															return (
 																column.id === 'name' ?
 																	<TableCell key={index} align='left'>
-																		{ value }
+																		{value}
 																	</TableCell> :
 																	<TableCell key={index} align='center'>
 																		<div style={{ display: 'flex' }}>
 																			{row.id !== 1 && <IconButton aira-label="edit" onClick={() => handleEditRole(row)} >
-																				<EditOutlinedIcon></EditOutlinedIcon>
+																				<Tooltip title="Edit"><EditOutlinedIcon></EditOutlinedIcon></Tooltip>
 																			</IconButton>}
-																			{ row.id !== 1 && <IconButton aria-label="delete" onClick={() => handleDeleteRole(row.id)}>
-																				<DeleteOutlinedIcon></DeleteOutlinedIcon>
+																			{row.id !== 1 && <IconButton aria-label="delete" onClick={() => handleDeleteRole(row.id)}>
+																				<Tooltip title="Delete"><DeleteOutlinedIcon></DeleteOutlinedIcon></Tooltip>
 																			</IconButton>}
 																		</div>
 																	</TableCell>
 															)
-														}) }
+														})}
 													</TableRow>
 												);
 											})}
@@ -302,20 +302,21 @@ function CenterAdmin() {
 							</div>
 						</CardContent>
 					</Card>
-
-					<Card sx={{ minWidth: '21vw', minHeight: '40vh', marginRight: '20px' }}>
+					<Card sx={{ width: '21vw', height: '40vh', marginRight: '20px' }}>
 						<CardContent>
 							<Typography sx={{ fontSize: 20, position: 'relative' }} color="text.secondary" gutterBottom>
 								<b>SERVICE TYPES</b>
-								<Fab size="small"
+								<Fab
+									size="small"
 									aria-label="add"
 									style={{ backgroundColor: '#64b5f6', position: 'absolute', right: 0 }}
-									onClick={() => setAddEditServiceOpen(true)}>
+									onClick={() => setAddEditServiceOpen(true)}
+								>
 									<AddIcon />
 								</Fab>
 							</Typography>
-							<div style={{ overflowX: 'auto', position: 'relative' }}>
-								<TableContainer component={Paper} sx={{ height: '100%', width: '100%', overflowX: 'auto'}}>
+							<div style={{ position: 'relative', overflow: 'hidden', width: '100%' }}>
+								<TableContainer component={Paper} style={{ maxHeight: '30vh' }}>
 									<Table stickyHeader size="small" aria-label="a dense table">
 										<TableHead>
 											<TableRow>
@@ -333,22 +334,30 @@ function CenterAdmin() {
 										<TableBody>
 											{serviceTypeData.map((row) => {
 												return (
-													<TableRow hover role="checkbox" tabIndex={-1} key={row.id} >
-														{serviceCols.map((column) => { 
+													<TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+														{serviceCols.map((column) => {
 															const value = row[column.id];
 															return (
-																column.id === 'actions' ? <TableCell key={column.id} align="center">
-																	<div style={{ display: 'flex' }}>
-																		<IconButton aira-label="edit" onClick={() => handleEditService(row)} >
-																			<EditOutlinedIcon></EditOutlinedIcon>
-																		</IconButton>
-																		<IconButton aria-label="delete" onClick={() => handleDeleteService(row.id)}>
-																			<DeleteOutlinedIcon></DeleteOutlinedIcon>
-																		</IconButton>
-																	</div>
-																</TableCell> : <TableCell key={column.id} align="left">
-																		{ value }
-																</TableCell>
+																column.id === 'actions' ? (
+																	<TableCell key={column.id} align="center">
+																		<div style={{ display: 'flex' }}>
+																			<Tooltip title="Edit">
+																				<IconButton aira-label="edit" onClick={() => handleEditService(row)} >
+																					<EditOutlinedIcon />
+																				</IconButton>
+																			</Tooltip>
+																			<Tooltip title="Delete">
+																				<IconButton aria-label="delete" onClick={() => handleDeleteService(row.id)}>
+																					<DeleteOutlinedIcon />
+																				</IconButton>
+																			</Tooltip>
+																		</div>
+																	</TableCell>
+																) : (
+																	<TableCell key={column.id} align="left">
+																		{value}
+																	</TableCell>
+																)
 															)
 														})}
 													</TableRow>
@@ -391,7 +400,7 @@ function CenterAdmin() {
 						<Grid container spacing={2}>
 							{/* employee table */}
 							<div style={{ margin: '70px 0 5px 15px', width: '65vw', }}>
-								<TableContainer component={Paper} sx={{ height: '66vh', minWidth: '30vw', marginTop: '1%' }} style={{ overflowX: 'auto', boxShadow: 'none' }}>
+								<TableContainer component={Paper} sx={{ height: '67vh', minWidth: '30vw' }} style={{ boxShadow: 'none' }}>
 									<Table stickyHeader size="small" aria-label="a dense table">
 										<TableHead>
 											<TableRow>
@@ -413,8 +422,8 @@ function CenterAdmin() {
 														{empcolumns.map((column, indexc) => {
 															const value = row[column.id];
 															return (
-																column.id !== 'isActive' ? (<TableCell key={column.id + '-' +indexr} align={column.align}>
-																	{ column.format?.(row) ?? value }
+																column.id !== 'isActive' ? (<TableCell key={column.id + '-' + indexr} align={column.align}>
+																	{column.format?.(row) ?? value}
 																</TableCell>
 																) : (
 																	<>
@@ -426,17 +435,19 @@ function CenterAdmin() {
 																		<TableCell key={indexc} align={column.align}>
 																			<div style={{ display: 'flex', justifyContent: 'left' }}>
 																				<Grid item xs={1} >
-																					<IconButton aria-label="edit"
-																						onClick={() => { handleEditemp(row) }} 
-																					>
-																						<EditOutlinedIcon></EditOutlinedIcon>
-																					</IconButton>
+																					<Tooltip title="Edit">
+																						<IconButton aria-label="edit"
+																							onClick={() => { handleEditemp(row) }}
+																						>
+																							<EditOutlinedIcon></EditOutlinedIcon>
+																						</IconButton>
+																					</Tooltip>
 																				</Grid>
 																				<Grid item xs={1} sx={{ marginLeft: 5 }}>
 																					<IconButton aria-label="delete"
 																						onClick={() => handleStatusEpm(row)}
 																					>
-																							{row['isActive'] ? <ToggleOffOutlinedIcon></ToggleOffOutlinedIcon> : <ToggleOnOutlinedIcon></ToggleOnOutlinedIcon>}
+																							{row['isActive'] ? <Tooltip title="Deactivate"><ToggleOffOutlinedIcon></ToggleOffOutlinedIcon></Tooltip> : <Tooltip title="Activate"><ToggleOnOutlinedIcon></ToggleOnOutlinedIcon></Tooltip>}
 																					</IconButton>
 																				</Grid>
 																			</div>
