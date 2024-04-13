@@ -19,7 +19,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEditRole }) {
+function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEditRole, isUpdatedRole }) {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -80,6 +80,7 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
     ]);
     closeAddRole();
     CloseEditRole();
+    isUpdatedRole();
   }
 
   const handleNameChange = (event) => {
@@ -138,8 +139,7 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
             'Content-type': 'application/json',
           },
           body: JSON.stringify({
-            //schema: window.sessionStorage.getItem('schema'),
-            schema: 'service_pqr_service_center',
+            schema: window.sessionStorage.getItem('schema'),
             name: name,
             description: description,
             privileges: privileges,
@@ -148,8 +148,9 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
         const data = await response.json();
 
         if (response.ok) {
-          url ? CloseEditRole(data.data.role) : closeAddRole(data.data.role);
+          roleData ? CloseEditRole(data.data.role) : closeAddRole(data.data.role);
         }
+        handleClose();
       } catch (error) {
         console.error('Failed to add/edit role:', error);
       }
@@ -169,10 +170,10 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
         style={{}}
       >
         <DialogTitle>
-          ADD NEW ROLE{" "}
+          {isEdit ? `EDIT ROLE: ${name}`: 'ADD NEW ROLE'}
           <IconButton onClick={handleClose} style={{ float: "right" }}>
             <CloseIcon color="primary"></CloseIcon>
-          </IconButton>{" "}
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={3} justifyContent="center">
@@ -236,65 +237,6 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
               </Button>
             </div>
           </div>
-
-          {/* <Grid container spacing={3} justifyContent="center">
-            <Grid item xs={12} sm={5}>
-              <TextField id="standard-basic" label="Role Name" fullWidth variant="standard"
-                name="name"
-                value={name}
-                onChange={handleNameChange}
-
-              />
-            </Grid>
-            <Grid item xs={12} sm={5}>
-              <TextField id="standard-basic" label="Description" fullWidth variant="standard"
-                name="description"
-                value={description}
-                onChange={handleDescriptionChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={10}>
-
-              <TableContainer component={Paper} sx={{ height: '100%', width: '100%', }} style={{ overflowX: 'auto' }}>
-                <Table sx={{ minWidth: 250 }} >
-                  <TableHead>
-
-                  </TableHead>
-                  <TableBody>
-
-                    <TableRow
-
-                    >
-                      <TableCell align="left" style={{ fontSize: '15px' }}>Ongoing Services Page</TableCell>
-                      <TableCell align="right"><FormControlLabel control={<Checkbox defaultUnChecked value={'os:v'} onChange={handleCheckboxChange} />} label="View" /></TableCell>
-                      <TableCell align="right"><FormControlLabel control={<Checkbox defaultUnChecked value={'os:ad'} onChange={handleCheckboxChange} />} label="Edit" /></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell align="left" style={{ fontSize: '15px' }}>Employees Page</TableCell>
-                      <TableCell align="right"><FormControlLabel control={<Checkbox defaultUnChecked value={'ep:v'} onChange={handleCheckboxChange} />} label="View" /></TableCell>
-                      <TableCell align="right"><FormControlLabel control={<Checkbox defaultUnChecked value={'ep:ad'} onChange={handleCheckboxChange} />} label="Edit" /></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell align="left" style={{ fontSize: '15px' }}>Inventory Page</TableCell>
-                      <TableCell align="right"><FormControlLabel control={<Checkbox defaultUnChecked value={'ip:v'} onChange={handleCheckboxChange} />} label="View" /></TableCell>
-                      <TableCell align="right"><FormControlLabel control={<Checkbox defaultUnChecked value={'ip:ad'} onChange={handleCheckboxChange} />} label="Edit" /></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell align="left" style={{ fontSize: '15px' }}>Settings Page</TableCell>
-                      <TableCell align="right"><FormControlLabel control={<Checkbox defaultUnChecked value={'sp:v'} onChange={handleCheckboxChange} />} label="View" /></TableCell>
-                      <TableCell align="right"><FormControlLabel control={<Checkbox defaultUnChecked value={'sp:ad'} onChange={handleCheckboxChange} />} label="Edit" /></TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-
-            </Grid>
-            <Grid item xs={12} sm={4} >
-              <div style={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
-                <Button fullWidth color="primary" variant="contained" onClick={submitRole} > {roleData ? 'Save Changes' : 'Submit'} </Button>
-              </div>
-            </Grid>
-          </Grid> */}
         </DialogContent>
       </Dialog>
     </div>

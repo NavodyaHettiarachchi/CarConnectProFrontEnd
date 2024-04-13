@@ -140,7 +140,7 @@ function Employees() {
               'Content-type': 'application/json',
             },
             body: JSON.stringify({
-              schema: 'service_pqr_service_center',
+              schema: window.sessionStorage.getItem('schema'),
               username: emp.username,
               password: emp.password,
               name: emp.name,
@@ -165,7 +165,7 @@ function Employees() {
           // edit emp query
           const empObj = empData.filter((empd) => empd.id === emp.id)[0];
           let editedObj = findDifferences(empObj, emp);
-          editedObj.schema = 'service_pqr_service_center';
+          editedObj.schema = window.sessionStorage.getItem('schema');
 
           console.log("EditedObj : ", editedObj);
           const response = await fetch(`http://localhost:5000/center/employee/${emp.id}`, {
@@ -245,7 +245,7 @@ function Employees() {
         'Content-type': 'application/json'
       },
       body: JSON.stringify({
-        schema: 'service_pqr_service_center',
+        schema: window.sessionStorage.getItem('schema'),
       }),
     })
       .then((res) => res.json())
