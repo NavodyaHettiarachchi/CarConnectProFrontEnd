@@ -27,11 +27,11 @@ function App() {
   };
 
   useEffect(() => {
-    const role = window.localStorage.getItem('user');
+    const role = window.sessionStorage.getItem('user');
     setUserRole(JSON.parse(role));
   });
 
-  const islogged = window.localStorage.getItem('IsLoggedIn');
+  const islogged = window.sessionStorage.getItem('IsLoggedIn');
   const sep_roles = userRole?.split(', ');
   const menuItems = menus.filter((subItem) => {
     for (let i = 0; i <= sep_roles?.length; i++) {
@@ -43,7 +43,7 @@ function App() {
     <div sx={shouldShowSidebar() ? { backgroundColor: '#d3d3d3' } : { backgroundColor: '#ffffff' }}>
       {shouldShowSidebar() && <Header />}
       <Box display="flex" className="App" sx={{ overflowX: 'hidden', paddingTop: 2, paddingX: 2, paddingBottom: 7, backgroundColor: '#ffffff' }}>
-        {shouldShowSidebar() && <Sidenav data={menuItems} />}
+        {shouldShowSidebar() && <Sidenav menus={menuItems} />}
         <div>
           {/* <Box className="App" sx={{}}> */}
             <Routes>

@@ -175,7 +175,7 @@ function ViewClientel() {
           owner_id: client.owner_id 
         }),
       });
-      const data = await response.json();
+      await response.json();
 
     } else { 
       // show error notif

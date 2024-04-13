@@ -9,7 +9,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function SideBarMenu({ key, name, icon, subMenu }) {
+export default function SideBarMenu({ name, icon, subMenu }) {
     const [open, setOpen] = useState(false);
 
     const navigate = useNavigate();
@@ -37,9 +37,9 @@ export default function SideBarMenu({ key, name, icon, subMenu }) {
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     {
-                        subMenu.map((subItem) => (
-                            <ListItemButton key={subItem.key} onClick={() => (navigate(subItem.path))} selected={location.pathname === subItem.path}>
-                                <ListItemText primary={subItem.name} key={subItem.key} />
+                        subMenu.map((subItem, index) => (
+                            <ListItemButton key={index} onClick={() => (navigate(subItem.path))} selected={location.pathname === subItem.path}>
+                                <ListItemText primary={subItem.name}  />
                             </ListItemButton>
                         ))
                     }

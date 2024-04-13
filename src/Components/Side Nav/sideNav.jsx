@@ -7,7 +7,7 @@ import SideBarMenu from './SideBarMenu';
 
 const drawerWidth = 240;
 
-export default function ClippedDrawer({ data }) {
+export default function ClippedDrawer({ menus }) {
   return (
     <Drawer
       sx={{
@@ -25,7 +25,7 @@ export default function ClippedDrawer({ data }) {
     >
      
       <List>
-        {data.map((item) => (<SideBarMenu name={item.name}  icon={item.icon} subMenu={item.subMenu} />))}
+        {menus.map((menuItem, index) => (<SideBarMenu key={index} name={menuItem.name} icon={menuItem.icon} subMenu={menuItem.subMenu} />))}
         
       </List>
     </Drawer>

@@ -21,12 +21,8 @@ import {
   Grid,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import dayjs from 'dayjs';
 import 'dayjs/locale/de';
 import 'dayjs/locale/en-gb';
-import { DateField } from '@mui/x-date-pickers/DateField';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Autocomplete from '@mui/material/Autocomplete';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
@@ -36,7 +32,6 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import CommonFunc from '../../Data/CommonFunc';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Alert from '@mui/material/Alert';
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -145,7 +140,7 @@ function Employees() {
               'Content-type': 'application/json',
             },
             body: JSON.stringify({
-              schema: 'service_pqr_service_center',
+              schema: window.sessionStorage.getItem('schema'),
               username: emp.username,
               password: emp.password,
               name: emp.name,
@@ -170,7 +165,7 @@ function Employees() {
           // edit emp query
           const empObj = empData.filter((empd) => empd.id === emp.id)[0];
           let editedObj = findDifferences(empObj, emp);
-          editedObj.schema = 'service_pqr_service_center';
+          editedObj.schema = window.sessionStorage.getItem('schema');
 
           console.log("EditedObj : ", editedObj);
           const response = await fetch(`http://localhost:5000/center/employee/${emp.id}`, {
@@ -250,7 +245,7 @@ function Employees() {
         'Content-type': 'application/json'
       },
       body: JSON.stringify({
-        schema: 'service_pqr_service_center',
+        schema: window.sessionStorage.getItem('schema'),
       }),
     })
       .then((res) => res.json())
