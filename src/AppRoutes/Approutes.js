@@ -9,10 +9,17 @@ import LoginPage from "../Components/Login/Login";
 import RegisterPage from "../Pages/Register/RegisterPage";
 import CenterAdmin from "../Pages/CenterAdminPage/CenterAdminPage";
 import Employees from "../Pages/EmployeePage/ViewEmployeePage";
+
+import Vehicle from "../Pages/VehiclePage/VehicleCard";
+import Feedback from "../Pages/FeedbackPage/Feedback";
+import { useState } from "react";
+import ServiceHome from "../Pages/ServiceHome/ServiceHome";
+
 import Vehicle from "../Pages/VehiclePage/Vehicle";
 // import Feedback from "../Pages/FeedbackPage/Feedback";
 // import { useState } from "react";
 // import ServiceHome from "../Pages/ServiceHome/ServiceHome";
+
 import EmployeeProfile from "../Pages/Profile/EmployeeProfile";
 import CenterProfile from "../Pages/Profile/CenterProfile";
 import OwnerProfile from "../Pages/Profile/OwnerProfie";
@@ -23,10 +30,8 @@ import AdminProfile from "../Pages/Profile/AdminProfile";
 
 export const AppRoutes={
 
-    
-
     // "home": { path: "/", component: (islogged?  null: <Feedback/> )},
-    "login": { path: "/login", component: <LoginPage />},
+    "login": { path: "/login/", component: <LoginPage />},
     "signup":{ path: "/signup", component: (<RegisterPage />)},
     "ongoing_services": { path: "/service/", component: (<OnGoingServices/>)},
     "repairs": { path: "/repairs/", component: (<RepairPage />)},
@@ -40,6 +45,5 @@ export const AppRoutes={
     "CenterProfile": { path: "/center/profile", component: <CenterProfile/> },
     "OwnerProfile": { path: "/owner/profile", component: <OwnerProfile/> },
     "AdminProfile": { path: "/admin/profile", component: <AdminProfile/> },
-    
     
 }

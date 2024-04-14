@@ -14,6 +14,15 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+
+      const respone = await axios.post('http://localhost:4000/login/', {username, password});
+      const loginData = respone.data.data.user.roles;
+      window.localStorage.setItem('user', JSON.stringify(loginData));
+      window.localStorage.setItem('IsLoggedIn', true);
+      if(respone.status==200){
+        navigate('/'); 
+        console.log(respone);
+
       const response = await axios.post('http://localhost:5000/login/', {username, password});
       const loginData = response.data.data;
       const schema = loginData.user.schema;
@@ -29,6 +38,7 @@ function Login() {
         } else { 
           navigate('/service/');
         }
+
       }else{
         alert("Invalid Credentials");
         window.sessionStorage.setItem('IsLoggedIn', false);

@@ -26,10 +26,12 @@ export default function Header({ UserRole }) {
   };
 
   const handleClose = () => {
+
     window.sessionStorage.removeItem('user');
     window.sessionStorage.removeItem('IsLoggedIn');
     window.sessionStorage.removeItem('schema');
     window.location.href = '/login';
+
     setAnchorEl(null);
   };
 
@@ -42,8 +44,16 @@ export default function Header({ UserRole }) {
   // };
 
   const handleProfileClick = () => {
-    handleClose();
+    
   };
+
+  const handleLogout=()=>{
+    window.localStorage.removeItem('user');
+    window.localStorage.removeItem('IsLoggedIn');
+    window.location.href = '/login';
+    setAnchorEl(null);
+  }
+  
 
   const handleConfirmLogout = () => {
     // Perform logout actions here
@@ -101,6 +111,7 @@ export default function Header({ UserRole }) {
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
+
               >
                 <MenuItem
                   component={Link} 
@@ -110,7 +121,7 @@ export default function Header({ UserRole }) {
                 >
                 </MenuItem>
                 <MenuItem onClick={handleOpenChangePassword} sx={{ justifyContent: 'center' }}>Change Password</MenuItem>
-                <MenuItem onClick={handleClose} sx={{ justifyContent: 'center' }}>Logout</MenuItem>
+                <MenuItem onClick={handleLogout} sx={{ justifyContent: 'center' }}>Logout</MenuItem>
               </Menu>
             </div>
           )}

@@ -39,7 +39,7 @@ export const menus = [
     key: 2,
     name: "Clientel",
     icon: <PersonOutline />,
-    allowedRoles: ["cv:ad","cv:v","s:ad"],
+    allowedRoles: ["cv:ad","cv:v","s:ad","mv:ad"],
     subMenu: [
       {
         key: 2.1,
