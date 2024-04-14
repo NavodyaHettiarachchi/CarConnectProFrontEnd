@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 
 import Avatar from '@mui/material/Avatar';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
-import UploadIcon from '@mui/icons-material/FileUpload';
 import AccountIcon from '@mui/icons-material/AccountCircle';
 
 function EmployeeForm() {

@@ -11,13 +11,9 @@ import CardContent from '@mui/material/CardContent';
 
 
 function AddService() {
-  const [type, setType] = React.useState('');
   const [category, setCategory] = React.useState('');
   const [status, setStatus] = React.useState('');
   // const [selectedDate, setSelectedDate] = React.useState(null);
-  const handleChangeType = (event) => {
-    setType(event.target.value);
-  };
 
   const handleChangeCategory = (event) => {
     setCategory(event.target.value);

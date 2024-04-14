@@ -1,24 +1,50 @@
-import React from 'react'
-import Heading from '../Page-Header/header'
+import React from 'react';
+import Heading from '../Page-Header/header';
 import GoogleIcon from '@mui/icons-material/Google';
-import './RegisterFormPartTwo.css'
+import './RegisterFormPartTwo.css';
 
-function RegisterFormPartTwo() {
+
+function RegisterFormPartTwo({data, setData}) {
+
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:5000/register/", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify(data), 
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const resData = await response.json();
+      console.log(resData);
+  
+    } catch (error) {
+      console.error('Error submitting registration:', error);
+    }
+  }
+
+
   return (
     <div>
         <Heading title="Create a password"/>    
-        <form className='form-container'>
-          <label htmlFor="" className='left-aligned'>Your Email</label>
-          
-          <input type="text" className='name-field ' />
+        <form className='form-container' onSubmit={handleSubmit}>
+          <label htmlFor="" className='left-aligned top-spacer'>Username</label>
+          <input onChange={(e) => setData({...data, username: e.target.value})} type="text" className='name-field ' />
           <br />
           <label htmlFor="" className='left-aligned top-spacer'>Password</label>
-          
-          <input type="password" className='name-field ' />
+          <input onChange={(e) => setData({...data, password: e.target.value})} type="password" className='name-field ' />
           <br />
-          <label htmlFor="" className='left-aligned top-spacer'>Confirmed Password</label>
+          {/* <label htmlFor="" className='left-aligned top-spacer'>Confirmed Password</label>
           
-          <input type="password" className='name-field ' />
+          <input onChange={(e) => setData({...data, confirmpassword: e.target.value})} type="password" className='name-field ' /> */}
           <span className='left-aligned space-between'>
             <div>
               <input type="checkbox" name="remember-me" className='top-spacer checkbox' id="" />
@@ -32,7 +58,7 @@ function RegisterFormPartTwo() {
                </p>
             </div>
           </span>
-          <input className='sub-btn' type="submit" value="Create" />
+          <input className='sub-btn' type="submit" value="CREATE ACCOUNT" onClick={handleSubmit} />
           <br />
           <span className="link-text top-spacer">or</span>
           <br />

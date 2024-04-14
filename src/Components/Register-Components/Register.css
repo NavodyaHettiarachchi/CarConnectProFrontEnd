@@ -41,6 +41,7 @@
 
 .module-border-wrap {
     max-width: 100vw;
+    height: 90vh;
     padding: 0.5rem;
     position: relative;
     background: linear-gradient(to right, rgb(144, 0, 255), purple);
@@ -58,7 +59,21 @@
 
 
 .stage-3 {
+    position: relative;
     margin-top: 10px;
+    
+}
+
+.stage-31 {
+    position: fixed;
+    bottom: 15vh;
+    right: 26vw;
+}
+
+.stage-32 {
+    position: fixed;
+    bottom: 10vh;
+    right: 25vw;
 }
 
 .stage-3 .stage-31 .back {
