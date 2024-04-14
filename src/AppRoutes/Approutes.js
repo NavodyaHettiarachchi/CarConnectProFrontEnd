@@ -10,7 +10,7 @@ import RegisterPage from "../Pages/Register/RegisterPage";
 import CenterAdmin from "../Pages/CenterAdminPage/CenterAdminPage";
 import Employees from "../Pages/EmployeePage/ViewEmployeePage";
 
-import Vehicle from "../Pages/VehiclePage/VehicleCard";
+// import Vehicle from "../Pages/VehiclePage/VehicleCard";
 import Feedback from "../Pages/FeedbackPage/Feedback";
 import { useState } from "react";
 import ServiceHome from "../Pages/ServiceHome/ServiceHome";
