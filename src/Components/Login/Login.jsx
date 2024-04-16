@@ -15,7 +15,7 @@ function Login() {
     event.preventDefault();
     try {
 
-      const respone = await axios.post('http://localhost:5000/login/', {username, password});
+      const respone = await axios.post('http://localhost:4000/login/', {username, password});
       const loginData = respone.data.data.user.roles;
       window.localStorage.setItem('user', JSON.stringify(loginData));
       window.localStorage.setItem('IsLoggedIn', true);
@@ -23,12 +23,13 @@ function Login() {
         navigate('/');
         console.log(respone);
 
-        const response = await axios.post('http://localhost:5000/login/', { username, password });
+        const response = await axios.post('http://localhost:4000/login/', { username, password });
         const loginData = response.data.data;
         const schema = loginData.user.schema;
         window.sessionStorage.setItem('schema', JSON.stringify(schema));
         window.sessionStorage.setItem('user', JSON.stringify(loginData.user.roles));
         window.sessionStorage.setItem('IsLoggedIn', true);
+        window.sessionStorage.setItem('userId', JSON.stringify(loginData.user.id));
         if (response.status === 200) {
           let roles = loginData.user.roles.split(', ');
           const found = roles.filter((role) => role === 'mv:ad');

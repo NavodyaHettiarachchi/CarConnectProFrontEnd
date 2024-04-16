@@ -66,7 +66,7 @@ function VehicleCard(props) {
     };
 
     useEffect( () => {
-        fetch("http://localhost:5000/owner/vehicles", {
+        fetch("http://localhost:4000/owner/vehicles", {
           method: "POST",
           headers: {
             'Content-type': 'application/json'
