@@ -23,12 +23,19 @@ function Login() {
         navigate('/');
         console.log(respone);
 
+
+        const response = await axios.post('http://localhost:4000/login/', { username, password });
+
         const response = await axios.post('http://localhost:5000/login/', { username, password });
+
         const loginData = response.data.data;
         const schema = loginData.user.schema;
         window.sessionStorage.setItem('schema', JSON.stringify(schema));
         window.sessionStorage.setItem('user', JSON.stringify(loginData.user.roles));
         window.sessionStorage.setItem('IsLoggedIn', true);
+
+        window.sessionStorage.setItem('userId', JSON.stringify(loginData.user.id));
+
         if (response.status === 200) {
           let roles = loginData.user.roles.split(', ');
           const found = roles.filter((role) => role === 'mv:ad');
@@ -48,7 +55,6 @@ function Login() {
       console.log(e);
     }
   };
-
   return (
     <div className='hero-landing-login'>
       <div className='hero-img'>
@@ -61,7 +67,7 @@ function Login() {
           <form className='form-container' onSubmit={handleSubmit}>
             <label htmlFor="" className='left-aligned'>Enter your Email</label>
             <br />
-            <input type="text"onChange={(e) => { setUsername(e.target.value) }} className='name-field ' />
+            <input type="text"onChange={(e) => {setUsername(e.target.value)}} className='name-field ' />
             <br />
             <label htmlFor="" className=' left-aligned top-spacer'>Enter your Password</label>
             <br />
