@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import CardContent from '@mui/material/CardContent';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
@@ -12,10 +12,12 @@ import Skeleton from '@mui/material/Skeleton';
 import VehicleDetails from "../../Data/Vehicledetails";
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
+import axios from 'axios';
 import Tab from '@material-ui/core/Tab';
 import Headerfile from '../../Components/Page-Header/CardHeader';
 import { TextField, IconButton } from '@mui/material'
 import CloseIcon from "@mui/icons-material/Close";
+import { data } from '../../Components/ServiceHome/VBarChart';
 
 const Image = styled('img')({
     width: '100%',
@@ -27,6 +29,8 @@ const Item = styled(Paper)(({ theme }) => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
 }));
+
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -52,6 +56,7 @@ function VehicleCard(props) {
     const [isSearchDialogOpen, setSearchDialogOpen] = useState(false);
     const [modal, setModal] = useState(false);
     const [value, setValue] = React.useState(0);
+    const [vehicleData, setvehicleData] = useState([]);
     const togglemodal = () => {
         setModal(!modal);
     }
@@ -59,6 +64,27 @@ function VehicleCard(props) {
     const handleOpenSearchDialog = () => {
         setSearchDialogOpen(true);
     };
+
+    useEffect( () => {
+        fetch("http://localhost:5000/owner/vehicles", {
+          method: "POST",
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: window.sessionStorage.getItem('userId'),
+          }),
+        
+        })
+          .then((res) => res.json())
+          .then((data) => {
+           
+            setvehicleData(data.data.vehicles.rows);
+            console.log(data.data.vehicles.rows);
+
+          })
+          .catch((error => { console.log(error) }));
+      }, []);
 
     const functionopenpopup = async () => {
 
@@ -125,18 +151,22 @@ function VehicleCard(props) {
                         </Typography>
                     </CardContent></Item>
                 </Grid>
-                <Grid item xs={4}>
-                    <Item> <CardContent style={cardStyle}>
-                        <Typography sx={{ fontSize: 30 }} color="text.secondary" gutterBottom>
-                            KY-8375
-                        </Typography>
-                        <Button onClick={togglemodal}>
-                            <Typography onClick={functionopenpopup}>
-                                View
+                
+                {vehicleData.map((item) => {
+                    return( <Grid  item xs={4}>
+                        <Item> <CardContent style={cardStyle}>
+                            <Typography  sx={{ fontSize: 30 }} color="text.secondary" gutterBottom>
+                               {item.number_plate}
                             </Typography>
-                        </Button>
-                    </CardContent></Item>
-                </Grid>
+                            <Button onClick={togglemodal}>
+                                <Typography onClick={functionopenpopup}>
+                                   View
+                                </Typography>
+                            </Button>
+                        </CardContent></Item>
+                    </Grid>)
+                })}
+                
             </Grid>
 
             <Dialog
