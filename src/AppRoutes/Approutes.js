@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import ViewClientel from "../Components/Clientel-Component/ViewClientel";
 import OnGoingServices from "../Pages/OnGoingServices/OnGoingServices";
 import RepairPage from "../Pages/Repairs/RepairPage";
@@ -24,26 +24,25 @@ import EmployeeProfile from "../Pages/Profile/EmployeeProfile";
 import CenterProfile from "../Pages/Profile/CenterProfile";
 import OwnerProfile from "../Pages/Profile/OwnerProfie";
 import AdminProfile from "../Pages/Profile/AdminProfile";
+import OnGoingServicesNew from "../Pages/OnGoingServices/OngoingServicesNew";
 
-
-
-
-export const AppRoutes={
-
-    // "home": { path: "/", component: (islogged?  null: <Feedback/> )},
-    "login": { path: "/login/", component: <LoginPage />},
-    "signup":{ path: "/signup", component: (<RegisterPage />)},
-    "ongoing_services": { path: "/service/", component: (<OnGoingServices/>)},
-    "repairs": { path: "/repairs/", component: (<RepairPage />)},
-    "add_service": { path: "/addservice/", component: (<AddServicePage />)},
-    "view_clients": { path: "/clientel/", component: (<ViewClientel />)},
-    "inventory": { path: "/inventory", component: <Inventory /> },
-    "admin": { path: "/admin", component: <CenterAdmin /> },
-    "view_employee": { path: "/employee", component: <Employees /> },
-    "view_vehicle": { path: "/vehicle", component: <Vehicle /> },
-    "EmployeeProfile": { path: "/employee/profile", component: < EmployeeProfile/> },
-    "CenterProfile": { path: "/center/profile", component: <CenterProfile/> },
-    "OwnerProfile": { path: "/owner/profile", component: <OwnerProfile/> },
-    "AdminProfile": { path: "/admin/profile", component: <AdminProfile/> },
-    
-}
+export const AppRoutes = {
+  // "home": { path: "/", component: (islogged?  null: <Feedback/> )},
+  login: { path: "/login", component: <LoginPage /> },
+  signup: { path: "/signup", component: <RegisterPage /> },
+  ongoing_services: { path: "/service/", component: <OnGoingServicesNew /> },
+  repairs: { path: "/repairs/", component: <RepairPage /> },
+  add_service: { path: "/addservice/", component: <AddServicePage /> },
+  view_clients: { path: "/clientel/", component: <ViewClientel /> },
+  inventory: { path: "/inventory", component: <Inventory /> },
+  admin: { path: "/admin", component: <CenterAdmin /> },
+  view_employee: { path: "/employee", component: <Employees /> },
+  view_vehicle: { path: "/vehicle", component: <Vehicle /> },
+  EmployeeProfile: {
+    path: "/employee/profile",
+    component: <EmployeeProfile />,
+  },
+  CenterProfile: { path: "/center/profile", component: <CenterProfile /> },
+  OwnerProfile: { path: "/owner/profile", component: <OwnerProfile /> },
+  AdminProfile: { path: "/admin/profile", component: <AdminProfile /> },
+};
