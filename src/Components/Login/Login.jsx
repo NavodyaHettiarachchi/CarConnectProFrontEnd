@@ -15,39 +15,20 @@ function Login() {
     event.preventDefault();
     try {
 
-      const respone = await axios.post('http://localhost:4000/login/', {username, password});
+      const respone = await axios.post('http://localhost:5000/login/', {username, password});
       const loginData = respone.data.data.user.roles;
-      console.log(loginData);
       window.localStorage.setItem('user', JSON.stringify(loginData));
       window.localStorage.setItem('IsLoggedIn', true);
-      if(respone.status==200){
-        navigate('/'); 
+      if (respone.status == 200) {
+        navigate('/');
         console.log(respone);
 
-<<<<<<< Updated upstream
-      const response = await axios.post('http://localhost:5000/login/', {username, password});
-      const loginData = response.data.data;
-      const schema = loginData.user.schema;
-      window.sessionStorage.setItem('schema', JSON.stringify(schema));
-      window.sessionStorage.setItem('user', JSON.stringify(loginData.user.roles));
-      window.sessionStorage.setItem('IsLoggedIn', true);
-      if (response.status === 200) {
-        let roles = loginData.user.roles.split(', ');
-        const found = roles.filter((role) => role === 'mv:ad');
-        console.log(found);
-        if (found.length > 0) {
-          navigate('/vehicle');
-        } else { 
-          navigate('/service/');
-=======
-        const response = await axios.post('http://localhost:4000/login/', { username, password });
+        const response = await axios.post('http://localhost:5000/login/', { username, password });
         const loginData = response.data.data;
         const schema = loginData.user.schema;
-        const id = loginData.user.id;
         window.sessionStorage.setItem('schema', JSON.stringify(schema));
         window.sessionStorage.setItem('user', JSON.stringify(loginData.user.roles));
         window.sessionStorage.setItem('IsLoggedIn', true);
-        window.sessionStorage.setItem('userId', id);
         if (response.status === 200) {
           let roles = loginData.user.roles.split(', ');
           const found = roles.filter((role) => role === 'mv:ad');
@@ -58,10 +39,8 @@ function Login() {
             navigate('/service/');
           }
 
->>>>>>> Stashed changes
         }
-
-      }else{
+      } else {
         alert("Invalid Credentials");
         window.sessionStorage.setItem('IsLoggedIn', false);
       }
