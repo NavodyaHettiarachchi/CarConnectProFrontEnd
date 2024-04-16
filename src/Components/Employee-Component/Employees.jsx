@@ -34,6 +34,7 @@ import Switch from '@mui/material/Switch';
 import CommonFunc from '../../Data/CommonFunc';
 import Alert from '@mui/material/Alert';
 import EditIcon from '@mui/icons-material/Edit';
+import VehicleHistory from '../Vehicle/VehicleHistory';
 
 const columns = [
   { id: 'profile_pic', label: '', minWidth: 50, maxWidth: 50 },
@@ -49,6 +50,7 @@ const columns = [
 function Employees() {
 
   const [open, openchange] = useState(false);
+  const [openHistory, setOpenHistory] = useState(false);
   const [searchName, setSearchName] = useState('');
   const [searchEmpNIC, setSearchEmpNIC] = useState('');
   const [empData, setEmpData] = useState([]);
@@ -88,6 +90,10 @@ function Employees() {
     openchange(false);
   };
 
+  const openPopupHistory = () => { 
+    setOpenHistory(true);
+  }
+
   const openPopupNewEmp = () => {
     setIsNewEmp(true);
     setEmp({
@@ -107,6 +113,8 @@ function Employees() {
     });
     functionopenpopup();
   }
+
+
 
   const handleEmpDataChange = (event, property) => {
     setEmp(prevEmp => ({
@@ -214,7 +222,6 @@ function Employees() {
   }
 
   const editEmployeePopup = (empD) => { 
-    console.log('emp: ', empD);
     setIsNewEmp(false);
     setEmp(empD);
     functionopenpopup();
@@ -282,6 +289,9 @@ function Employees() {
             />
             <Button variant="contained" onClick={openPopupNewEmp} color="primary" className='Button' sx={{ right: 0, left: 'auto' }}>
               New Employee
+            </Button>
+            <Button variant="contained" onClick={openPopupHistory} color="primary" className='Button' sx={{ right: 0, left: 'auto' }}>
+              View history
             </Button>
             {/* Add employee popup  */}
             <Dialog
@@ -462,6 +472,12 @@ function Employees() {
           </div>
         </CardContent>
       </Card>
+
+      <VehicleHistory
+        open={openHistory}
+        vehicleId={1}
+        closeVehicleHistory={() => {setOpenHistory(false)}}
+      />
     </div>
   )
 }

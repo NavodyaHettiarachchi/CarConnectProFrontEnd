@@ -30,6 +30,7 @@ export default function Header({ UserRole }) {
     window.sessionStorage.removeItem('user');
     window.sessionStorage.removeItem('IsLoggedIn');
     window.sessionStorage.removeItem('schema');
+    window.sessionStorage.removeItem('userId');
     window.location.href = '/login';
 
     setAnchorEl(null);

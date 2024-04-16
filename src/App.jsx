@@ -27,7 +27,7 @@ function App() {
   };
 
   useEffect(() => {
-    const role = window.sessionStorage.getItem('user');
+    const role = window.sessionStorage.getItem('roles');
     setUserRole(JSON.parse(role));
   });
 
