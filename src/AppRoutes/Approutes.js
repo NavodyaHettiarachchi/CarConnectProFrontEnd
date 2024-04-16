@@ -10,23 +10,28 @@ import RegisterPage from "../Pages/Register/RegisterPage";
 import CenterAdmin from "../Pages/CenterAdminPage/CenterAdminPage";
 import Employees from "../Pages/EmployeePage/ViewEmployeePage";
 
+import Vehicle from "../Pages/VehiclePage/VehicleCard";
+
+// import Vehicle from "../Pages/VehiclePage/VehicleCard";
+
+import Feedback from "../Pages/FeedbackPage/Feedback";
+import { useState } from "react";
+import ServiceHome from "../Pages/ServiceHome/ServiceHome";
+
 // import Vehicle from "../Pages/VehiclePage/VehicleCard";
 import Feedback from "../Pages/FeedbackPage/Feedback";
 import { useState } from "react";
 import ServiceHome from "../Pages/ServiceHome/ServiceHome";
 
 import Vehicle from "../Pages/VehiclePage/VehicleCard";
+
 // import Feedback from "../Pages/FeedbackPage/Feedback";
 // import { useState } from "react";
 // import ServiceHome from "../Pages/ServiceHome/ServiceHome";
-
 import EmployeeProfile from "../Pages/Profile/EmployeeProfile";
 import CenterProfile from "../Pages/Profile/CenterProfile";
 import OwnerProfile from "../Pages/Profile/OwnerProfie";
 import AdminProfile from "../Pages/Profile/AdminProfile";
-
-
-
 
 export const AppRoutes={
 
