@@ -17,7 +17,6 @@ import Vehicle from "../Pages/VehiclePage/VehicleCard";
 import Feedback from "../Pages/FeedbackPage/Feedback";
 import { useState } from "react";
 import ServiceHome from "../Pages/ServiceHome/ServiceHome";
-import Vehicle from "../Pages/VehiclePage/VehicleCard";
 // import Feedback from "../Pages/FeedbackPage/Feedback";
 // import { useState } from "react";
 // import ServiceHome from "../Pages/ServiceHome/ServiceHome";
