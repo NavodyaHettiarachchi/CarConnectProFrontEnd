@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import CardContent from '@mui/material/CardContent';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
@@ -51,6 +51,8 @@ var cardStyle = {
 };
 
 function VehicleCard(props) {
+
+    const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [open, openchange] = useState(false);
     const classes = useStyles();
     const [isSearchDialogOpen, setSearchDialogOpen] = useState(false);
@@ -65,32 +67,34 @@ function VehicleCard(props) {
         setSearchDialogOpen(true);
     };
 
-    useEffect( () => {
+    useEffect(() => {
         fetch("http://localhost:4000/owner/vehicles", {
-          method: "POST",
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            id: window.sessionStorage.getItem('userId'),
-          }),
-        
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: window.sessionStorage.getItem('userId'),
+            }),
+
         })
-          .then((res) => res.json())
-          .then((data) => {
-           
-            setvehicleData(data.data.vehicles.rows);
-            console.log(data.data.vehicles.rows);
+            .then((res) => res.json())
+            .then((data) => {
 
-          })
-          .catch((error => { console.log(error) }));
-      }, []);
+                setvehicleData(data.data.vehicles);
+                console.log(data.data.vehicles);
 
-    const functionopenpopup = async () => {
+            })
+            .catch((error => { console.log(error) }));
+    }, []);
 
+    const functionopenpopup = async (vehicle) => {
+        console.log(vehicle);
+        setSelectedVehicle(vehicle);
         openchange(true);
     };
     const closepopup = () => {
+        setSelectedVehicle(null);
         openchange(false);
     };
 
@@ -102,33 +106,33 @@ function VehicleCard(props) {
         setValue(newValue);
     };
 
-    function a11yProps(index) {
-        return {
-            id: `simple-tab-${index}`,
-            'aria-controls': `simple-tabpanel-${index}`,
-        };
-    }
+    // function a11yProps(index) {
+    //     return {
+    //         id: `simple-tab-${index}`,
+    //         'aria-controls': `simple-tabpanel-${index}`,
+    //     };
+    // }
 
 
-    function TabPanel(props) {
-        const { children, value, index, ...other } = props;
+    // function TabPanel(props) {
+    //     const { children, value, index, ...other } = props;
 
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`simple-tabpanel-${index}`}
-                aria-labelledby={`simple-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box p={3}>
-                        <Typography>{children}</Typography>
-                    </Box>
-                )}
-            </div>
-        );
-    }
+    //     return (
+    //         <div
+    //             role="tabpanel"
+    //             hidden={value !== index}
+    //             id={`simple-tabpanel-${index}`}
+    //             aria-labelledby={`simple-tab-${index}`}
+    //             {...other}
+    //         >
+    //             {value === index && (
+    //                 <Box p={3}>
+    //                     <Typography>{children}</Typography>
+    //                 </Box>
+    //             )}
+    //         </div>
+    //     );
+    // }
 
     return (
         <div><Headerfile title="My Vehicles" />
@@ -150,164 +154,174 @@ function VehicleCard(props) {
                             </Button>
                         </Typography>
                     </CardContent></Item>
-                </Grid>
-                
-                {vehicleData.map((item) => {
-                    return( <Grid  item xs={4}>
-                        <Item> <CardContent style={cardStyle}>
-                            <Typography  sx={{ fontSize: 30 }} color="text.secondary" gutterBottom>
-                               {item.number_plate}
-                            </Typography>
-                            <Button onClick={togglemodal}>
-                                <Typography onClick={functionopenpopup}>
-                                   View
-                                </Typography>
-                            </Button>
-                        </CardContent></Item>
-                    </Grid>)
-                })}
-                
-            </Grid>
+                   
 
-            <Dialog
-                // fullScreen
-                open={open}
-                onClose={closepopup}
-                fullWidth
-                maxWidth="xl"
-                style={{}}
-            >
-                <div>
-                    <IconButton onClick={closepopup} style={{ float: "right" }}>
-                        <CloseIcon color="primary"></CloseIcon>
-                    </IconButton>{" "}
-                    <Headerfile title="My Vehicle" />
-                    <div style={{ marginRight: 70, display: 'flex' }}>
-                        <div style={{ marginLeft: 60, width: '45%', marginTop: 20 }}> {loading ? (
-                            <Skeleton variant="rectangular" width="40%">
-                                <div style={{ paddingTop: 5 }} />
-                            </Skeleton>
-                        ) : (
-                            <Image style={{
-                              width: 640,
-                              height: 400, marginLeft: 20
-                            }}
-                              src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhcnN8ZW58MHx8MHx8fDA%3D"
-                              alt=""
-                            />
-                          )
-                          }
-                            <Box sx={{ height: 10, width: '100%', marginTop: 4, marginLeft: 2 }}>
-                                <div className={classes.root}>
-                                    <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" inkBarStyle={{ background: 'blue' }}>
-                                        {VehicleDetails.map((item) => {
-                                            return (
-                                                <Tab label={item.parameter} {...a11yProps(item.key)} style={{ minWidth: "25%" }} />
-                                            )
-                                        })}
-                                    </Tabs>
-                                    {VehicleDetails.map((item) => {
-                                        return (
-                                            <TabPanel style={{ height: 250 }} value={value} index={item.key}>
-                                                {item.submenu.map((subitem) => {
-                                                    return (
-                                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                            <Typography sx={{ fontSize: '1rem', marginTop: 2 }} variant="h6" gutterBottom component="div">
-                                                                {subitem}
-                                                            </Typography>
-                                                            <TextField sx={{ width: 300 }} className='TextField1'
-                                                                id="standard-basic"
-                                                                disabled
-                                                                variant="standard"
-                                                                onChange={handleChange}
-                                                            />
-                                                        </div>
-                                                    )
-                                                })}
-                                            </TabPanel>
-                                        )
-                                    })}
-                                </div>
-                            </Box>
-                        </div>
-                        <div style={{ marginLeft: 150, marginTop: 15, height: '80vh', width: '40%' }}>
-                            <div className={classes.divs}>
-                                <h2>Mileage</h2>
-                                <div >
-                                    <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
-                                        Current
+                </Grid>
+
+                {vehicleData?.map((item) => {
+                    return (
+
+
+                        <Grid item xs={4}>
+                            <Item> <CardContent style={cardStyle}>
+                                <Typography sx={{ fontSize: 30 }} color="text.secondary" gutterBottom>
+                                    {item.number_plate}
+                                </Typography>
+                                <Button onClick={togglemodal}>
+                                    <Typography vehicle ={item?.make} onClick={() => functionopenpopup(item)}>
+                                        View
                                     </Typography>
-                                        <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                            id="standard-basic"
-                                            disabled
-                                            variant="standard"
-                                            onChange={handleChange}
-                                        /></div>
-                                    <div style={{ display: 'flex' }}>
-                                        <Typography sx={{ marginRight: 3, padding: 2 }}>
-                                            Last Update
+                                </Button>
+                            </CardContent></Item>
+                            <Dialog
+                        // fullScreen
+                        open={open}
+                        onClose={closepopup}
+                        fullWidth
+                        maxWidth="xl"
+                        style={{}}
+                    >
+                        <div>
+                            <IconButton onClick={closepopup} style={{ float: "right" }}>
+                                <CloseIcon color="primary"></CloseIcon>
+                            </IconButton>{" "}
+                            <Headerfile title="My Vehicle" />
+                            <div style={{ marginRight: 70, display: 'flex' }}>
+                                <div style={{ marginLeft: 60, width: '45%', marginTop: 20 }}> {loading ? (
+                                    <Skeleton variant="rectangular" width="40%">
+                                        <div style={{ paddingTop: 5 }} />
+                                    </Skeleton>
+                                ) : (
+                                    <Image style={{
+                                        width: 640,
+                                        height: 400, marginLeft: 20
+                                    }}
+                                        src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhcnN8ZW58MHx8MHx8fDA%3D"
+                                        alt=""
+                                    />
+                                )
+                                }
+                                    <Box sx={{ height: 10, width: '100%', marginTop: 4, marginLeft: 2 }}>
+
+                                        <div className={classes.divs}>
+                                            <h2>Major Information</h2>
+                                            <div >
+                                                <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
+                                                    Make
+                                                </Typography>
+                                                    <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                        id="standard-basic"
+                                                        disabled
+                                                        variant="standard"
+                                                        onChange={handleChange}
+                                                        value={selectedVehicle?.make}
+                                                    /></div>
+                                                <div style={{ display: 'flex' }}>
+                                                    <Typography sx={{ marginRight: 3, padding: 2 }}>
+                                                        Model
+                                                    </Typography>
+                                                    <TextField sx={{ width: 300, padding: 2,marginLeft:3 }} className='TextField1'
+                                                        id="standard-basic"
+                                                        disabled
+                                                        variant="standard"
+                                                        onChange={handleChange}
+                                                        value={selectedVehicle?.model}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </Box>
+                                </div>
+                                <div style={{ marginLeft: 150, marginTop: 15, height: '80vh', width: '40%' }}>
+                                    <div className={classes.divs}>
+                                        <h2>Chassis and Engine No</h2>
+                                        <div >
+                                            <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
+                                                Chassis number
+                                            </Typography>
+                                                <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                    id="standard-basic"
+                                                    disabled
+                                                    variant="standard"
+                                                    onChange={handleChange}
+                                                    value={selectedVehicle?.chassis_number}
+                                                /></div>
+                                            <div style={{ display: 'flex' }}>
+                                                <Typography sx={{ marginRight: 3, padding: 2 }}>
+                                                   Enginer Number
+                                                </Typography>
+                                                <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                    id="standard-basic"
+                                                    disabled
+                                                    variant="standard"
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className={classes.divs}>
+                                        <h2>Mileage</h2>
+                                        <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
+                                            Current
                                         </Typography>
-                                        <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                            id="standard-basic"
-                                            disabled
-                                            variant="standard"
-                                            onChange={handleChange}
-                                        />
+                                            <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                id="standard-basic"
+                                                disabled
+                                                variant="standard"
+                                                onChange={handleChange}
+                                            /></div>
+                                        <div style={{ display: 'flex' }}>
+                                            <Typography sx={{ marginRight: 3, padding: 2 }}>
+                                                Last Update
+                                            </Typography>
+                                            <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                id="standard-basic"
+                                                disabled
+                                                variant="standard"
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className={classes.divs}>
+                                        <h2>Registration details</h2>
+                                        <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
+                                            Manufactured year
+                                        </Typography>
+                                            <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                id="standard-basic"
+                                                disabled
+                                                variant="standard"
+                                                onChange={handleChange}
+                                            /></div>
+                                        <div style={{ display: 'flex' }}>
+                                            <Typography sx={{ marginRight: 3, padding: 2 }}>
+                                                Registered year
+                                            </Typography>
+                                            <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                id="standard-basic"
+                                                disabled
+                                                variant="standard"
+                                                onChange={handleChange}
+                                                value={selectedVehicle?.reg_year}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div className={classes.divs}>
-                                <h2>Mileage</h2>
-                                <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
-                                    Current
-                                </Typography>
-                                    <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                        id="standard-basic"
-                                        disabled
-                                        variant="standard"
-                                        onChange={handleChange}
-                                    /></div>
-                                <div style={{ display: 'flex' }}>
-                                    <Typography sx={{ marginRight: 3, padding: 2 }}>
-                                        Last Update
-                                    </Typography>
-                                    <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                        id="standard-basic"
-                                        disabled
-                                        variant="standard"
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                            <div className={classes.divs}>
-                                <h2>Mileage</h2>
-                                <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
-                                    Current
-                                </Typography>
-                                    <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                        id="standard-basic"
-                                        disabled
-                                        variant="standard"
-                                        onChange={handleChange}
-                                    /></div>
-                                <div style={{ display: 'flex' }}>
-                                    <Typography sx={{ marginRight: 3, padding: 2 }}>
-                                        Last Update
-                                    </Typography>
-                                    <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                        id="standard-basic"
-                                        disabled
-                                        variant="standard"
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
                         </div>
-                    </div>
-                </div>
 
-            </Dialog>
+                    </Dialog>
+                        </Grid>
+
+
+                    )
+                })}
+            </Grid>
+
+
 
 
 
