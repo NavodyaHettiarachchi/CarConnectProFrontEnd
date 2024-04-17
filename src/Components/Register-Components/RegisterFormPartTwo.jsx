@@ -1,33 +1,75 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Heading from '../Page-Header/header';
 import GoogleIcon from '@mui/icons-material/Google';
+import { Alert } from '@mui/material';
 import './RegisterFormPartTwo.css';
+import axios from 'axios';
+import {getResponseError} from '../../Data/errormsgFunc';
+
 
 
 function RegisterFormPartTwo({data, setData}) {
+  const [errors, setErrors] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+   
+  const  isOwner = data.isOwner;
+  const  username = data.username;
+  const  password = data.password;
+  const  name = data.name;
+  const  gender = data.gender;
+  const  dob = data.dob;
+  const  email = data.email;
+  const  phone = data.phone;
+  const  street_1 = data.street_1;
+  const  street_2 = data.street_2;
+  const  city = data.city;
+  const  province = data.province;
+  const  nic = data.nic;
+  const  center_type = data.center_type;
 
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors(null);
+    setStatus(null);
+    setSuccessMessage(null);
+
     try {
-      const response = await fetch("http://localhost:5000/register/", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json', 
-        },
-        body: JSON.stringify(data), 
-      });
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      const response = await axios.post("http://localhost:5000/register/", {
+        isOwner,
+        username,
+        password ,
+        name,
+        gender,
+        dob,
+        email,
+        phone,
+        street_1,
+        street_2,
+        city,
+        province,
+        nic,
+        center_type
+       });
+
+      const responseData = response.data;
+
+      if (responseData.status === "success") {
+        // console.log("Registration successful:", responseData.message);
+        setSuccessMessage(responseData.message);
       }
   
-      const resData = await response.json();
-      console.log(resData);
-  
     } catch (error) {
-      console.error('Error submitting registration:', error);
+      console.error("Error submitting registration:", error);
+      if (error.response) {
+        setErrors(getResponseError(error));
+        setStatus(error.response.status);
+        console.log(error.response.status);
+        console.log(errors);
+      } else {
+        console.error("Network error or server did not respond with a valid HTTP response.");
+      }
     }
   }
 
@@ -65,6 +107,24 @@ function RegisterFormPartTwo({data, setData}) {
           <button className='signup'><GoogleIcon/>  sign up with Google</button>
           <br />
       </form>
+      {/* Display alert based on backend response */}
+      
+      {errors && (
+        <Alert severity="error" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} >
+          {status === 409 ? (
+            <div>{errors}</div>
+          ) : (
+            Object.values(errors).map((errorMsg, index) => (
+              <div key={index}>{errorMsg}</div>
+            ))
+          )}
+        </Alert>
+      )}
+      {successMessage && (
+        <Alert severity="success">
+          {successMessage}
+        </Alert>
+      )}
     </div>
   )
 }

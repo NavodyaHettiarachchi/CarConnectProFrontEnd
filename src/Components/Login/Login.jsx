@@ -15,19 +15,16 @@ function Login() {
     event.preventDefault();
     try {
 
-      const respone = await axios.post('http://localhost:5000/login/', {username, password});
-      const loginData = respone.data.data.user.roles;
-      window.localStorage.setItem('user', JSON.stringify(loginData));
-      window.localStorage.setItem('IsLoggedIn', true);
-      if (respone.status == 200) {
+      const response = await axios.post('http://localhost:5000/login/', {username, password});
+      const loginData = response.data;
+      if (response.status == 200) {
         navigate('/');
-        const response = await axios.post('http://localhost:5000/login/', { username, password });
-        const loginData = response.data.data;
-        const schema = loginData.schema;
-        window.sessionStorage.setItem('schema', JSON.stringify(schema));
-        window.sessionStorage.setItem('roles', JSON.stringify(loginData.user.roles));
+        console.log(loginData.data.user.roles);
+        window.sessionStorage.setItem('schema', JSON.stringify(loginData.schema));
+        window.sessionStorage.setItem('roles', JSON.stringify(loginData.data.user.roles));
         window.sessionStorage.setItem('IsLoggedIn', true);
-        window.sessionStorage.setItem('userId', loginData.user.id ? loginData.user.id : loginData.user.center_id);
+        window.sessionStorage.setItem('userId', JSON.stringify(loginData.data.user.id));
+        window.localStorage.setItem('user', JSON.stringify(loginData.data.user.name));
         if (response.status === 200) {
           let roles = loginData.user.roles.split(', ');
           const found = roles.filter((role) => role === 'mv:ad');
@@ -46,7 +43,6 @@ function Login() {
       console.log(e);
     }
   };
-
   return (
     <div className='hero-landing-login'>
       <div className='hero-img'>
@@ -59,7 +55,7 @@ function Login() {
           <form className='form-container' onSubmit={handleSubmit}>
             <label htmlFor="" className='left-aligned'>Enter your Email</label>
             <br />
-            <input type="text"onChange={(e) => { setUsername(e.target.value) }} className='name-field ' />
+            <input type="text"onChange={(e) => {setUsername(e.target.value)}} className='name-field ' />
             <br />
             <label htmlFor="" className=' left-aligned top-spacer'>Enter your Password</label>
             <br />

@@ -14,11 +14,11 @@ function RegisterFormPartOne({ data, setData }) {
   const handleChange = (event) => {
     const type = event.target.value;
     setSelectedType(type);
-    setData({ ...data, isOwner: type === 'user' ? 'true' : 'false', 
-                       center_type: type === 'user' ? 'null' : '', 
-                       gender: type === 'center' ? 'null' : '', 
-                       dob: type === 'center' ? '0000-00-00' : '', 
-                       nic: type === 'center' ? 'null' : '' });
+    setData({ ...data, isOwner: type === 'user' ? true : false, 
+                       center_type: type === 'user' ? null : '', 
+                       gender: type === 'center' ? null : '', 
+                       dob: type === 'center' ? null : '', 
+                       nic: type === 'center' ? null : '' });
   };
 
 
