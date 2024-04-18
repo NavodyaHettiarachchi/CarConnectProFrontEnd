@@ -52,6 +52,7 @@ const VehicleCard = ({
   const [serviceItems, setServiceItems] = useState([]);
   const [ongoingServices, setOngoingServices] = useState([]);
   const [vehiData, setVehiData] = useState([]);
+  const [invoiceData, setInvoiceData] = useState(null);
 
   const getVehicleNumber = () => {
     const vehicle = vehiData.find((vehicle) => vehicle.id === clientId);
@@ -140,6 +141,7 @@ const VehicleCard = ({
   };
 
   const handleSaveClick = async () => {
+    console.log("invoice data", invoiceData);
     // Filter out inputFields with empty values
     const validInputFields = inputFields.filter(
       (inputField) =>
@@ -198,6 +200,8 @@ const VehicleCard = ({
   const handleInputChange = (index, event) => {
     const values = [...inputFields];
     values[index][event.target.name] = event.target.value;
+
+    // If the item type is "Service", set the price based on the selected service
     if (event.target.name === "item" && values[index].type === "Service") {
       const selectedService = serviceItems.find(
         (service) => service.name === event.target.value
@@ -206,20 +210,29 @@ const VehicleCard = ({
         values[index].price = "Rs. " + selectedService.cost;
       }
     }
-    if (values[index].price && values[index].quantity) {
+
+    // Parse price and quantity as floats
       const price = parseFloat(values[index].price.replace("Rs. ", ""));
       const quantity = parseFloat(values[index].quantity);
+
+    // if (values[index].price && values[index].quantity) {
+    //   const price = parseFloat(values[index].price.replace("Rs. ", ""));
+    //   const quantity = parseFloat(values[index].quantity);
+
+    // Calculate total if both price and quantity are valid numbers
       if (!isNaN(price) && !isNaN(quantity)) {
         values[index].total = "Rs. " + (price * quantity).toFixed(2);
       } else {
         values[index].total = "";
       }
-    } else {
-      values[index].total = "";
-    }
-    if (values[index].tax) {
-      values[index].tax = "Rs. " + values[index].tax;
-    }
+    
+    
+    // else {
+    //   values[index].total = "";
+    // }
+    // if (values[index].tax) {
+    //   values[index].tax = "Rs. " + values[index].tax;
+    // }
     // Calculate the total of all the total fields
 
     // Set the fullAmount state with the total cost
@@ -314,11 +327,38 @@ const VehicleCard = ({
     }
   };
 
+    //pdfInvoice genaration
+    //collect final values
+
+    const generateInvoiceData = () => {  
+      const vehicle_id = getVehicleNumber();
+      const fuel_type = getFuel();
+      const model = getModel();
+      const mileage = ongoingServices.mileage;
+      const selectedItems = inputFields.map((item) => ({
+        Type: item.type,
+        Item: item.item,
+        Price: item.price,
+        Quantity: parseFloat(item.quantity),
+        Total: item.total, 
+      }));
+      const full_Amount = fullAmount;
+  
+      setInvoiceData({ vehicle_id, fuel_type, model, mileage, selectedItems, full_Amount });
+
+      console.log("in genarate invoiceData" , invoiceData);
+    }
+
+    // const handleGenerateInvoice = () => {
+    //   generateInvoiceData();
+    //   console.log("in handle genarate invoiceData" , invoiceData);
+    // };
+
   const handleFinish = () => {
     console.log("finish clicked");
     handleSaveClick();
     handleClose();
-
+    generateInvoiceData();
     disableOngoingService();
   };
   useEffect(() => {
@@ -330,6 +370,7 @@ const VehicleCard = ({
       clearInterval(intervalId);
     };
   }, []);
+
 
   return (
     <div>
@@ -505,10 +546,15 @@ const VehicleCard = ({
           <Button variant="contained" color="primary" onClick={handleFinish}>
             Finish
           </Button>
-
+          <Button variant="contained" color="secondary" onClick={generateInvoiceData} >
+            Genarate Invoice
+          </Button>
           <Button onClick={handleClose} variant="contained" color="primary">
             Close
           </Button>
+        </DialogActions>
+        <DialogActions>
+        {invoiceData && <PdfInvoice invoiceData={invoiceData} />}
         </DialogActions>
       </Dialog>
     </div>
