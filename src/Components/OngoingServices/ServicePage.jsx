@@ -26,6 +26,7 @@ import VehicleCard from "./VehicleCard";
 
 import AddButtonCard from "./AddButtonCard.jsx";
 import CancelPresentationOutlinedIcon from "@mui/icons-material/CancelPresentationOutlined";
+import PdfInvoice from "../PDFInvoice/PdfInvoice";
 
 const columns = [
   { id: "type", label: "Type", minWidth: 170 },
@@ -57,6 +58,8 @@ const ServicePage = () => {
   const [milage, setMilage] = useState(
     selectedVehicle ? selectedVehicle.milage : ""
   );
+  const [invoiceData, setInvoiceData] = useState(null);
+
   const handleMaxxWidthChange = (event) => {
     setMaxxWidth(
       // @ts-expect-error autofill of arbitrary value is not handled.
@@ -334,6 +337,32 @@ const ServicePage = () => {
     };
   }, []);
 
+      //pdfInvoice genaration
+    //collect final values
+
+    const generateInvoiceData = () => {  
+      const vehicle_id = vehicle_id;
+      const fuel_type = selectedVehicle.fuel;
+      const model = model;
+      const mileage = milage;
+      const selectedItems = inputFields.map((item) => ({
+        Type: item.type,
+        Item: item.item,
+        Price: parseFloat(item.price),
+        Quantity: parseFloat(item.quantity),
+        Total:  parseFloat(item.total), 
+      }));
+      const full_Amount = fullAmount;
+  
+      setInvoiceData({ vehicle_id, fuel_type, model, mileage, selectedItems, full_Amount });
+  
+    }
+
+    const handleGenerateInvoice = () => {
+      generateInvoiceData();
+      console.log("in handle genarate invoiceData" , invoiceData);
+    };
+
   return (
     <>
       <Grid>
@@ -549,11 +578,15 @@ const ServicePage = () => {
           >
             Finish Service
           </Button>
+          <Button variant="contained" color="secondary" onClick={handleGenerateInvoice}>
+            Genarate Invoice
+          </Button>
 
           <Button onClick={handleClose} variant="contained" color="primary">
             Close
           </Button>
         </DialogActions>
+        {invoiceData && <PdfInvoice invoiceData={invoiceData} />}
       </Dialog>
     </>
   );

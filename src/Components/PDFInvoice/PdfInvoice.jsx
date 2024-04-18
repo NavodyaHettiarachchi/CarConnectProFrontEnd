@@ -2,40 +2,51 @@ import React from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import QRCode from 'qrcode-generator';
-import { invoiceData } from '../../Data/invoiceData';
+import Button from '@mui/material/Button';
 
 class PdfInvoice extends React.Component {
-  generatePdf = () => {
+  generatePdf = (invoiceData) => {
+    console.log("invoice data object",invoiceData);
+    // if (!invoiceData || !invoiceData.selectedItems || !Array.isArray(invoiceData.selectedItems)) {
+      
+    //   console.error('Invoice data or selected items are missing or invalid');
+    //   return;
+    // }
 
     const {
-        totalAmount,
-        billNumber,
-        formattedDate,
-        formattedTime,
-        selectedCustomerName,
-        selectedCustomerContact,
+        // totalAmount,
+        // billNumber,
+        // formattedDate,
+        // formattedTime,
         // fullname,
-        vehicleId,
-        // CompanyLogo,
-        CompanyName,
-        street_1, street_2, 
-        city, 
-        province, 
-        phone, 
-        email,
+        vehicle_id,
+        fuel_type,
+        model,
+        mileage,
+        full_Amount,
         selectedItems,
-        subTotal,
-        discount,
-        cash,
-        balance,
-        noteText1,
-        noteText2,
-        noteText3,
+        // CompanyLogo,
+        // CompanyName,
+        // street_1, street_2, 
+        // city, 
+        // province, 
+        // phone, 
+        // email,
+        // discount,
+        // noteText1,
+        // noteText2,
+        // noteText3,
     } = invoiceData;
 
+    const billNumber = "INV-001";
+    const formattedDate = "2024-02-27";
+    const formattedTime = "14:30";
+    const discount = 10;
+    const totalAmount = full_Amount - (full_Amount * discount/100);
+
     const qrCodeData = `${billNumber}\nDate: ${formattedDate}\nTime:
-    ${formattedTime}\nCustomer: ${selectedCustomerName}\nCustomer Contact:
-    ${selectedCustomerContact}\nUser: ${vehicleId}`;
+    ${formattedTime}\nvehicle id: ${vehicle_id}\nmodel:
+    ${model}\nfuel type: ${fuel_type}`;
     const qr = QRCode(0, 'L');
     qr.addData(qrCodeData);
     qr.make();
@@ -78,13 +89,13 @@ class PdfInvoice extends React.Component {
       pdf.setTextColor(40);
     //   pdf.addImage( 'PNG', 40, 20, 70, 70);
       headerText();
-      pdf.text(`${CompanyName}`, 115, 35);
+      pdf.text("CompanyName", 115, 35);
       pdftext2();
-      pdf.text(`${street_1 , street_2}`, 115, 50);
-      pdf.text(`${city}`, 115, 63);
-      pdf.text(`${province}`, 115, 76);
-      pdf.text(`${email}`, 115, 89);
-      pdf.text(`${phone}`, 115, 102);
+      pdf.text("street_1 , street_2", 115, 50);
+      pdf.text("city", 115, 63);
+      pdf.text("province", 115, 76);
+      pdf.text("email", 115, 89);
+      pdf.text("phone", 115, 102);
     };
 
     const headerRight = function (data) {
@@ -98,37 +109,36 @@ class PdfInvoice extends React.Component {
     };
 
     const customerDetails = function (data) {
-      pdf.text(`Customer Name:`, 45, 150);
-      pdf.text(`${selectedCustomerName}`, 140, 150);
-      pdf.text(`Customer Mobile:`, 45, 165);
-      pdf.text(`${selectedCustomerContact}`, 140, 165);
-      pdf.text(`Vehicle Id:`, 360, 150);
-      pdf.text(`${vehicleId}`, 430, 150);
+      pdf.text(`Vehicle Id:`, 45, 150);
+      pdf.text(`${vehicle_id}`, 140, 150);
+      pdf.text(`Model:`, 45, 165);
+      pdf.text(`${model}`, 140, 165);
+      pdf.text(`Fuel Type:`, 360, 150);
+      pdf.text(`${fuel_type}`, 430, 150);
+      pdf.text('Mileage:' , 360 , 165);
+      pdf.text(`${mileage}`, 430 , 165);
     };
 
     const addTransactionTabel = (
       pdf,
-      subTotal,
+      full_Amount,
       discount,
       totalAmount,
-      cash,
-      balance
+      
     ) => {
-      const subTotalData = [['Subtotal', `Rs${subTotal}`]];
+      const full_AmountData = [['Subtotal', `Rs${full_Amount}`]];
       const discountData = [['Discount', `${discount}%`]];
       const totalAmountData = [['Total Amount', `Rs${totalAmount}`]];
-      const cashData = [['Cash', `Rs${cash}`]];
-      const balanceData = [['Balance', `Rs${balance}`]];
+      // const cashData = [['Cash', `Rs${cash}`]];
+      // const balanceData = [['Balance', `Rs${balance}`]];
       const startYPosition = 250 + itemTableHeight;
       const marginAdjustment = 10;
 
       pdf.autoTable({
         body: [
-          ...subTotalData,
+          ...full_AmountData,
           ...discountData,
           ...totalAmountData,
-          ...cashData,
-          ...balanceData,
         ],
         theme: 'striped',
         styles: {
@@ -144,17 +154,17 @@ class PdfInvoice extends React.Component {
       pdf.setFont('times', 'italic');
       pdf.setFontSize(10);
       pdf.text(
-        noteText1,
+        "Thank you for your business.",
         60,
         pdf.autoTable.previous.finalY + marginAdjustment + 20
       );
       pdf.text(
-        noteText2,
+        "Payment is due within 30 days.",
         60,
         pdf.autoTable.previous.finalY + marginAdjustment + 35
       );
       pdf.text(
-        noteText3,
+        "For any inquiries, please contact us at example@example.com.",
         60,
         pdf.autoTable.previous.finalY + marginAdjustment + 50
       );
@@ -168,19 +178,19 @@ class PdfInvoice extends React.Component {
 
     const headers = [
       'No',
-      'Item/Type',
-      'Item Code',
+      'Type',
+      'Item',
       'Unit Price',
       'Quantity',
       'TotalPrice',
     ];
     const data = selectedItems.map((item, index) => [
       index + 1,
-      item.itemName,
-      item.itemCode,
-      `Rs${item.unitPrice}`,
-      item.quantity,
-      `Rs${item.totalPrice}`,
+      item.Type,
+      item.Item,
+      `Rs${item.Price}`,
+      item.Quantity,
+      `Rs${item.Total}`,
     ]);
     const itemTableHeight = selectedItems.length * 20;
 
@@ -211,11 +221,9 @@ class PdfInvoice extends React.Component {
         pdf.line(20, 190, 580, 190);
         addTransactionTabel(
           pdf,
-          subTotal,
+          full_Amount,
           discount,
           totalAmount,
-          cash,
-          balance
         );
         pdf.line(20, 800, 580, 800);
         footerText();
@@ -225,13 +233,22 @@ class PdfInvoice extends React.Component {
     });
     
     pdf.save('invoice.pdf');
+    // // const Invoice = pdf.save('invoice.pdf');
+    // // // Invoice.output('dataurlnewwindow');
+    // // return Invoice;
+
+    // const pdfDataUri = pdf.output('datauri');
+    // const pdfWindow = window.open(pdfDataUri, ' ');
+    
+    // if (!pdfWindow) {
+    //   alert('Please allow pop-ups for this site');
+    // }
   };
 
   render() {
     return (
       <div>
-        <h1>PDF Invoice Generator</h1>
-        <button onClick={this.generatePdf}>Generate PDF</button>
+        <Button variant="outlined" onClick={() => this.generatePdf(this.props.invoiceData)} >Open & Download Invoice</Button>
       </div>
     );
   }
