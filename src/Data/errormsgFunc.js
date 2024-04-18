@@ -23,5 +23,11 @@ export const getResponseError = (error) => {
 
        return error.response.data.message; 
       }
+
+      else if (error.response.status === 500 && error.response) {
+        console.log(error.response.statusText);
+
+       return error.response.statusText; 
+      }
     }
   }

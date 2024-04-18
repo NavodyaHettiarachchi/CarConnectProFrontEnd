@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Heading from '../Page-Header/header';
 import './RegisterFormPartOne.css';
 import Radio from '@mui/material/Radio';
@@ -9,7 +9,15 @@ import FormControl from '@mui/material/FormControl';
 
 function RegisterFormPartOne({ data, setData }) {
 
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedType, setSelectedType] = useState(() => {
+    // Get the selectedType from local storage, defaulting to null if not found
+    return localStorage.getItem('selectedType') || null;
+  });
+
+  // Update local storage whenever selectedType changes
+  useEffect(() => {
+    localStorage.setItem('selectedType', selectedType);
+  }, [selectedType]);
 
   const handleChange = (event) => {
     const type = event.target.value;

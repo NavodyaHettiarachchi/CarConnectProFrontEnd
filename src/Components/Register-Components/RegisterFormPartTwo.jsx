@@ -35,31 +35,72 @@ function RegisterFormPartTwo({data, setData}) {
     setStatus(null);
     setSuccessMessage(null);
 
+
     try {
-      const response = await axios.post("http://localhost:5000/register/", {
-        isOwner,
-        username,
-        password ,
-        name,
-        gender,
-        dob,
-        email,
-        phone,
-        street_1,
-        street_2,
-        city,
-        province,
-        nic,
-        center_type
-       });
+
+      let payload;
+
+        if (isOwner) {
+          payload = {
+            isOwner,
+            username,
+            password,
+            name,
+            gender,
+            dob,
+            email,
+            phone,
+            street_1,
+            street_2,
+            city,
+            province,
+            nic,
+            center_type
+          };
+        } else {
+          payload = {
+            isOwner,
+            username,
+            password,
+            name,
+            email,
+            phone,
+            street_1,
+            street_2,
+            city,
+            province,
+            center_type
+          };
+        }
+
+      const response = await axios.post("http://localhost:5000/register/", payload);
 
       const responseData = response.data;
 
       if (responseData.status === "success") {
         // console.log("Registration successful:", responseData.message);
         setSuccessMessage(responseData.message);
+
+        //clear input fields
+
+        setData({
+          isOwner: "",
+          username: "",
+          password: "",
+          name: "",
+          gender: "",
+          dob: "",
+          email: "",
+          phone: "",
+          street_1: "",
+          street_2: "",
+          city: "",
+          province: "",
+          nic: "",
+          center_type: ""
+        })
       }
-  
+
     } catch (error) {
       console.error("Error submitting registration:", error);
       if (error.response) {
@@ -111,7 +152,7 @@ function RegisterFormPartTwo({data, setData}) {
       
       {errors && (
         <Alert severity="error" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} >
-          {status === 409 ? (
+          {status === 409 || status === 500 ? (
             <div>{errors}</div>
           ) : (
             Object.values(errors).map((errorMsg, index) => (
@@ -121,7 +162,7 @@ function RegisterFormPartTwo({data, setData}) {
         </Alert>
       )}
       {successMessage && (
-        <Alert severity="success">
+        <Alert severity="success" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {successMessage}
         </Alert>
       )}
@@ -129,4 +170,4 @@ function RegisterFormPartTwo({data, setData}) {
   )
 }
 
-export default RegisterFormPartTwo
+export default RegisterFormPartTwo;
