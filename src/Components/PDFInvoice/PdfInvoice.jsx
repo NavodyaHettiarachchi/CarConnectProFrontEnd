@@ -188,9 +188,9 @@ class PdfInvoice extends React.Component {
       index + 1,
       item.Type,
       item.Item,
-      `Rs${item.Price}`,
+      item.Price,
       item.Quantity,
-      `Rs${item.Total}`,
+      item.Total,
     ]);
     const itemTableHeight = selectedItems.length * 20;
 
