@@ -55,7 +55,6 @@ function RegisterFormPartTwo({data, setData}) {
             city,
             province,
             nic,
-            center_type
           };
         } else {
           payload = {

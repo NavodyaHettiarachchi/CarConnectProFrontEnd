@@ -23,10 +23,11 @@ function RegisterFormPartOne({ data, setData }) {
     const type = event.target.value;
     setSelectedType(type);
     setData({ ...data, isOwner: type === 'user' ? true : false, 
-                       center_type: type === 'user' ? null : '', 
-                       gender: type === 'center' ? null : '', 
-                       dob: type === 'center' ? null : '', 
-                       nic: type === 'center' ? null : '' });
+                      //  center_type: type === 'user' ? null : '', 
+                      //  gender: type === 'center' ? null : '', 
+                      //  dob: type === 'center' ? null : '', 
+                      //  nic: type === 'center' ? null : '' 
+                      });
   };
 
 
