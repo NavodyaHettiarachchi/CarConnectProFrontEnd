@@ -20,7 +20,7 @@ function Login() {
       if (response.status == 200) {
         navigate('/');
         console.log(loginData.data.user.roles);
-        window.sessionStorage.setItem('schema', JSON.stringify(schema));
+        window.sessionStorage.setItem('schema', JSON.stringify(loginData.data.schema));
         window.sessionStorage.setItem('roles', JSON.stringify(loginData.data.user.roles));
         window.sessionStorage.setItem('IsLoggedIn', true);
         window.sessionStorage.setItem('userId', JSON.stringify(loginData.data.user.id));
