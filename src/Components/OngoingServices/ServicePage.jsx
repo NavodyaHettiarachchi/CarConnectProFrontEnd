@@ -118,7 +118,7 @@ const ServicePage = () => {
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: "service_pqr_service_center",
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
           }),
         }
       );
@@ -173,7 +173,7 @@ const ServicePage = () => {
               "Content-type": "application/json",
             },
             body: JSON.stringify({
-              schema: "service_pqr_service_center",
+              schema: JSON.parse(window.sessionStorage.getItem('schema')),
 
               client_id: selectedVehicle.client_id,
 
@@ -220,8 +220,7 @@ const ServicePage = () => {
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          // schema: window.sessionStorage.getItem('schema'),
-          schema: "service_pqr_service_center",
+          schema: JSON.parse(window.sessionStorage.getItem('schema')),
         }),
       });
 
@@ -246,8 +245,7 @@ const ServicePage = () => {
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            // schema: window.sessionStorage.getItem('schema'),
-            schema: "service_pqr_service_center",
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
           }),
         }
       );
@@ -327,14 +325,9 @@ const ServicePage = () => {
       return isNaN(price) || isNaN(quantity) ? acc : acc + price * quantity;
     }, 0);
   };
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      getAllOngoingServices();
-    }, 5000); // Call getAllOngoingServices every 10 seconds
 
-    return () => {
-      clearInterval(intervalId);
-    };
+  useEffect(() => {
+    getAllOngoingServices();
   }, []);
 
       //pdfInvoice genaration

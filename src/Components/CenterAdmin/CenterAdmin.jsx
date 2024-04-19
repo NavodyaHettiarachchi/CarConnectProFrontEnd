@@ -98,8 +98,8 @@ function CenterAdmin() {
 				'Content-type': 'application/json'
 			},
 			body: JSON.stringify({
-				schema: window.sessionStorage.getItem('schema'),
-			}),
+				schema: JSON.parse(window.sessionStorage.getItem('schema')),
+			})
 		})
 			.then((res) => res.json())
 			.then((data) => {
@@ -117,7 +117,7 @@ function CenterAdmin() {
 				'Content-type': 'application/json'
 			},
 			body: JSON.stringify({
-				schema: window.sessionStorage.getItem('schema'),
+				schema: JSON.parse(window.sessionStorage.getItem('schema')),
 			}),
 		})
 			.then((res) => res.json())
@@ -134,7 +134,7 @@ function CenterAdmin() {
 				'Content-type': 'application/json'
 			},
 			body: JSON.stringify({
-				schema: window.sessionStorage.getItem('schema'),
+				schema: JSON.parse(window.sessionStorage.getItem('schema')),
 			}),
 		}).then((res) => res.json())
 			.then((data) => {
@@ -149,7 +149,7 @@ function CenterAdmin() {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				schema: window.sessionStorage.getItem('schema'),
+				schema: JSON.parse(window.sessionStorage.getItem('schema')),
 			})
 		})
 
@@ -192,7 +192,7 @@ function CenterAdmin() {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				schema: window.sessionStorage.getItem('schema'),
+				schema: JSON.parse(window.sessionStorage.getItem('schema')),
 			})
 		}).then((res) => {
 			if (res.ok) {
@@ -212,7 +212,7 @@ function CenterAdmin() {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				schema: window.sessionStorage.getItem('schema'),
+				schema: JSON.parse(window.sessionStorage.getItem('schema')),
 				isActive: !emp.isActive,
 			}),
 		})

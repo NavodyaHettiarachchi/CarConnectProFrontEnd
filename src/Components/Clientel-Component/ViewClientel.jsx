@@ -133,14 +133,13 @@ function ViewClientel() {
         'Content-type': 'application/json',
       },
       body: JSON.stringify({
-        schema: 'service_pqr_service_center',
+        schema: JSON.parse(window.sessionStorage.getItem('schema')),
       })
     })
       .then((res) => res.json())
       .then((data) => {
         setClientData(data.data.clients);
       })
-      //new Date().toJSON().slice(0, 10)
       .catch((error) => { console.log(error) });
   }, []);
 
@@ -168,7 +167,7 @@ function ViewClientel() {
           'Content-type': 'application/json',
         },
         body: JSON.stringify({
-          schema: 'service_pqr_service_center',
+          schema: JSON.parse(window.sessionStorage.getItem('schema')),
           vehicle_id: client.vehicle_id,
           date_of_reg: client.date_of_reg,
           mileage_on_reg: client.mileage_on_reg,

@@ -16,25 +16,21 @@ function Login() {
     try {
 
       const response = await axios.post('http://localhost:5000/login/', {username, password});
-      const loginData = response.data;
+      const loginData = response.data.data;
       if (response.status == 200) {
         navigate('/');
-        console.log(loginData.data.user.roles);
-        window.sessionStorage.setItem('schema', JSON.stringify(loginData.data.schema));
-        window.sessionStorage.setItem('roles', JSON.stringify(loginData.data.user.roles));
+        window.sessionStorage.setItem('schema', JSON.stringify(loginData.schema));
+        window.sessionStorage.setItem('roles', JSON.stringify(loginData.user.roles));
         window.sessionStorage.setItem('IsLoggedIn', true);
-        window.sessionStorage.setItem('userId', JSON.stringify(loginData.data.user.id));
-        window.sessionStorage.setItem('user', JSON.stringify(loginData.data.user.roles));
-        if (response.status === 200) {
-          let roles = loginData.user.roles.split(', ');
-          const found = roles.filter((role) => role === 'mv:ad');
-          console.log(found);
-          if (found.length > 0) {
-            navigate('/vehicle');
-          } else {
-            navigate('/service/');
-          }
-
+        window.sessionStorage.setItem('userId', JSON.stringify(loginData.user.id));
+        window.sessionStorage.setItem('user', JSON.stringify(loginData.user));
+        let roles = loginData.user.roles.split(', ');
+        const found = roles.filter((role) => role === 'mv:ad');
+        console.log(found);
+        if (found.length > 0) {
+          navigate('/vehicle');
+        } else {
+          navigate('/service/');
         }
       } else {
         alert("Invalid Credentials");

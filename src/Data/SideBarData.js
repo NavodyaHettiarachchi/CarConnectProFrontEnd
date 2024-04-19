@@ -1,107 +1,68 @@
-import React from 'react'
-import {
-  PersonOutline,
-} from "@mui/icons-material";
-
+import React from 'react';
+import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
+import GarageOutlinedIcon from '@mui/icons-material/GarageOutlined';
+import CarRepairOutlinedIcon from '@mui/icons-material/CarRepairOutlined';
+import DriveEtaOutlinedIcon from '@mui/icons-material/DriveEtaOutlined';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import DirectionsCarFilledOutlinedIcon from '@mui/icons-material/DirectionsCarFilledOutlined';
 import { AppRoutes as Routes } from "../AppRoutes/Approutes";
 
-export const menus = [
-  
-
+export const menu = [
   {
     key: 1,
     name: "Services",
-    icon: <PersonOutline />,
-    allowedRoles: ["mv:ad","s:ad"],
-    subMenu: [
-      {
-        key: 1.1,
-        name: "On going services",
-        path: Routes.ongoing_services.path,
-        component: Routes.ongoing_services.component,
-      },
-      {
-        key: 1.2,
-        name: "Repairs",
-        path: Routes.repairs.path,
-        component: Routes.repairs.component,
-      },
-      {
-        key: 1.3,
-        name: "Add Service",
-        path: Routes.add_service.path,
-        component: Routes.add_service.component,
-      },
-    ],
-  },
-
+    icon: <GarageOutlinedIcon />,
+    allowedRoles: ["s:ad", "os:v", "os:ad"],
+    path: Routes.ongoing_services.path,
+    component: Routes.ongoing_services.component,
+  }, 
   {
     key: 2,
-    name: "Clientel",
-    icon: <PersonOutline />,
-    allowedRoles: ["cv:ad","cv:v","s:ad","mv:ad"],
-    subMenu: [
-      {
-        key: 2.1,
-        name: "View clients",
-        path: Routes.view_clients.path,
-        component: Routes.view_clients.component,
-      },
-      {
-        key: 2.2,
-        name: "Edit Clients",
-        path: Routes.repairs.path,
-        component: Routes.repairs.component,
-      },
-    ],
+    name: "Repairs",
+    icon: <CarRepairOutlinedIcon />,
+    allowedRoles: ["s:ad", "or:v", "or:ad"],
+    path: Routes.repairs.path,
+    component: Routes.repairs.component,
   },
   {
     key: 3,
-    name: "Inventory",
-    icon: <PersonOutline />,
-    allowedRoles: ["mv:ad","s:ad"],
-    subMenu: [
-      {
-        key: 3.1,
-        name: "View Inventory",
-        path: Routes.inventory.path,
-        component: Routes.inventory.component,
-      },
-    ],
+    name: "Clientele",
+    icon: <DriveEtaOutlinedIcon />,
+    allowedRoles: ["s:ad", "cp:v", "cp:ad"],
+    path: Routes.view_clients.path,
+    component: Routes.view_clients.component,
   },
   {
     key: 4,
-    name: "Center-Admin",
-    // name: "Employee",
-    icon: <PersonOutline />,
-    allowedRoles: ["s:ad"],
-    subMenu: [
-      {
-        key: 4.1,
-        name: "Add Role",
-        path: Routes.admin.path,
-        component: Routes.admin.component,
-      },
-      {
-        key: 4.2,
-        name: "View Employees",
-        path: Routes.view_employee.path,
-        component: Routes.view_employee.component,
-      },
-    ],
+    name: "Inventory",
+    icon: <Inventory2OutlinedIcon />,
+    allowedRoles: ["s:ad", "ip:v", "ip:ad"],
+    path: Routes.inventory.path,
+    component: Routes.inventory.component,
   },
   {
     key: 5,
-    name: "Vehicles",
-    icon: <PersonOutline />,
-    allowedRoles: ["mv:ad"],
-    subMenu: [
-      {
-        key: 5.1,
-        name: "My vehicles",
-        path: Routes.view_vehicle.path,
-        component: Routes.view_vehicle.component,
-      },
-    ],
+    name: "Employee",
+    icon: <PeopleOutlinedIcon />,
+    allowedRoles: ["s:ad", "ep:v", "ep:ad"],
+    path: Routes.view_employee.path,
+    component: Routes.view_employee.component,
   },
+  {
+    key: 6,
+    name: "Settings",
+    icon: <SettingsOutlinedIcon />,
+    allowedRoles: ["s:ad", "sp:v", "sp:ad"],
+    path: Routes.admin.path,
+    component: Routes.admin.component,
+  },
+  {
+    key: 7,
+    name: "My Vehicles",
+    icon: <DirectionsCarFilledOutlinedIcon />,
+    allowedRoles: ["mv:ad"],
+    path: Routes.view_vehicle.path,
+    component: Routes.view_vehicle.component,
+  }
 ];

@@ -96,7 +96,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: "service_pqr_service_center",
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
           }),
         }
       );
@@ -125,7 +125,7 @@ const VehicleCard = ({
         },
         body: JSON.stringify({
           // schema: window.sessionStorage.getItem('schema'),
-          schema: "service_pqr_service_center",
+          schema: JSON.parse(window.sessionStorage.getItem('schema')),
         }),
       });
 
@@ -164,7 +164,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: "service_pqr_service_center",
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
             details: JSON.stringify(updatedClientData.details),
           }),
         }
@@ -253,7 +253,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: "service_pqr_service_center",
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
           }),
         }
       );
@@ -313,7 +313,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: "service_pqr_service_center",
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
             isOngoing: false,
           }),
         }

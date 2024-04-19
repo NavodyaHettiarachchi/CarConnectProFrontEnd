@@ -43,10 +43,8 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
 
   // UPDATE ROLE DATA TO FIELDS 
   const updateFields = () => {
-    console.log('roleData: ', roleData, 'isEdit: ', isEdit);
     if (isEdit) {
       const priv = roleData.privileges.split(', ');
-      console.log('priv: ', priv);
       const updatedRows = addRoleBodyCols.map(row => {
         if (priv.includes(row.editVal)) {
           return { ...row, view: true, edit: true };
@@ -139,7 +137,7 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
             'Content-type': 'application/json',
           },
           body: JSON.stringify({
-            schema: window.sessionStorage.getItem('schema'),
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
             name: name,
             description: description,
             privileges: privileges,
