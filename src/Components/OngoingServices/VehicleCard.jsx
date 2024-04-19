@@ -116,6 +116,7 @@ const VehicleCard = ({
       console.error("Error fetching data:", error);
     }
   };
+  
   const getAllVehicles = async () => {
     try {
       const response = await fetch("http://localhost:5000/center/getclients", {
@@ -366,14 +367,9 @@ const VehicleCard = ({
     generateInvoiceData();
     disableOngoingService();
   };
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      getAllVehicles();
-    }, 1000); // Call getAllOngoingServices every 10 seconds
 
-    return () => {
-      clearInterval(intervalId);
-    };
+  useEffect(() => {
+    getAllVehicles();
   }, []);
 
   return (

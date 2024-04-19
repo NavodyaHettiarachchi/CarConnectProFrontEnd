@@ -26,11 +26,15 @@ import AddEditRole from './AddEditRole';
 import AddEditServiceType from './AddEditServiceType';
 import Tooltip from '@mui/material/Tooltip';
 
+
+const allowedRoles = new Set(['sp:ad', 's:ad']);
+
 function CenterAdmin() {
 
 	//common
 	const [isUpdated, setIsUpdated] = useState(false);
 	const [isEditVal, setIsEditVal] = useState(false);
+	const [editRole, setEditRole] = useState(false);
 	// roles
 	const [roles, setRoleData] = useState([]);
 	const [searchRole, setSearchRole] = useState("");
@@ -91,6 +95,11 @@ function CenterAdmin() {
 		{ id: 'actions', label: 'Actions', minWidth: 70, maxWidth: 70 }
 	]
 
+	useEffect(() => {
+		const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
+		setEditRole(allowedRoles.has(roles.find(role => role === 'sp:ad' || role === 's:ad')));
+	}, []);
+	
 	useEffect(() => {
 		fetch("http://localhost:5000/center/getemployee", {
 			method: "POST",
@@ -250,6 +259,7 @@ function CenterAdmin() {
 									aria-label="add"
 									style={{ backgroundColor: '#64b5f6', position: 'absolute', right: 0 }}
 									onClick={() => setAddEditRoleOpen(true)}
+									disabled={!editRole}
 								>
 									<AddIcon />
 								</Fab>
@@ -283,10 +293,10 @@ function CenterAdmin() {
 																	</TableCell> :
 																	<TableCell key={index} align='center'>
 																		<div style={{ display: 'flex' }}>
-																			{row.id !== 1 && <IconButton aira-label="edit" onClick={() => handleEditRole(row)} >
+																			{row.id !== 1 && <IconButton aira-label="edit"  onClick={() => handleEditRole(row)} >
 																				<Tooltip title="Edit"><EditOutlinedIcon></EditOutlinedIcon></Tooltip>
 																			</IconButton>}
-																			{row.id !== 1 && <IconButton aria-label="delete" onClick={() => handleDeleteRole(row.id)}>
+																			{row.id !== 1 && <IconButton aria-label="delete" disabled={!editRole} onClick={() => handleDeleteRole(row.id)}>
 																				<Tooltip title="Delete"><DeleteOutlinedIcon></DeleteOutlinedIcon></Tooltip>
 																			</IconButton>}
 																		</div>
@@ -311,6 +321,7 @@ function CenterAdmin() {
 									aria-label="add"
 									style={{ backgroundColor: '#64b5f6', position: 'absolute', right: 0 }}
 									onClick={() => setAddEditServiceOpen(true)}
+									disabled={!editRole}
 								>
 									<AddIcon />
 								</Fab>
@@ -347,7 +358,7 @@ function CenterAdmin() {
 																				</IconButton>
 																			</Tooltip>
 																			<Tooltip title="Delete">
-																				<IconButton aria-label="delete" onClick={() => handleDeleteService(row.id)}>
+																				<IconButton aria-label="delete" disabled={!editRole} onClick={() => handleDeleteService(row.id)}>
 																					<DeleteOutlinedIcon />
 																				</IconButton>
 																			</Tooltip>
@@ -444,10 +455,10 @@ function CenterAdmin() {
 																					</Tooltip>
 																				</Grid>
 																				<Grid item xs={1} sx={{ marginLeft: 5 }}>
-																					<IconButton aria-label="delete"
+																					<IconButton aria-label="delete" disabled={!editRole}
 																						onClick={() => handleStatusEpm(row)}
 																					>
-																							{row['isActive'] ? <Tooltip title="Deactivate"><ToggleOffOutlinedIcon></ToggleOffOutlinedIcon></Tooltip> : <Tooltip title="Activate"><ToggleOnOutlinedIcon></ToggleOnOutlinedIcon></Tooltip>}
+																						{row['isActive'] ? <Tooltip title="Deactivate"><ToggleOffOutlinedIcon></ToggleOffOutlinedIcon></Tooltip> : <Tooltip title="Activate"><ToggleOnOutlinedIcon></ToggleOnOutlinedIcon></Tooltip>}
 																					</IconButton>
 																				</Grid>
 																			</div>
@@ -473,6 +484,8 @@ function CenterAdmin() {
 					empData={empData}
 					closeEditEmployee={() => { setEditEmployeeOpen(false) }}
 					isUpdatedEmp={() => { setIsUpdated(!isUpdated) }}
+					roleData={roles}
+					editRole={editRole}
 				/>
 
 				<AddEditRole
@@ -483,6 +496,7 @@ function CenterAdmin() {
 					closeAddRole={() => { setAddEditRoleOpen(false); setSelectedRole(null) }}
 					CloseEditRole={() => { setIsEditVal(false); setEditRoleOpen(false); setSelectedRole(null) }}
 					isUpdatedRole={() => { setIsUpdated(!isUpdated) }}
+					editRole={editRole}
 				/>
 
 				<AddEditServiceType
@@ -491,6 +505,7 @@ function CenterAdmin() {
 					isEdit={isEditVal}
 					closeEditServiceType={() => { setAddEditServiceOpen(false); setSelectedServiceType(null); setIsEditVal(false); }}
 					isUpdatedService={() => { setIsUpdated(!isUpdated) }}
+					editRole={editRole}
 				/>
 
 

@@ -17,14 +17,14 @@ function Login() {
 
       const response = await axios.post('http://localhost:5000/login/', {username, password});
       const loginData = response.data.data;
-      if (response.status == 200) {
+      if (response.status === 200) {
         navigate('/');
         window.sessionStorage.setItem('schema', JSON.stringify(loginData.schema));
         window.sessionStorage.setItem('roles', JSON.stringify(loginData.user.roles));
         window.sessionStorage.setItem('IsLoggedIn', true);
         window.sessionStorage.setItem('userId', JSON.stringify(loginData.user.id));
         window.sessionStorage.setItem('user', JSON.stringify(loginData.user));
-        window.sessionStorage.setItem('userType', JSON.stringify(loginData.data.roleType));//@Harindu
+        window.sessionStorage.setItem('userType', JSON.stringify(loginData.roleType));//@Harindu
         let roles = loginData.user.roles.split(', ');
         const found = roles.filter((role) => role === 'mv:ad');
         console.log(found);

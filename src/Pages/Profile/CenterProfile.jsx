@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField,Paper} from '@mui/material';
 import Headerfile from '../../Components/Page-Header/CardHeader';
 import { Link } from 'react-router-dom';
 import ChangePassword from './ChangePassword';
-import { useEffect } from 'react';
 import axios from 'axios';
 
-const CenterForm = () => {
+const allowedRoles = new Set(["pp:ad", "s:ad"]);
+
+function CenterForm () {
 
 const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || null;
-const [UserID] = useState(initialUserID);
+  const [UserID] = useState(initialUserID);
+  const [editRole, setEditRole] = useState(false);
+
+  useEffect(() => {
+    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
+    setEditRole(allowedRoles.has(roles.find(role => role === 'pp:ad' || role === 's:ad')));
+  }, []);
 
   const mapCenterType = (value) => {
     switch(value) {

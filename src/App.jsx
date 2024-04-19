@@ -35,11 +35,6 @@ function App() {
     setUserType(JSON.parse(userType));
   },[]);
 
-  // useEffect(() => {
-  //   const userType = window.sessionStorage.getItem('userType');//@Harindu Ashen 
-  //   setUserType(JSON.parse(userType));
-  // },[]);  
-
   const islogged = window.sessionStorage.getItem('IsLoggedIn');
   const sep_roles = userRole?.split(', ');
   let menuItems = menu.filter((subItem) => {
@@ -47,17 +42,18 @@ function App() {
       return islogged && subItem.allowedRoles.includes(sep_roles[i]);
     }
   });
-  const center_type = JSON.parse(window.sessionStorage.getItem('user')).center_type;
+  const userData = JSON.parse(window.sessionStorage.getItem('user'));
+  const center_type = userData?.center_type;
 
-  if (center_type && center_type !== "B") { 
-    if (center_type === "S") { 
+  if (center_type && center_type !== "B") {
+    if (center_type === "S") {
       menuItems = menuItems.filter((item) => {
         return item.key !== 2;
-      })
+      });
     } else {
       menuItems = menuItems.filter((item) => {
         return item.key !== 1;
-      })
+      });
     }
   }
 
