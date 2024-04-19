@@ -2,24 +2,84 @@ import React, { useState } from 'react';
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField,Paper} from '@mui/material';
 import Headerfile from '../../Components/Page-Header/CardHeader';
 import { Link } from 'react-router-dom';
+import ChangePassword from './ChangePassword';
+import { useEffect } from 'react';
+import axios from 'axios';
 
-const CenterForm = ({ onSubmit }) => {
+const CenterForm = () => {
+
+const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || null;
+const [UserID] = useState(initialUserID);
+
+  const mapCenterType = (value) => {
+    switch(value) {
+      case "S":
+        return "Service";
+      case "R":
+        return "Repairs";
+      case "B":
+        return "Service & Repairs";
+      default:
+        return "";
+    }
+  };
+  
+  const mapCenterTypeReverse = (value) => {
+    switch(value) {
+      case "Service":
+        return "S";
+      case "Repairs":
+        return "R";
+      case "Service & Repairs":
+        return "B";
+      default:
+        return "";
+    }
+  };
+
+
   const [formData, setFormData] = useState({
-    username: 'Harindu',
-    email: 'ashenharindu@gmail.com',
+    username: '',
+    email: '',
     name: '',
     phone: '',
-    center: '',
-    street1: '',
-    street2: '',
+    center_type: '',
+    street_1: '',
+    street_2: '',
     city: '',
     province: ''
     
   });
 
-  const MAX_VISIBLE_CHARACTERS = 4;
-  const [email, domain] = formData.email.split('@');
-  const truncatedEmail = email.slice(0, MAX_VISIBLE_CHARACTERS) + '*****';
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/center/profile/'+UserID) 
+      .then(response => {
+        const {username, email, phone, name, center_type,street_1, street_2, city, province} = response.data.data.userData;
+        console.log(response.data);
+        setFormData({
+          username,
+          email,
+          phone,
+          name,
+          center_type,
+          street_1,
+          street_2,
+          city,
+          province,
+        });
+      })
+
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+      });
+      
+  }, [UserID]);
+
+
+  // const MAX_VISIBLE_CHARACTERS = 4;
+  // const [email, domain] = formData.email.split('@');
+  // const truncatedEmail = email.slice(0, MAX_VISIBLE_CHARACTERS) + '*****';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,10 +89,16 @@ const CenterForm = ({ onSubmit }) => {
     });
   };
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Submitted:', formData);
+    axios.patch('http://localhost:5000/center/profile/'+UserID, formData)
+      .then(response => {
+        console.log('Profile updated successfully:', response.data); 
+      })
+      .catch(error => {
+        console.error('Error updating profile:', error);  
+    });
   };
 
   return (
@@ -41,7 +107,10 @@ const CenterForm = ({ onSubmit }) => {
 
         <Paper style={{ padding:15,top:5,maxWidth:1200,display:'flex'}}>
 
+        <Grid container spacing={2}>
+        <Grid item xs={12}>
         <form onSubmit={handleSubmit}>
+
 
         <Grid container rowSpacing={6} columnSpacing={2} sx={{paddingTop:2}}>
 
@@ -63,7 +132,8 @@ const CenterForm = ({ onSubmit }) => {
             label="Email"
             name="email"
             type="email"
-            value={truncatedEmail + '@' + domain}
+             value={formData.email}
+            // value={truncatedEmail + '@' + domain}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -73,7 +143,7 @@ const CenterForm = ({ onSubmit }) => {
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
-            label="Name"
+            label="Center Name"
             name="name"
             value={formData.name}
             onChange={handleChange}
@@ -98,17 +168,17 @@ const CenterForm = ({ onSubmit }) => {
             <Grid container spacing={2}>
 
             <Grid item xs={0} sm={6}>
-                <FormControl fullWidth sx={{ bgcolor: formData.center? 'rgba(232, 240, 254,1)' : 'transparent' }}>
+                <FormControl fullWidth>
                 <InputLabel>Center Type</InputLabel>
                 <Select
-                value={formData.center}
-                onChange={handleChange}
-                name="center"
+                value={mapCenterType(formData.center_type)}
+                onChange={(e) => handleChange({ target: { name: "center_type", value: mapCenterTypeReverse(e.target.value) } })} 
+                name="center_type"
                 required
                 >
                 <MenuItem value="Service">Service</MenuItem>
                 <MenuItem value="Repairs">Repairs</MenuItem>
-                <MenuItem value="Service & Repairs">Service & Repairs</MenuItem>
+                <MenuItem value="Service & Repairs">Services & Repairs</MenuItem>
                 </Select>
 
             </FormControl>
@@ -120,8 +190,8 @@ const CenterForm = ({ onSubmit }) => {
             <TextField
                 fullWidth
                 label="Street 1"
-                name="street1"
-                value={formData.street1}
+                name="street_1"
+                value={formData.street_1}
                 onChange={handleChange}
                 required
             />
@@ -136,72 +206,64 @@ const CenterForm = ({ onSubmit }) => {
           <TextField
             fullWidth
             label="Street 2"
-            name="street2"
-            value={formData.street2}
+            name="street_2"
+            value={formData.street_2}
             onChange={handleChange}
             required
           />
         </Grid>
 
-            <Grid item xs={0} sm={6}>
-                  
-                <Grid container spacing={2}>
-
-                    <Grid item xs={0} sm={6}>
-                      <TextField
-                      fullWidth
-                      label="City"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleChange}
-                      required
-                      />
-                    </Grid>
-
-
-                    <Grid item xs={0} sm={6}>
-                      <TextField
-                      fullWidth
-                      label="Province"
-                      name="province"
-                      value={formData.province}
-                      onChange={handleChange}
-                      required
-                      />
-                    </Grid>
-
-                </Grid>
-
-            </Grid>
-
 
         <Grid item xs={12} sm={6}>
-          <div style={{ marginLeft: '36%', marginTop: '1%' }}>
-            <Grid container spacing={3}>
+         <TextField
+            fullWidth
+            label="City"
+            name="city"
+            value={formData.city}
+            onChange={handleChange}
+            required
+           />
+        </Grid>
 
-                        <Grid item xs={3}>
-                          <Button variant="contained" color="primary"  type="submit">
-                            Save   
-                          </Button>
-                        </Grid>
+        <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Province"
+              name="province"
+              value={formData.province}
+              onChange={handleChange}
+              required
+              />
+        </Grid>
 
-                        <Grid item xs={3}>
-                          <Button variant="contained" color="secondary" type="button" component={Link} to="/">
-                            Back
-                          </Button>
-                        </Grid>
+            <div style={{ marginLeft: '68%', marginTop: '1%' }}>
+              <Grid container spacing={5}>
+                  <Grid item xs={6}>
+                    <Button variant="contained" color="primary" type="submit">
+                      Save
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button variant="contained" color="secondary" type="button" component={Link} to="/">
+                      Back
+                    </Button>
+                  </Grid>
+                </Grid>
+              </div>
 
             </Grid>
+            </form>  
+            </Grid>
 
-        </div>
+            <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
+              <Grid item xs={12} sm={12}>
+                <ChangePassword/>
+              </Grid>
+            </div>
 
-      </Grid>
+        </Grid>
 
-    </Grid>
-
-    </form>
-
-    </Paper>
+      </Paper>
 
     </div>
 
@@ -209,3 +271,4 @@ const CenterForm = ({ onSubmit }) => {
 };
 
 export default CenterForm;
+ 

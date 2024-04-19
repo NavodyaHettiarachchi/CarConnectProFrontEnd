@@ -7,23 +7,26 @@ import Avatar from '@mui/material/Avatar';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import AccountIcon from '@mui/icons-material/AccountCircle';
 
+
+import ChangePassword from './ChangePassword';
+
 function AdminProfile() {
   const [formData, setFormData] = useState({
-    username: 'Harindu',
-    email: 'ashenharindu714@gmail.com',
+    username: '',
+    email: '',
     phone: '',
     name: '',
     dob: '',
     gender: '',
-    nic: '993041254v',
-    managerName: 'harindu',
-    designation: 'labour',
+    nic: '',
+    city:'',
+    province:'',
     image: ''
   });
 
-  const MAX_VISIBLE_CHARACTERS = 4;
-  const [email, domain] = formData.email.split('@');
-  const truncatedEmail = email.slice(0, MAX_VISIBLE_CHARACTERS) + '*****';
+  // const MAX_VISIBLE_CHARACTERS = 4;
+  // const [email, domain] = formData.email.split('@');
+  // const truncatedEmail = email.slice(0, MAX_VISIBLE_CHARACTERS) + '*****';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,7 +74,11 @@ function AdminProfile() {
     <div>
       <Headerfile title="Admin Profile"/>
       <Paper style={{ padding: 15, top: 5, maxWidth: 1200, display: 'flex' }}>
-        <form onSubmit={handleSubmit}>
+        
+      <Grid container spacing={2}>
+          <Grid item xs={12}>
+          <form onSubmit={handleSubmit}>
+
           <Grid container spacing={2}>
             <Grid item sm={6} xs={12}>
               <Paper style={{ padding: 5 }}>
@@ -92,7 +99,7 @@ function AdminProfile() {
                     <Avatar alt="Avatar" style={{ width: '100%', height: '100%' }}><AccountIcon style={{ width: '100%', height: '100%', color: '#f0f0f0' }}/></Avatar>
                   )}
                   {formData.image && (
-                    <Button onClick={handleDeleteImage} variant="contained" color="secondary" style={{ position: 'absolute', top: 288, left: 525 }}><DeleteIcon/></Button>
+                    <Button onClick={handleDeleteImage} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left:780 }}><DeleteIcon/></Button>
                   )}
                 </div>
                 <input
@@ -103,13 +110,8 @@ function AdminProfile() {
                   onChange={handleImageChange}
                 />
 
-                {/* <label htmlFor="contained-button-file">
-                  <Button variant="contained" component="span" sx={{ left: 200 }}>
-                    <UploadIcon/>
-                  </Button>
-                </label> */}
 
-              </Paper>
+            </Paper>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Grid container spacing={4.8} sx={{paddingTop:2}}>
@@ -130,7 +132,7 @@ function AdminProfile() {
                     label="Email"
                     name="email"
                     type="email"
-                    value={truncatedEmail + '@' + domain}
+                    value={formData.email}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -170,15 +172,13 @@ function AdminProfile() {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                InputProps={{
-                  ...(formData.dob && { inputProps: { placeholder: '' },sx: { bgcolor: 'rgba(232, 240, 254,1)'}})
-                }}
+              
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth sx={{ bgcolor: formData.gender ? 'rgba(232, 240, 254,1)' : 'transparent' }}>
+                  <FormControl fullWidth>
                     <InputLabel>Gender</InputLabel>
                     <Select
                       value={formData.gender}
@@ -237,27 +237,37 @@ function AdminProfile() {
 
                 </Grid>
 
-            <Grid item xs={12} sm={12}>
-              <div style={{ marginLeft: '39%', marginTop: '1%' }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={3}>
+                <div style={{ marginLeft: '68%', marginTop: '1%' }}>
+              <Grid container spacing={5}>
+                  <Grid item xs={6}>
                     <Button variant="contained" color="primary" type="submit">
                       Save
                     </Button>
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={6}>
                     <Button variant="contained" color="secondary" type="button" component={Link} to="/">
                       Back
                     </Button>
                   </Grid>
                 </Grid>
               </div>
+
+
             </Grid>
+            </form>  
           </Grid>
-        </form>
+
+            <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
+              <Grid item xs={12} sm={12}>
+              <ChangePassword/>
+              </Grid>
+            </div>
+
+          </Grid>
+      
       </Paper>
     </div>
   );
 }
 
-export default AdminProfile;
+export default AdminProfile
