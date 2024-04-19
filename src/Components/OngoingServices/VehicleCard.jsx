@@ -189,7 +189,7 @@ const VehicleCard = ({
   useEffect(() => {
     // Calculate the full amount
     const totalAmount = inputFields.reduce((acc, curr) => {
-      const total = parseFloat(curr.total.replace("Rs. ", ""));
+      const total = curr.total ? parseFloat(curr.total.replace("Rs. ", "")) : 0;
       return isNaN(total) ? acc : acc + total;
     }, 0);
 
@@ -367,13 +367,7 @@ const VehicleCard = ({
     disableOngoingService();
   };
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      getAllVehicles();
-    }, 1000); // Call getAllOngoingServices every 10 seconds
-
-    return () => {
-      clearInterval(intervalId);
-    };
+    getAllVehicles();
   }, []);
 
   return (

@@ -17,8 +17,24 @@ import {
   Autocomplete,
   InputAdornment,
   Grid,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
 } from "@mui/material";
 
+const columns = [
+  { id: "itemID", label: "Item ID", minWidth: 170 },
+  { id: "itemName", label: "Item Name", minWidth: 170 },
+
+  { id: "price", label: "Price", minWidth: 170 },
+  { id: "quantity", label: "Quantity", minWidth: 170 },
+  { id: "total", label: "Total", minWidth: 170 },
+  { id: "actions", label: "Actions", minWidth: 170 },
+];
 function Inventory() {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
@@ -356,10 +372,10 @@ function Inventory() {
       <Headerfile title="Inventory" />
       <Card style={{ height: "80vh" }}>
         <CardContent>
-          <div class="row">
+          <div>
             <div class="col-sm-8">
-              <Grid container spacing={2}>
-                <Grid item xs={10}>
+              <Grid container spacing={5}>
+                <Grid item xs={5}>
                   <input
                     type="text"
                     class="form-control"
@@ -369,7 +385,7 @@ function Inventory() {
                     style={{ width: "100%" }}
                   />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={5}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -378,55 +394,61 @@ function Inventory() {
                     Add Item
                   </Button>
                 </Grid>
+                <Grid item>
+                  <TableContainer component={Paper} style={{ width: "250%" }}>
+                    <Table aria-label="customized table" padding="normal">
+                      <TableHead>
+                        <TableRow>
+                          {columns.map((column) => (
+                            <TableCell key={column.id} align={column.align}>
+                              {column.label}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {filterUsers().map((row, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{row.part_id}</TableCell>
+                            <TableCell>{row.name}</TableCell>
+                            <TableCell>Rs. {row.price}</TableCell>
+
+                            <TableCell>{row.quantity}</TableCell>
+                            <TableCell>
+                              Rs.{" "}
+                              {calculateTotal(
+                                parseFloat(row.price.replace("Rs. ", "")),
+                                row.quantity
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <EditIcon
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleEdit(row)}
+                                style={{
+                                  marginRight: "10px",
+                                  cursor: "pointer",
+                                }}
+                              />
+
+                              <DeleteForeverIcon
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleRemove(row)}
+                                style={{
+                                  marginRight: "10px",
+                                  cursor: "pointer",
+                                }}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
               </Grid>
-              <h3 align="left"> Products </h3>
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th> Item ID</th>
-                    <th>Item Name</th>
-
-                    <th>Price</th>
-                    <th>Qty</th>
-                    <th>Total</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {filterUsers().map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.part_id}</td>
-                      <td>{row.name}</td>
-                      <td>Rs. {row.price}</td>
-
-                      <td>{row.quantity}</td>
-                      <td>
-                        Rs.{" "}
-                        {calculateTotal(
-                          parseFloat(row.price.replace("Rs. ", "")),
-                          row.quantity
-                        )}
-                      </td>
-                      <td>
-                        <EditIcon
-                          variant="contained"
-                          color="primary"
-                          onClick={() => handleEdit(row)}
-                          style={{ marginRight: "10px", cursor: "pointer" }}
-                        />
-
-                        <DeleteForeverIcon
-                          variant="contained"
-                          color="secondary"
-                          onClick={() => handleRemove(row)}
-                          style={{ marginRight: "10px", cursor: "pointer" }}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
           </div>
         </CardContent>
