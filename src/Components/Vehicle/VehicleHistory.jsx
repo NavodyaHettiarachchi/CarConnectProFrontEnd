@@ -5,16 +5,32 @@ import {
   DialogTitle,
   IconButton,
   Grid,
-  Typography
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper
 } from '@mui/material';
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from '@mui/icons-material/Menu';
 import axios from 'axios';
 import HistoryFilter from './VehicleHistoryFilter';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import Collapse from '@mui/material/Collapse';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 
 function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
   //vehicle State
   const [vehicleHistory, setVehicleHistory] = useState([]);
+  const [filteredHistory, setFilteredHistory] = useState([]);
+  
   const [vehicleData, setVehicleData] = useState({
     vehicle_id: '',
     number_plate: '',
@@ -25,6 +41,23 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
   });
   // filter State
   const [openFilter, setOpenFilter] = useState(false);
+  const [openm, setOpenm] = useState(null);
+
+  const handleFilteredHistory = (filteredHistoryData) => {
+    // Update state with filtered history data
+    setFilteredHistory(filteredHistoryData);
+    
+  };
+
+  const handleFilterCancel = () => {
+    // Reset filtered history to original history
+    setFilteredHistory(vehicleHistory);
+  };
+
+  const handleYearClick = (year) => {
+    setOpenm((prevYear) => (prevYear === year ? null : year));
+  }
+
 
   const filtersGiven = [
     { id: 'f_date', type: 'date', label: 'From Date', description: 'Filter history from this date' },
@@ -83,6 +116,27 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
     closeVehicleHistory();
   };
 
+  const handleYearConversion = (date) => {
+    return date.split('-')[0];
+  }
+
+  const groupByYear = () => {
+    console.log("filteredVehicleHistory: ", filteredHistory);
+    const historyToGroup = filteredHistory.length > 0 ? filteredHistory : vehicleHistory;
+    const groups = {};
+    
+    historyToGroup.forEach((service, index) => {
+      const year = handleYearConversion(service.service_date);
+      if (!groups[year]) {
+        groups[year] = [];
+      }
+      groups[year].push({ ...service, index });
+    });
+
+    // console.log("group ", groups);
+    return groups;
+  };
+
   const handleDateConversions = (date) => {
     return date.split('T')[0];
   }
@@ -105,36 +159,36 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
         </DialogTitle>
         <DialogContent style={{ 'margin': '30px' }}>
           <div>
-            <Grid container spacing={3} justifyContent="center">
+            <Grid container spacing={3} justifyContent="center" bgcolor={'#CCD0FF'} padding={2}>
               <Grid item xs={6} sm={2}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {`Owner :  ${vehicleData.name}`}
+                <Typography variant="button"  display="block" gutterBottom>
+                <strong>Owner :</strong>  {vehicleData.name}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {`Date of register :  ${handleDateConversions(vehicleData.reg_year)}`}
+                <Typography variant="button"  display="block" gutterBottom>
+                  <strong>Date of register :</strong>  {handleDateConversions(vehicleData.reg_year)}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {`Number Plate :  ${vehicleData.number_plate}`}
+                <Typography variant="button"  display="block" gutterBottom>
+                <strong>Number Plate : </strong> {vehicleData.number_plate}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {`Make :  ${vehicleData.make}`}
+                <Typography variant="button"  display="block" gutterBottom>
+                <strong>Make : </strong> {vehicleData.make}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {`Model :  ${vehicleData.model}`}
+                <Typography variant="button"  display="block" gutterBottom>
+                <strong>Model : </strong> {vehicleData.model}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2} style={{position: 'relative'}}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    {`Mileage :  ${vehicleData.mileage}`}
+                  <Typography variant="button"  display="block" gutterBottom>
+                    <strong>Mileage : </strong> {vehicleData.mileage}
                   </Typography>
                   <IconButton onClick={handleFilter} style={{ marginLeft: '30%', marginTop: '-2%' }}>
                     <MenuIcon color="primary"></MenuIcon>
@@ -143,13 +197,81 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
               </Grid>
             </Grid>
           </div>
+          <div>
+            <List
+              sx={{width: '94%', minWidth: 300, marginTop: 5, marginLeft: 6, bgcolor: 'background.paper' }}
+              component="nav"
+              aria-labelledby="service-history-subheader"
+              subheader={
+                <Typography variant="h6" gutterBottom component="div" id="service-history-subheader" sx={{marginBottom: 2 }}>
+                  SERVICE HISTORY
+                </Typography>
+              }
+            >
+               {Object.entries(groupByYear()).map(([year, services]) => (
+                <React.Fragment key={year}>
+                  <ListItemButton onClick={() => handleYearClick(year)}>
+                    <ListItemText primary={` ${year}`} />
+                    {openm === year ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openm === year} timeout="auto" unmountOnExit sx={{marginBottom: 2}}>
+                    <List disablePadding>
+                      <div style={{ overflowX: 'auto', position: 'relative' }}>
+                        <TableContainer  sx={{ minWidth: 400, marginTop: '1%' }} style={{ overflowX: 'auto' }}>
+                          <Table>
+                            <TableHead component={Paper} sx={{minHeight: '3px', padding: 0, bgcolor: '#CCD0FF' , boxShadow: 'none' }}>
+                              <TableRow>
+                                <TableCell style={{ fontWeight: 'bold' }}>
+                                  SERVICE DATE
+                                </TableCell>
+                                <TableCell style={{ fontWeight: 'bold' }}>
+                                  DESCRIPTION
+                                </TableCell>
+                                <TableCell style={{ fontWeight: 'bold' }}>
+                                  MILEAGE
+                                </TableCell>
+                                <TableCell style={{ fontWeight: 'bold' }}>
+                                  COST
+                                </TableCell>
+                                <TableCell style={{ fontWeight: 'bold' }}>
+                                  
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {services.map((service) => (
+                                <TableRow key={service.index}>
+                                  <TableCell>{handleDateConversions(service.service_date)}</TableCell>
+                                  <TableCell>{service.description}</TableCell>
+                                  <TableCell>{service.mileage}</TableCell>
+                                  <TableCell>{`Rs. ${parseFloat(service.cost).toFixed(2)}`}</TableCell>
+                                  <TableCell align='right'>
+                                    <IconButton aria-label="delete" sx={{fontSize: 'small'}} >
+                                      Download Invoice <DownloadForOfflineIcon sx={{marginLeft: 1}} color="primary"/>
+                                    </IconButton>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </div>
+                    </List>
+                  </Collapse>
+                </React.Fragment>
+              ))}
+            </List>
+          </div>
+
         </DialogContent>
       </Dialog>
 
+        
       <HistoryFilter
         openFilter={openFilter}
+        vehicleId={vehicleId}
         vehicleData={vehicleData}
-        setParentVehicleData={() => { console.log('update'); }}
+        onFilteredHistory={handleFilteredHistory}
         closeFilterPopup={() => setOpenFilter(false)}
       />
     </div>

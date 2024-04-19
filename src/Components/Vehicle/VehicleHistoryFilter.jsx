@@ -8,7 +8,8 @@ import {
   IconButton,
   Grid,
   TextField,
-  Typography
+  Typography,
+  Button
 } from '@mui/material';
 import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,7 +31,7 @@ const useStyles = makeStyles({
 
 const minDistance = 10000;
 
-function VehicleHistoryFilter({ openFilter, vehicleData, setParentVehicleData, closeFilterPopup }) { 
+function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicleData, closeFilterPopup }) { 
 
   const classes = useStyles();
   const theme = useTheme();
@@ -44,6 +45,7 @@ function VehicleHistoryFilter({ openFilter, vehicleData, setParentVehicleData, c
     mileage: [0, 300000]
   });
   const [centerData, setCenterData] = useState([]);
+  
 
   useEffect(() => { 
     try {
@@ -58,6 +60,7 @@ function VehicleHistoryFilter({ openFilter, vehicleData, setParentVehicleData, c
       console.log(err);
     }
   }, [openFilter])
+
 
 
   const handleMileageChange = (event, newValue, activeThumb) => { 
@@ -105,6 +108,29 @@ function VehicleHistoryFilter({ openFilter, vehicleData, setParentVehicleData, c
       }))
     }
   };
+
+  const fetchFilteredHistory = async () => {
+    try {
+      const response = await axios.post(`http://localhost:5000/owner/vehicles/${vehicleId}/filter`, { filterData })
+      
+      .then((res) => {
+        const filteredHistory = res.data.data.filteredHistory[0];
+        console.log('Response data:', res.data.data.filteredHistory[0]);
+        
+        onFilteredHistory(filteredHistory);
+      })
+      .catch((err) => console.log(err));  
+    } catch (error) {
+      console.error('Error fetching filtered history:', error);
+    }
+  };
+
+  const handleFilterSubmit = () => {
+    // Call the function to fetch filtered history data from the backend
+    fetchFilteredHistory();
+    handleClose();
+  };
+
 
 
   const handleClose = () => { 
@@ -226,6 +252,9 @@ function VehicleHistoryFilter({ openFilter, vehicleData, setParentVehicleData, c
           </div>
 
         </DialogContent>
+
+        <Button onClick={handleFilterSubmit}>Apply Filter</Button>
+        <Button onClick={handleFilterSubmit}>Clear Filter</Button>
       </Dialog>
     </div>
   );

@@ -34,6 +34,11 @@ import Switch from '@mui/material/Switch';
 import CommonFunc from '../../Data/CommonFunc';
 import Alert from '@mui/material/Alert';
 import EditIcon from '@mui/icons-material/Edit';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import dayjs, { Dayjs } from 'dayjs';
 import VehicleHistory from '../Vehicle/VehicleHistory';
 
 const columns = [
@@ -47,6 +52,8 @@ const columns = [
   { id: 'actions', label: '', minWidth: 80, maxWidth: 80 }
 ]
 
+const allowedRoles = new Set(['ep:ad', 's:ad']);
+
 function Employees() {
 
   const [open, openchange] = useState(false);
@@ -58,6 +65,7 @@ function Employees() {
   const [genderData, setGenderData] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [editRole, setEditRole] = useState(false);
   const [emp, setEmp] = useState({
     username: '',
     password: '',
@@ -65,7 +73,7 @@ function Employees() {
     contact: '',
     email: '',
     gender: '',
-    dob: '2000-12-12',
+    dob: dayjs('2000-12-02'),
     profile_pic: null,
     nic: '',
     designation: '',
@@ -103,7 +111,7 @@ function Employees() {
       contact: '',
       email: '',
       gender: '',
-      dob: '2000-12-12',
+      dob: dayjs('2000-12-02'),
       profile_pic: null,
       nic: '',
       designation: '',
@@ -119,13 +127,9 @@ function Employees() {
   const handleEmpDataChange = (event, property) => {
     setEmp(prevEmp => ({
       ...prevEmp,
-      [property]: property === 'isActive' ? (emp.isActive ? false : true) : event.target.value
+      [property]: property === 'isActive' ? (emp.isActive ? false : true) : property === 'dob' ? event :event.target.value
     }));
-    console.log('emp : ', emp);
   }
-
-  useEffect(() => {
-  }, [genderData])
 
   const findDifferences = (obj1, obj2) => {
     const differences = {};
@@ -148,7 +152,7 @@ function Employees() {
               'Content-type': 'application/json',
             },
             body: JSON.stringify({
-              schema: window.sessionStorage.getItem('schema'),
+              schema: JSON.parse(window.sessionStorage.getItem('schema')),
               username: emp.username,
               password: emp.password,
               name: emp.name,
@@ -173,7 +177,7 @@ function Employees() {
           // edit emp query
           const empObj = empData.filter((empd) => empd.id === emp.id)[0];
           let editedObj = findDifferences(empObj, emp);
-          editedObj.schema = window.sessionStorage.getItem('schema');
+          editedObj.schema = JSON.parse(window.sessionStorage.getItem('schema'));
 
           console.log("EditedObj : ", editedObj);
           const response = await fetch(`http://localhost:5000/center/employee/${emp.id}`, {
@@ -189,18 +193,13 @@ function Employees() {
           if (index !== -1) {
             // Create a copy of the current array
             const updatedEmpData = [...empData];
-
             // Remove the object at the found index
             updatedEmpData.splice(index, 1);
-
             // Add the new object at the same index
             updatedEmpData.splice(index, 0, data.data.empData);
-
             // Update the state with the new array
             setEmpData(updatedEmpData);
           }
-
-
         }
         
         closepopup();
@@ -221,9 +220,13 @@ function Employees() {
     return empData.filter((empD) => empD.id !== emp.id);
   }
 
-  const editEmployeePopup = (empD) => { 
+  const editEmployeePopup = (empD) => {
     setIsNewEmp(false);
     setEmp(empD);
+    setEmp((prevEmp) => ({
+      ...prevEmp,
+      dob: dayjs(prevEmp.dob)
+    }));
     functionopenpopup();
   }
 
@@ -245,14 +248,22 @@ function Employees() {
     }
   }
 
+  const checkRoles = () => {
+    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
+    console.log(roles);
+    setEditRole(allowedRoles.has(roles.find(role => role === 'ep:ad' || role === 's:ad')));
+    console.log(" edit: ", editRole);
+  };
+
   useEffect(() => {
+    checkRoles();
     fetch("http://localhost:5000/center/getemployee", {
       method: "POST",
       headers: {
         'Content-type': 'application/json'
       },
       body: JSON.stringify({
-        schema: window.sessionStorage.getItem('schema'),
+        schema: JSON.parse(window.sessionStorage.getItem('schema')),
       }),
     })
       .then((res) => res.json())
@@ -287,7 +298,7 @@ function Employees() {
               value={searchEmpNIC}
               onChange={handleEmpNICChange}
             />
-            <Button variant="contained" onClick={openPopupNewEmp} color="primary" className='Button' sx={{ right: 0, left: 'auto' }}>
+            <Button variant="contained" onClick={openPopupNewEmp} color="primary" className='Button' sx={{ right: 0, left: 'auto' }} disabled={!editRole}>
               New Employee
             </Button>
             <Button variant="contained" onClick={openPopupHistory} color="primary" className='Button' sx={{ right: 0, left: 'auto' }}>
@@ -316,19 +327,19 @@ function Employees() {
               <DialogContent style={{ margin: '40px' }}>
                 <Grid container spacing={10} justifyContent="center">
                   <Grid item xs={12} sm={4}>
-                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'username')} value={emp.username ?? ''} label="Username" disabled={!isNewEmp} fullWidth variant="standard" />
+                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'username')} value={emp.username ?? ''} label="Username" disabled={!isNewEmp || !editRole} fullWidth variant="standard" />
                   </Grid>
                   {isNewEmp && <Grid item xs={12} sm={4}>
-                    <TextField id="standard-basic" type="password" onChange={(event) => handleEmpDataChange(event, 'password')} value={emp.password ?? ''} label="Password" disabled={!isNewEmp} fullWidth variant="standard" />
+                    <TextField id="standard-basic" type="password" onChange={(event) => handleEmpDataChange(event, 'password')} value={emp.password ?? ''} label="Password" disabled={!isNewEmp || !editRole} fullWidth variant="standard" />
                   </Grid>}
                   <Grid item xs={12} sm={4}>
-                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'name')} value={emp.name ?? ''} label="Name" fullWidth variant="standard" />
+                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'name')} value={emp.name ?? ''} label="Name" fullWidth variant="standard" disabled={!editRole} />
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'contact')} value={emp.contact ?? ''} label="Contact" fullWidth variant="standard" />
+                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'contact')} value={emp.contact ?? ''} label="Contact" fullWidth variant="standard" disabled={!editRole} />
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'email')} value={emp.email ?? ''} label="Email" disabled={!isNewEmp} fullWidth variant="standard" />
+                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'email')} value={emp.email ?? ''} label="Email" disabled={!isNewEmp || !editRole} fullWidth variant="standard" />
                   </Grid>
                   <Grid item xs={12} sm={4}>
                     <InputLabel id="demo-simple-select-standard-label">Gender</InputLabel>
@@ -340,6 +351,7 @@ function Employees() {
                       onChange={(event) => handleEmpDataChange(event, 'gender')}
                       label="Gender"
                       variant="standard"
+                      disabled={!editRole}
                     >
                       <MenuItem value="">
                         <em>None</em>
@@ -352,23 +364,24 @@ function Employees() {
                     </Select>
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DateField
-                        label="Controlled field"
-                        fullWidth
-                        format = "MM-DD-YYYY"
-                        variant="standard"
-                        value={emp.dob}
-                        onChange={(event, newValue) => handleEmpDataChange(newValue, 'dob')}
-                      />
-                      <DatePicker label="Date of birth" value={emp.dob} variant="standard" fullWidth onChange={(event) => handleEmpDataChange(event, 'dob')} />
-                    </LocalizationProvider> */}
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={['DatePicker']}>
+                        <DatePicker
+                          label="Date of birth"
+                          value={emp.dob}
+                          variant="standard"
+                          fullWidth
+                          onChange={(newValue) => handleEmpDataChange(newValue, 'dob')}
+                          disabled={!editRole}
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'nic')} value={emp.nic ?? ''} label="NIC" disabled={!isNewEmp} fullWidth variant="standard" />
+                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'nic')} value={emp.nic ?? ''} label="NIC" disabled={!isNewEmp || !editRole} fullWidth variant="standard" />
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'designation')} value={emp.designation ?? ''} label="Designation" fullWidth variant="standard" />
+                    <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'designation')} value={emp.designation ?? ''} disabled={!editRole} label="Designation" fullWidth variant="standard" />
                   </Grid>
                   <Grid item xs={12} sm={4}>
                     <Autocomplete
@@ -380,6 +393,7 @@ function Employees() {
                       onChange={(event, newValue) => {
                         setEmp({ ...emp, manager_id: newValue ? newValue.id : null }); // Save the selected manager_id
                       }}
+                      disabled={!editRole}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -402,12 +416,13 @@ function Employees() {
                       onChange={(e) => setEmp({ ...emp, salary: e.target.value })}
                       variant="standard"
                       fullWidth
+                      disabled={!editRole}
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
                     <FormGroup>
                       <FormControlLabel
-                        control={<Switch checked={emp.isActive} onChange={(event) => handleEmpDataChange(event, 'isActive')} />}
+                        control={<Switch checked={emp.isActive} onChange={(event) => handleEmpDataChange(event, 'isActive')} disabled={!editRole} />}
                         label={emp.isActive ? 'Active' : 'Inactive'}
                       />
                     </FormGroup>
@@ -419,7 +434,7 @@ function Employees() {
                   <Grid item xs={12} sm={4}>
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <Button fullWidth color="primary" variant="contained" onClick={submitEmployee}>Submit</Button>
+                    <Button fullWidth color="primary" variant="contained" disabled={!editRole} onClick={submitEmployee}>Submit</Button>
                   </Grid>
                   <Grid item xs={12} sm={4}>
                   </Grid>
