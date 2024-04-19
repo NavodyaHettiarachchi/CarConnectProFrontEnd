@@ -174,9 +174,7 @@ const ServicePage = () => {
             },
             body: JSON.stringify({
               schema: JSON.parse(window.sessionStorage.getItem('schema')),
-
               client_id: selectedVehicle.client_id,
-
               service_date: new Date().toISOString().split("T")[0],
               description: "Full Service",
               mileage: milage,
@@ -330,31 +328,37 @@ const ServicePage = () => {
     getAllOngoingServices();
   }, []);
 
-      //pdfInvoice genaration
-    //collect final values
+  //pdfInvoice genaration
+  //collect final values
 
-    const generateInvoiceData = () => {  
-      const vehicle_id = vehicle_id;
-      const fuel_type = selectedVehicle.fuel;
-      const model = model;
-      const mileage = milage;
-      const selectedItems = inputFields.map((item) => ({
-        Type: item.type,
-        Item: item.item,
-        Price: parseFloat(item.price),
-        Quantity: parseFloat(item.quantity),
-        Total:  parseFloat(item.total), 
-      }));
-      const full_Amount = fullAmount;
-  
-      setInvoiceData({ vehicle_id, fuel_type, model, mileage, selectedItems, full_Amount });
-  
-    }
+  const generateInvoiceData = () => {
+    const vehicle_id = vehicle_id;
+    const fuel_type = selectedVehicle.fuel;
+    const model = model;
+    const mileage = milage;
+    const selectedItems = inputFields.map((item) => ({
+      Type: item.type,
+      Item: item.item,
+      Price: parseFloat(item.price),
+      Quantity: parseFloat(item.quantity),
+      Total: parseFloat(item.total),
+    }));
+    const full_Amount = fullAmount;
 
-    const handleGenerateInvoice = () => {
-      generateInvoiceData();
-      console.log("in handle genarate invoiceData" , invoiceData);
-    };
+    setInvoiceData({
+      vehicle_id,
+      fuel_type,
+      model,
+      mileage,
+      selectedItems,
+      full_Amount,
+    });
+  };
+
+  const handleGenerateInvoice = () => {
+    generateInvoiceData();
+    console.log("in handle genarate invoiceData", invoiceData);
+  };
 
   return (
     <>
@@ -571,7 +575,11 @@ const ServicePage = () => {
           >
             Finish Service
           </Button>
-          <Button variant="contained" color="secondary" onClick={handleGenerateInvoice}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleGenerateInvoice}
+          >
             Genarate Invoice
           </Button>
 
