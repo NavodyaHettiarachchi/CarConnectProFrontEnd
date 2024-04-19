@@ -19,7 +19,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEditRole, isUpdatedRole }) {
+function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEditRole, isUpdatedRole, editRole }) {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -27,6 +27,7 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
   const [addRoleBodyCols, setRows] = useState([
     { name: 'ongoing', label: 'On Going Services', view: false, edit: false, viewVal: 'os:v', editVal: 'os:ad' },
     { name: 'employees', label: 'Employees', view: false, edit: false, viewVal: 'ep:v', editVal: 'ep:ad' },
+    { name: 'clientele', label: 'Clientele', view: false, edit: false, viewVal: 'cp:v', editVal: 'cp:ad' },
     { name: 'inventory', label: 'Inventory', view: false, edit: false, viewVal: 'ip:v', editVal: 'ip:ad' },
     { name: 'settings', label: 'Settings', view: false, edit: false, viewVal: 'sp:v', editVal: 'sp:ad' },
     { name: 'profile', label: 'Profile', view: false, edit: false, viewVal: 'pp:v', editVal: 'pp:ad' },
@@ -43,10 +44,8 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
 
   // UPDATE ROLE DATA TO FIELDS 
   const updateFields = () => {
-    console.log('roleData: ', roleData, 'isEdit: ', isEdit);
     if (isEdit) {
       const priv = roleData.privileges.split(', ');
-      console.log('priv: ', priv);
       const updatedRows = addRoleBodyCols.map(row => {
         if (priv.includes(row.editVal)) {
           return { ...row, view: true, edit: true };
@@ -74,6 +73,7 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
     setRows([
       { name: 'ongoing', label: 'On Going Services', view: false, edit: false, viewVal: 'os:v', editVal: 'os:ad' },
       { name: 'employees', label: 'Employees', view: false, edit: false, viewVal: 'ep:v', editVal: 'ep:ad' },
+      { name: 'clientele', label: 'Clientele', view: false, edit: false, viewVal: 'cp:v', editVal: 'cp:ad' },
       { name: 'inventory', label: 'Inventory', view: false, edit: false, viewVal: 'ip:v', editVal: 'ip:ad' },
       { name: 'settings', label: 'Settings', view: false, edit: false, viewVal: 'sp:v', editVal: 'sp:ad' },
       { name: 'profile', label: 'Profile', view: false, edit: false, viewVal: 'pp:v', editVal: 'pp:ad' },
@@ -139,7 +139,7 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
             'Content-type': 'application/json',
           },
           body: JSON.stringify({
-            schema: window.sessionStorage.getItem('schema'),
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
             name: name,
             description: description,
             privileges: privileges,
@@ -182,6 +182,7 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
                 name="name"
                 value={name}
                 onChange={handleNameChange}
+                disabled={!editRole}
               />
             </Grid>
             <Grid item xs={12} sm={5}>
@@ -189,6 +190,7 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
                 name="description"
                 value={description}
                 onChange={handleDescriptionChange}
+                disabled={!editRole}
               />
             </Grid>
           </Grid>
@@ -218,8 +220,8 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
                               {row['label']}
                             </TableCell> :
                             <TableCell key={col.id} align='center'>
-                              <FormControlLabel size="small" control={<Checkbox checked={row.view} onChange={(event) => handleCheckboxChange(event, row, 'view')} />} label="View" />
-                              <FormControlLabel size="small" control={<Checkbox checked={row.edit} onChange={(event) => handleCheckboxChange(event, row, 'edit')} />} label="Edit" />
+                              <FormControlLabel size="small" disabled={!editRole} control={<Checkbox checked={row.view} onChange={(event) => handleCheckboxChange(event, row, 'view')} />} label="View" />
+                              <FormControlLabel size="small" disabled={!editRole} control={<Checkbox checked={row.edit} onChange={(event) => handleCheckboxChange(event, row, 'edit')} />} label="Edit" />
                             </TableCell>
                         ))}
                       </TableRow>

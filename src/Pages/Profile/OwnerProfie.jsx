@@ -11,13 +11,19 @@ import AccountIcon from '@mui/icons-material/AccountCircle';
 
 import ChangePassword from './ChangePassword';
 
-
+const allowedRoles = new Set(["pp:ad", "s:ad"]);
 
 function OwnerForm() {
 
 // get user ID from local storage or null
 const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || null;
-const [UserID] = useState(initialUserID);
+  const [UserID] = useState(initialUserID);
+  const [editRole, setEditRole] = useState(false);
+
+  useEffect(() => {
+    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
+    setEditRole(allowedRoles.has(roles.find(role => role === 'pp:ad' || role === 's:ad')));
+  }, []);
 
   const mapGender = (value) => {
     switch(value) {

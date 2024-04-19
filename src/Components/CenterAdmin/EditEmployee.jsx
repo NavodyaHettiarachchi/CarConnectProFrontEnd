@@ -16,22 +16,32 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import Autocomplete from '@mui/material/Autocomplete';
 import CloseIcon from "@mui/icons-material/Close";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import dayjs, { Dayjs } from 'dayjs';
 
 
 
-function EditEmployee({ open, closeEditEmployee, employeeToEdit, empData, isUpdatedEmp }) {
+function EditEmployee({ open, closeEditEmployee, employeeToEdit, empData, isUpdatedEmp, roleData, editRole }) {
   const [genderData, setGenderData] = useState([]);
   const [formState, setFormState] = useState(employeeToEdit ? employeeToEdit : {
     name: "",
     manager: "",
     designation: "",
-    role: "",
+    roles: "",
     status: "Active",
+    dob: dayjs()
   });
 
   useEffect(() => {
     if (employeeToEdit) {
       setFormState(employeeToEdit);
+      setFormState((prevState) => ({
+        ...prevState,
+        dob: dayjs(prevState.dob),
+      }));
       getGenders();
     }
   }, [employeeToEdit]);
@@ -39,7 +49,7 @@ function EditEmployee({ open, closeEditEmployee, employeeToEdit, empData, isUpda
   const handleEmpDataChange = (event, property) => {
     setFormState(prevEmp => ({
       ...prevEmp,
-      [property]: property === 'isActive' ? (formState.isActive ? false : true) : event.target.value
+      [property]: property === 'isActive' ? (formState.isActive ? false : true) : property === 'dob' ? event : event.target.value
     }));
   }
 
@@ -80,7 +90,9 @@ function EditEmployee({ open, closeEditEmployee, employeeToEdit, empData, isUpda
       designation: formState.designation,
       salary: formState.salary,
       isActive: formState.isActive,
-      schema: window.sessionStorage.getItem('schema'),
+      dob: formState.dob,
+      roles: formState.roles,
+      schema: JSON.parse(window.sessionStorage.getItem('schema')),
     }
     if (formState.manager_id) { 
       emp.manager_id = formState.manager_id
@@ -140,7 +152,7 @@ function EditEmployee({ open, closeEditEmployee, employeeToEdit, empData, isUpda
               <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'username')} value={formState.username ?? ''} label="Username" disabled fullWidth variant="standard" />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'name')} value={formState.name ?? ''} label="Name" fullWidth variant="standard" />
+              <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'name')} value={formState.name ?? ''} label="Name" fullWidth disabled={!editRole} variant="standard" />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'contact')} value={formState.contact ?? ''} label="Contact" disabled fullWidth variant="standard" />
@@ -171,10 +183,24 @@ function EditEmployee({ open, closeEditEmployee, employeeToEdit, empData, isUpda
               </Select>
             </Grid>
             <Grid item xs={12} sm={4}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DatePicker']}>
+                  <DatePicker
+                    label="Date of birth"
+                    value={formState.dob}
+                    variant="standard"
+                    fullWidth
+                    onChange={(newValue) => handleEmpDataChange(newValue, 'dob')}
+                    disabled={!editRole}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} sm={4}>
               <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'nic')} value={formState.nic ?? ''} label="NIC" disabled fullWidth variant="standard" />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'designation')} value={formState.designation ?? ''} label="Designation" fullWidth variant="standard" />
+              <TextField id="standard-basic" onChange={(event) => handleEmpDataChange(event, 'designation')} value={formState.designation ?? ''} disabled={!editRole} label="Designation" fullWidth variant="standard" />
             </Grid>
             <Grid item xs={12} sm={4}>
               <Autocomplete
@@ -186,6 +212,7 @@ function EditEmployee({ open, closeEditEmployee, employeeToEdit, empData, isUpda
                 onChange={(event, newValue) => {
                   setFormState({ ...formState, manager_id: newValue ? newValue.id : null }); // Save the selected manager_id
                 }}
+                disabled={!editRole}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -208,20 +235,41 @@ function EditEmployee({ open, closeEditEmployee, employeeToEdit, empData, isUpda
                 onChange={(e) => setFormState({ ...formState, salary: e.target.value })}
                 variant="standard"
                 fullWidth
+                disabled={!editRole}
               />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <InputLabel id="demo-simple-select-standard-label">Gender</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={formState.roles ?? null}
+                fullWidth
+                onChange={(event) => handleEmpDataChange(event, 'roles')}
+                label="Roles"
+                variant="standard"
+                disabled={!editRole}
+              >
+                {roleData.map((item) => (
+                  <MenuItem key={item.name} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </Select>
             </Grid>
             <Grid item xs={12} sm={4}>
               <FormGroup>
                 <FormControlLabel
                   control={<Switch checked={formState.isActive} onChange={(event) => handleEmpDataChange(event, 'isActive')} />}
-                  label={formState.isActive ? 'Active' : 'Inactive'}
+                  label={formState.isActive ? 'Active' : 'Inactive'} disabled={!editRole}
                 />
               </FormGroup>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item sx={12} sm={4}>
+              
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Button fullWidth color="primary" variant="contained" onClick={handleSubmit}>Submit</Button>
+              <Button fullWidth color="primary" variant="contained" disabled={!editRole} onClick={handleSubmit}>Submit</Button>
             </Grid>
             <Grid item xs={12} sm={4}>
             </Grid>

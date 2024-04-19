@@ -119,7 +119,7 @@ const ServicePage = () => {
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem("schema")),
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
           }),
         }
       );
@@ -174,10 +174,8 @@ const ServicePage = () => {
               "Content-type": "application/json",
             },
             body: JSON.stringify({
-              schema: JSON.parse(window.sessionStorage.getItem("schema")),
-
+              schema: JSON.parse(window.sessionStorage.getItem('schema')),
               client_id: selectedVehicle.client_id,
-
               service_date: new Date().toISOString().split("T")[0],
               description: "Full Service",
               mileage: milage,
@@ -222,7 +220,7 @@ const ServicePage = () => {
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          schema: JSON.parse(window.sessionStorage.getItem("schema")),
+          schema: JSON.parse(window.sessionStorage.getItem('schema')),
         }),
       });
 
@@ -247,8 +245,7 @@ const ServicePage = () => {
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            // schema: window.sessionStorage.getItem('schema'),
-            schema: JSON.parse(window.sessionStorage.getItem("schema")),
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
           }),
         }
       );
@@ -328,14 +325,9 @@ const ServicePage = () => {
       return isNaN(price) || isNaN(quantity) ? acc : acc + price * quantity;
     }, 0);
   };
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      getAllOngoingServices();
-    }, 5000); // Call getAllOngoingServices every 10 seconds
 
-    return () => {
-      clearInterval(intervalId);
-    };
+  useEffect(() => {
+    getAllOngoingServices();
   }, []);
 
   //pdfInvoice genaration

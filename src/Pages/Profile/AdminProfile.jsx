@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Grid, Paper, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import Headerfile from '../../Components/Page-Header/CardHeader';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,8 @@ import AccountIcon from '@mui/icons-material/AccountCircle';
 
 
 import ChangePassword from './ChangePassword';
+
+const allowedRoles = new Set(["pp:ad", "s:ad"]);
 
 function AdminProfile() {
   const [formData, setFormData] = useState({
@@ -24,9 +26,15 @@ function AdminProfile() {
     image: ''
   });
 
+  const [editRole, setEditRole] = useState(false);
   // const MAX_VISIBLE_CHARACTERS = 4;
   // const [email, domain] = formData.email.split('@');
   // const truncatedEmail = email.slice(0, MAX_VISIBLE_CHARACTERS) + '*****';
+
+  useEffect(() => {
+    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
+    setEditRole(allowedRoles.has(roles.find(role => role === 'pp:ad' || role === 's:ad')));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

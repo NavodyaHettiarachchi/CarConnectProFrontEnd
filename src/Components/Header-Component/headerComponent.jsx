@@ -25,10 +25,6 @@ export default function Header({ Role }) {
   };
 
   const handleClose = () => {
-    // window.sessionStorage.removeItem('user');
-    // window.sessionStorage.removeItem('IsLoggedIn');
-    // window.sessionStorage.removeItem('schema');
-    // window.location.href = '/login';
     setAnchorEl(null);
   };
 
@@ -46,6 +42,9 @@ export default function Header({ Role }) {
     window.sessionStorage.removeItem('user');
     window.sessionStorage.removeItem('IsLoggedIn');
     window.sessionStorage.removeItem('schema');
+    window.sessionStorage.removeItem('schema');
+    window.sessionStorage.removeItem('userId');
+    window.sessionStorage.removeItem('userType');
     // window.location.href = '/login';
     setShowLogoutConfirmation(false);
   };
@@ -99,14 +98,14 @@ export default function Header({ Role }) {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem
+                {/* <MenuItem
                   component={Link} 
                   to={`/${Role}/profile`}
                   onClick={handleProfileClick}
                   sx={{ justifyContent: 'center' }}
                 >
                   Profile
-                </MenuItem>
+                </MenuItem> */}
 
                 <MenuItem onClick={handleOpenLogoutConfirmation} sx={{ justifyContent: 'center' }}>Logout</MenuItem>
               </Menu>

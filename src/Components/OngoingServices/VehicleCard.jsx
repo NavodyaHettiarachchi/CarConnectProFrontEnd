@@ -96,7 +96,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem("schema")),
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
           }),
         }
       );
@@ -116,6 +116,7 @@ const VehicleCard = ({
       console.error("Error fetching data:", error);
     }
   };
+  
   const getAllVehicles = async () => {
     try {
       const response = await fetch("http://localhost:5000/center/getclients", {
@@ -124,7 +125,7 @@ const VehicleCard = ({
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          schema: JSON.parse(window.sessionStorage.getItem("schema")),
+          schema: JSON.parse(window.sessionStorage.getItem('schema')),
         }),
       });
 
@@ -163,7 +164,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem("schema")),
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
             details: JSON.stringify(updatedClientData.details),
           }),
         }
@@ -251,7 +252,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem("schema")),
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
           }),
         }
       );
@@ -311,7 +312,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem("schema")),
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
             isOngoing: false,
           }),
         }
@@ -366,6 +367,7 @@ const VehicleCard = ({
     generateInvoiceData();
     disableOngoingService();
   };
+  
   useEffect(() => {
     getAllVehicles();
   }, []);
