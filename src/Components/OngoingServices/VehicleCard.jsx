@@ -96,7 +96,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: "service_pqr_service_center",
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
           }),
         }
       );
@@ -124,8 +124,7 @@ const VehicleCard = ({
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          // schema: window.sessionStorage.getItem('schema'),
-          schema: "service_pqr_service_center",
+          schema: JSON.parse(window.sessionStorage.getItem("schema")),
         }),
       });
 
@@ -164,7 +163,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: "service_pqr_service_center",
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
             details: JSON.stringify(updatedClientData.details),
           }),
         }
@@ -212,21 +211,20 @@ const VehicleCard = ({
     }
 
     // Parse price and quantity as floats
-      const price = parseFloat(values[index].price.replace("Rs. ", ""));
-      const quantity = parseFloat(values[index].quantity);
+    const price = parseFloat(values[index].price.replace("Rs. ", ""));
+    const quantity = parseFloat(values[index].quantity);
 
     // if (values[index].price && values[index].quantity) {
     //   const price = parseFloat(values[index].price.replace("Rs. ", ""));
     //   const quantity = parseFloat(values[index].quantity);
 
     // Calculate total if both price and quantity are valid numbers
-      if (!isNaN(price) && !isNaN(quantity)) {
-        values[index].total = "Rs. " + (price * quantity).toFixed(2);
-      } else {
-        values[index].total = "";
-      }
-    
-    
+    if (!isNaN(price) && !isNaN(quantity)) {
+      values[index].total = "Rs. " + (price * quantity).toFixed(2);
+    } else {
+      values[index].total = "";
+    }
+
     // else {
     //   values[index].total = "";
     // }
@@ -253,7 +251,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: "service_pqr_service_center",
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
           }),
         }
       );
@@ -313,7 +311,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: "service_pqr_service_center",
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
             isOngoing: false,
           }),
         }
@@ -327,32 +325,39 @@ const VehicleCard = ({
     }
   };
 
-    //pdfInvoice genaration
-    //collect final values
+  //pdfInvoice genaration
+  //collect final values
 
-    const generateInvoiceData = () => {  
-      const vehicle_id = getVehicleNumber();
-      const fuel_type = getFuel();
-      const model = getModel();
-      const mileage = ongoingServices.mileage;
-      const selectedItems = inputFields.map((item) => ({
-        Type: item.type,
-        Item: item.item,
-        Price: item.price,
-        Quantity: parseFloat(item.quantity),
-        Total: item.total, 
-      }));
-      const full_Amount = fullAmount;
-  
-      setInvoiceData({ vehicle_id, fuel_type, model, mileage, selectedItems, full_Amount });
+  const generateInvoiceData = () => {
+    const vehicle_id = getVehicleNumber();
+    const fuel_type = getFuel();
+    const model = getModel();
+    const mileage = ongoingServices.mileage;
+    const selectedItems = inputFields.map((item) => ({
+      Type: item.type,
+      Item: item.item,
+      Price: item.price,
+      Quantity: parseFloat(item.quantity),
+      Total: item.total,
+    }));
+    const full_Amount = fullAmount;
 
-      console.log("in genarate invoiceData" , invoiceData);
-    }
+    setInvoiceData({
+      vehicle_id,
+      fuel_type,
+      model,
+      mileage,
+      selectedItems,
+      full_Amount,
+    });
 
-    // const handleGenerateInvoice = () => {
-    //   generateInvoiceData();
-    //   console.log("in handle genarate invoiceData" , invoiceData);
-    // };
+    console.log("in genarate invoiceData", invoiceData);
+  };
+
+  // const handleGenerateInvoice = () => {
+  //   generateInvoiceData();
+  //   console.log("in handle genarate invoiceData" , invoiceData);
+  // };
 
   const handleFinish = () => {
     console.log("finish clicked");
@@ -370,7 +375,6 @@ const VehicleCard = ({
       clearInterval(intervalId);
     };
   }, []);
-
 
   return (
     <div>
@@ -546,7 +550,11 @@ const VehicleCard = ({
           <Button variant="contained" color="primary" onClick={handleFinish}>
             Finish
           </Button>
-          <Button variant="contained" color="secondary" onClick={generateInvoiceData} >
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={generateInvoiceData}
+          >
             Genarate Invoice
           </Button>
           <Button onClick={handleClose} variant="contained" color="primary">
@@ -554,7 +562,7 @@ const VehicleCard = ({
           </Button>
         </DialogActions>
         <DialogActions>
-        {invoiceData && <PdfInvoice invoiceData={invoiceData} />}
+          {invoiceData && <PdfInvoice invoiceData={invoiceData} />}
         </DialogActions>
       </Dialog>
     </div>
