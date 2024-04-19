@@ -14,6 +14,7 @@ import { menus } from "../src/Data/SideBarData";
 function App() {
   const location = useLocation();
   const [userRole, setUserRole] = useState('');
+  const [UserType, setUserType] = useState('');//@Harindu Ashen 
   let routes = [];
 
   Object.keys(AppRoutes).forEach((key) => {
@@ -27,9 +28,17 @@ function App() {
   };
 
   useEffect(() => {
-    const role = window.sessionStorage.getItem('user');
+    const role = window.sessionStorage.getItem('roles');
     setUserRole(JSON.parse(role));
-  });
+
+    const userType = window.sessionStorage.getItem('userType');//@Harindu Ashen 
+    setUserType(JSON.parse(userType));
+  },[]);
+
+  // useEffect(() => {
+  //   const userType = window.sessionStorage.getItem('userType');//@Harindu Ashen 
+  //   setUserType(JSON.parse(userType));
+  // },[]);  
 
   const islogged = window.sessionStorage.getItem('IsLoggedIn');
   const sep_roles = userRole?.split(', ');
@@ -41,7 +50,7 @@ function App() {
   });
   return (
     <div sx={shouldShowSidebar() ? { backgroundColor: '#d3d3d3' } : { backgroundColor: '#ffffff' }}>
-      {shouldShowSidebar() && <Header />}
+      {shouldShowSidebar() && <Header Role={UserType}/>}
       <Box display="flex" className="App" sx={{ overflowX: 'hidden', paddingTop: 2, paddingX: 2, paddingBottom: 7, backgroundColor: '#ffffff' }}>
         {shouldShowSidebar() && <Sidenav menus={menuItems} />}
         <div>

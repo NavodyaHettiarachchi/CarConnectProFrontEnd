@@ -25,6 +25,8 @@ function Login() {
         window.sessionStorage.setItem('IsLoggedIn', true);
         window.sessionStorage.setItem('userId', JSON.stringify(loginData.data.user.id));
         window.sessionStorage.setItem('user', JSON.stringify(loginData.data.user.roles));
+        window.sessionStorage.setItem('userType', JSON.stringify(loginData.data.roleType));//@Harindu
+      
         if (response.status === 200) {
           let roles = loginData.user.roles.split(', ');
           const found = roles.filter((role) => role === 'mv:ad');
