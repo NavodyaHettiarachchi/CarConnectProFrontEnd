@@ -19,11 +19,10 @@ function Login() {
       const loginData = response.data;
       if (response.status == 200) {
         navigate('/');
-        console.log(loginData.data.user.roles);
-        window.sessionStorage.setItem('schema', JSON.stringify(loginData.schema));
+        window.sessionStorage.setItem('schema', JSON.stringify(loginData.data.schema));
         window.sessionStorage.setItem('roles', JSON.stringify(loginData.data.user.roles));
         window.sessionStorage.setItem('IsLoggedIn', true);
-        window.sessionStorage.setItem('userId', JSON.stringify(loginData.data.user.id));
+        window.sessionStorage.setItem('userId', JSON.stringify(loginData.data.user.id ? loginData.data.user.id : loginData.data.user.center_id));
         window.localStorage.setItem('user', JSON.stringify(loginData.data.user.name));
         if (response.status === 200) {
           let roles = loginData.user.roles.split(', ');
