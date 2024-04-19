@@ -10,13 +10,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Tooltip from '@mui/material/Tooltip';
-import Button from '@mui/material/Button';
-import Cookies from 'js-cookie';
-import ChangePassword from '../../Pages/Profile/ChangePassword';
 import LogoutConfirmation from '../../Pages/Profile/LogoutConfirmation';
 import { Link } from 'react-router-dom';
 
-export default function Header({ UserRole }) {
+export default function Header({ Role }) {
  
   const [auth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -28,17 +25,11 @@ export default function Header({ UserRole }) {
   };
 
   const handleClose = () => {
-    window.localStorage.removeItem('user');
-    window.localStorage.removeItem('IsLoggedIn');
-    window.location.href = '/login';
     setAnchorEl(null);
   };
 
-  const handleOpenChangePassword = () => {
-    setShowChangePassword(true);
-  };
-
   const handleOpenLogoutConfirmation = () => {
+    handleClose();
     setShowLogoutConfirmation(true);
   };
 
@@ -58,15 +49,13 @@ export default function Header({ UserRole }) {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style={{ background: '#7758D1' }} className="header" >
-        <Toolbar style={{ marginTop: '-0.4%' }} >
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} style={{ height: '40px' }} >
-
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style={{ background: '#7758D1' }} className="header">
+        <Toolbar style={{ marginTop: '-5px' }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             CarConnectPro
           </Typography>
-         
           {auth && (
-            <div style={{ marginTop: '-0.25%' }}>
+            <div>
               <Tooltip title="No notifications">
                 <IconButton
                   size="large"
@@ -105,19 +94,19 @@ export default function Header({ UserRole }) {
               >
                 <MenuItem
                   component={Link} 
-                  to={`/${UserRole}/profile`}
+                  to={`/${Role}/profile`}
                   onClick={handleProfileClick}
                   sx={{ justifyContent: 'center' }}
                 >
+                  Profile
                 </MenuItem>
-                <MenuItem onClick={handleOpenChangePassword} sx={{ justifyContent: 'center' }}>Change Password</MenuItem>
-                <MenuItem onClick={handleClose} sx={{ justifyContent: 'center' }}>Logout</MenuItem>
+
+                <MenuItem onClick={handleOpenLogoutConfirmation} sx={{ justifyContent: 'center' }}>Logout</MenuItem>
               </Menu>
             </div>
           )}
         </Toolbar>
       </AppBar>
-      {showChangePassword && <ChangePassword onClose={() => setShowChangePassword(false)} />}
       {showLogoutConfirmation && <LogoutConfirmation onConfirm={handleConfirmLogout} onCancel={handleCancelLogout} />}
     </Box>
   );

@@ -14,6 +14,7 @@ import { menus } from "../src/Data/SideBarData";
 function App() {
   const location = useLocation();
   const [userRole, setUserRole] = useState('');
+  const [UserType, setUserType] = useState('');//@Harindu Ashen 
   let routes = [];
 
   Object.keys(AppRoutes).forEach((key) => {
@@ -29,6 +30,9 @@ function App() {
   useEffect(() => {
     const role = window.localStorage.getItem('user');
     setUserRole(JSON.parse(role));
+
+    const UserType = window.localStorage.getItem('userType');
+    setUserType(JSON.parse(UserType));
   });
 
   const islogged = window.localStorage.getItem('IsLoggedIn');
@@ -41,7 +45,7 @@ function App() {
   });
   return (
     <div sx={shouldShowSidebar() ? { backgroundColor: '#d3d3d3' } : { backgroundColor: '#ffffff' }}>
-      {shouldShowSidebar() && <Header />}
+      {shouldShowSidebar() && <Header Role={UserType} />}
       <Box display="flex" className="App" sx={{ overflowX: 'hidden', paddingTop: 2, paddingX: 2, paddingBottom: 7, backgroundColor: '#ffffff' }}>
         {shouldShowSidebar() && <Sidenav data={menuItems} />}
         <div>

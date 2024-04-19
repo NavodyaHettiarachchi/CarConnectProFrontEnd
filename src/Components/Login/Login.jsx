@@ -1,10 +1,10 @@
-import React, { useState,useContext,useEffect } from 'react';
+import React, { useState} from 'react';
 import './LoginStyles.css';
 import landingimg from '../../../src/Images/sidelogin.jpg';
 import Minilogo from '../../../src/Images/sidelogin.svg';
 import Heading from '../Page-Header/header';
 import axios from 'axios';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 
 function Login() {
 
@@ -17,8 +17,15 @@ function Login() {
       const respone = await axios.post('http://localhost:5000/login/', {username, password});
       const loginData = respone.data.data.user.roles;
       window.localStorage.setItem('user', JSON.stringify(loginData));
+
+      const {roleType} = respone.data.data;
+      window.localStorage.setItem('userType',JSON.stringify(roleType));//@Harindu
+
+      const {userID} = respone.data.data;
+      window.localStorage.setItem('userID',JSON.stringify(userID));//@Harindu
+
       window.localStorage.setItem('IsLoggedIn', true);
-      if(respone.status==200){
+      if(respone.status===200){
         navigate('/'); 
         console.log(respone);
       }else{
