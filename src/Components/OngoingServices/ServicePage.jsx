@@ -59,7 +59,8 @@ const ServicePage = () => {
     selectedVehicle ? selectedVehicle.milage : ""
   );
   const [invoiceData, setInvoiceData] = useState(null);
-
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [employees, setEmployees] = useState([]);
   const handleMaxxWidthChange = (event) => {
     setMaxxWidth(
       // @ts-expect-error autofill of arbitrary value is not handled.
@@ -139,7 +140,7 @@ const ServicePage = () => {
     getAllServices();
     getAllVehicles();
     setSelectedVehicle(null);
-
+    getAllEmployees();
     setInputFields([
       { type: "", item: "", price: "", quantity: "1", total: "" },
     ]);
@@ -178,9 +179,9 @@ const ServicePage = () => {
               service_date: new Date().toISOString().split("T")[0],
               description: "Full Service",
               mileage: milage,
-              cost: calculateTotalCost(tableData),
-              details: JSON.stringify(tableData),
-              technician_ids: [8, 13],
+              cost: calculateTotalCost(inputFields),
+              details: JSON.stringify(inputFields),
+              technician_ids: [selectedEmployee ? selectedEmployee.id : ""],
               isOngoing: true,
             }),
           }
@@ -198,6 +199,7 @@ const ServicePage = () => {
       setVehicles((prevVehicles) => [...prevVehicles, newCard]);
       handleClose();
       setMilage("");
+      setSelectedEmployee(null);
     }
   };
   useEffect(() => {
@@ -359,7 +361,61 @@ const ServicePage = () => {
     generateInvoiceData();
     console.log("in handle genarate invoiceData", invoiceData);
   };
+  const getAllEmployees = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/center/getemployee", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          schema: JSON.parse(window.sessionStorage.getItem("schema")),
+        }),
+      });
 
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const data = await response.json();
+      setEmployees(data.data.empData);
+      console.log("emp", data.data.empData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const EmployeeAutocomplete = ({ filterData, employees }) => {
+    const options = employees.map((employee) => ({
+      id: employee.id,
+      name: employee.name,
+    }));
+    return (
+      <Autocomplete
+        disablePortal
+        id="combo-box-demo"
+        options={options}
+        sx={{ width: 300 }}
+        value={selectedEmployee}
+        onChange={(event, value) => filterData(value)}
+        getOptionLabel={(option) => option.name || ""}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            size="small"
+            label="Search Employees"
+            InputProps={{ ...params.InputProps, type: "search" }}
+          />
+        )}
+      />
+    );
+  };
+
+  const filterEmployeeData = (selectedEmployee) => {
+    if (selectedEmployee) {
+      setSelectedEmployee(selectedEmployee);
+    }
+  };
   return (
     <>
       <Grid>
@@ -404,16 +460,16 @@ const ServicePage = () => {
 
           <Grid container>
             <Grid item container>
-              <Grid item xs={6}>
+              <Grid item xs={1}>
                 <Typography variant="h6">
                   Vehicle No: {selectedVehicle ? selectedVehicle.number : ""}
                 </Typography>
-                <Grid item>
-                  <VehicleAutocomplete
-                    filterData={filterData}
-                    vehiData={vehiData}
-                  />
-                </Grid>
+              </Grid>
+              <Grid item xs={5}>
+                <VehicleAutocomplete
+                  filterData={filterData}
+                  vehiData={vehiData}
+                />
               </Grid>
               <Grid item xs={6}>
                 <Typography variant="h6">
@@ -435,6 +491,15 @@ const ServicePage = () => {
                   onChange={(event) => setMilage(event.target.value)}
                   sx={{ width: "200px", mr: "10px" }}
                   type="number"
+                />
+              </Grid>
+              <Grid item xs={1}>
+                <Typography variant="h6">Employee:</Typography>
+              </Grid>
+              <Grid item>
+                <EmployeeAutocomplete
+                  filterData={filterEmployeeData}
+                  employees={employees}
                 />
               </Grid>
             </Grid>
@@ -568,20 +633,20 @@ const ServicePage = () => {
           <Button variant="contained" color="primary" onClick={handleSaveClick}>
             Save
           </Button>
-          <Button
+          {/* <Button
             // onClick={handleFinishServiceClick}
             variant="contained"
             color="primary"
           >
             Finish Service
-          </Button>
-          <Button
+          </Button> */}
+          {/* <Button
             variant="contained"
             color="secondary"
             onClick={handleGenerateInvoice}
           >
             Genarate Invoice
-          </Button>
+          </Button> */}
 
           <Button onClick={handleClose} variant="contained" color="primary">
             Close

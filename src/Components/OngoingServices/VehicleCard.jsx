@@ -190,7 +190,7 @@ const VehicleCard = ({
   useEffect(() => {
     // Calculate the full amount
     const totalAmount = inputFields.reduce((acc, curr) => {
-      const total = parseFloat(curr.total.replace("Rs. ", ""));
+      const total = curr.total ? parseFloat(curr.total.replace("Rs. ", "")) : 0;
       return isNaN(total) ? acc : acc + total;
     }, 0);
 
@@ -367,7 +367,7 @@ const VehicleCard = ({
     generateInvoiceData();
     disableOngoingService();
   };
-
+  
   useEffect(() => {
     getAllVehicles();
   }, []);
