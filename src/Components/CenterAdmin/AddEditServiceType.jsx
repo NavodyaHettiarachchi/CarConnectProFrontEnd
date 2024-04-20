@@ -11,7 +11,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 
-function AddEditServiceType({ open, serviceData, isEdit, closeEditServiceType, isUpdatedService }) { 
+function AddEditServiceType({ open, serviceData, isEdit, closeEditServiceType, isUpdatedService, editRole }) { 
   const [serviceD, setServiceD] = useState('');
 
   useEffect(() => {
@@ -60,7 +60,7 @@ function AddEditServiceType({ open, serviceData, isEdit, closeEditServiceType, i
             'Content-type': 'application/json'
           },
           body: JSON.stringify({
-            schema: window.sessionStorage.getItem('schema'),
+            schema: JSON.parse(window.sessionStorage.getItem('schema')),
             name: serviceD.name,
             description: serviceD.description,
             cost: serviceD.cost
@@ -99,6 +99,7 @@ function AddEditServiceType({ open, serviceData, isEdit, closeEditServiceType, i
                 name="name"
                 value={serviceD.name}
                 onChange={(event) => handleChange(event, 'name')}
+                disabled={!editRole}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -106,6 +107,7 @@ function AddEditServiceType({ open, serviceData, isEdit, closeEditServiceType, i
                 name="description"
                 value={serviceD.description}
                 onChange={(event) => handleChange(event, 'description')}
+                disabled={!editRole}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -117,12 +119,13 @@ function AddEditServiceType({ open, serviceData, isEdit, closeEditServiceType, i
                 onChange={(event) => handleChange(event, 'cost')}
                 variant="standard"
                 fullWidth
+                disabled={!editRole}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Button fullWidth color="primary" variant="contained" onClick={submitServiceType}>Submit</Button>
+              <Button fullWidth color="primary" disabled={!editRole} variant="contained" onClick={submitServiceType}>Submit</Button>
             </Grid>
             <Grid item xs={12} sm={4}>
             </Grid>

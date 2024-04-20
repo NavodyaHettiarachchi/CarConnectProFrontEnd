@@ -1,33 +1,106 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Paper, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import Headerfile from '../../Components/Page-Header/CardHeader';
-import { Link } from 'react-router-dom';
+import { Link} from 'react-router-dom';
+import axios from 'axios'; 
+import { useEffect } from 'react';
 
 import Avatar from '@mui/material/Avatar';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import AccountIcon from '@mui/icons-material/AccountCircle';
 
+import ChangePassword from './ChangePassword';
+
+const allowedRoles = new Set(["pp:ad", "s:ad"]);
+
 function OwnerForm() {
-  const [formData, setFormData] = useState({
-    username: 'Harindu',
-    email: 'ashenharindu714@gmail.com',
+
+// get user ID from local storage or null
+const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || null;
+  const [UserID] = useState(initialUserID);
+  const [editRole, setEditRole] = useState(false);
+
+  useEffect(() => {
+    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
+    setEditRole(allowedRoles.has(roles.find(role => role === 'pp:ad' || role === 's:ad')));
+  }, []);
+
+  const mapGender = (value) => {
+    switch(value) {
+      case "M":
+        return "male";
+      case "F":
+        return "female";
+      case "O":
+        return "other";
+      default:
+        return "";
+    }
+  };
+  
+  // Mapping function to convert "Male", "Female", "Other" to "M", "F", "O"
+  const mapGenderReverse = (value) => {
+    switch(value) {
+      case "male":
+        return "M";
+      case "female":
+        return "F";
+      case "other":
+        return "O";
+      default:
+        return "";
+    }
+  };
+  
+  // store form data
+  const [formData, setformData] = useState({
+    username: '',
+    email: '',
     phone: '',
     name: '',
     dob: '',
     gender: '',
-    nic: '993041254v',
-    managerName: 'harindu',
-    designation: 'labour',
-    image: ''
+    nic: '',
+    city:'',
+    province:'',
+    profile_pic:''
   });
+  
+  useEffect(() => {
+   
+    axios.get('http://localhost:5000/owner/profile/'+UserID) 
+      .then(response => {
+        const { username, email, name, dob,gender , nic, city, province, phone,profile_pic } = response.data.data.userData;
+        const dateOnly = dob.split('T')[0];
+        console.log(response.data);
+        setformData({
+          username,
+          email,
+          phone,
+          name,
+          dob:dateOnly, 
+          gender,
+          nic,
+          city,
+          province,
+          profile_pic
+        });
+      })
 
-  const MAX_VISIBLE_CHARACTERS = 4;
-  const [email, domain] = formData.email.split('@');
-  const truncatedEmail = email.slice(0, MAX_VISIBLE_CHARACTERS) + '*****';
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+      });
+
+  }, [UserID]);
+  
+
+  // const MAX_VISIBLE_CHARACTERS = 4;
+  // const [email, domain] = formData.email.split('@');
+  // const truncatedEmail = email.slice(0, MAX_VISIBLE_CHARACTERS) + '*****';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
+    setformData({
       ...formData,
       [name]: value
     });
@@ -38,9 +111,9 @@ function OwnerForm() {
     if (file instanceof Blob) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData({
+        setformData({
           ...formData,
-          image: reader.result
+          profile_pic: reader.result
         });
       };
       reader.readAsDataURL(file);
@@ -50,9 +123,9 @@ function OwnerForm() {
   };
 
   const handleDeleteImage = () => {
-    setFormData({
+    setformData({
       ...formData,
-      image: ''
+      profile_pic: ''
     });
 
     // Clear file input value
@@ -64,16 +137,25 @@ function OwnerForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Submitted:', formData);
+    axios.patch('http://localhost:5000/owner/profile/'+UserID, formData)
+      .then(response => {
+        console.log('Profile updated successfully:', response.data); 
+      })
+      .catch(error => {
+        console.error('Error updating profile:', error);  
+    });
   };
 
   return (
     <div>
       <Headerfile title="Owner Profile"/>
       <Paper style={{ padding: 15, top: 5, maxWidth: 1200, display: 'flex' }}>
-        <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item sm={6} xs={12}>
+            <Grid item  xs={12}>
+            <form onSubmit={handleSubmit}>
+                <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+
               <Paper style={{ padding: 5 }}>
                 <div style={{
                   width: 200,
@@ -86,13 +168,13 @@ function OwnerForm() {
                   margin: '10px auto',
                   background: '#f0f0f0'
                 }}>
-                  {formData.image ? (
-                    <img src={formData.image} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '50%' }} />
+                  {formData.profile_pic ? (
+                    <img src={formData.profile_pic} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '50%' }} />
                   ) : (
                     <Avatar alt="Avatar" style={{ width: '100%', height: '100%' }}><AccountIcon style={{ width: '100%', height: '100%', color: '#f0f0f0' }}/></Avatar>
                   )}
-                  {formData.image && (
-                    <Button onClick={handleDeleteImage} variant="contained" color="secondary" style={{ position: 'absolute', top: 288, left:525 }}><DeleteIcon/></Button>
+                  {formData.profile_pic && (
+                    <Button onClick={handleDeleteImage} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left:780 }}><DeleteIcon/></Button>
                   )}
                 </div>
                 <input
@@ -100,17 +182,12 @@ function OwnerForm() {
                   id="contained-button-file"
                   multiple
                   type="file"
+                 // value={formData.profile_pic}
                   onChange={handleImageChange}
                 />
-
-                {/* <label htmlFor="contained-button-file">
-                  <Button variant="contained" component="span" sx={{ left: 200 }}>
-                    <UploadIcon/>
-                  </Button>
-                </label> */}
-
               </Paper>
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <Grid container spacing={4.8} sx={{paddingTop:2}}>
                 <Grid item xs={12}>
@@ -130,7 +207,8 @@ function OwnerForm() {
                     label="Email"
                     name="email"
                     type="email"
-                    value={truncatedEmail + '@' + domain}
+                    // value={truncatedEmail + '@' + domain}
+                     value={formData.email}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -148,6 +226,7 @@ function OwnerForm() {
                 </Grid>
               </Grid>
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -158,6 +237,7 @@ function OwnerForm() {
                 required
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -171,28 +251,30 @@ function OwnerForm() {
                   shrink: true,
                 }}
                 InputProps={{
-                  ...(formData.dob && { inputProps: { placeholder: '' },sx: { bgcolor: 'rgba(232, 240, 254,1)'}})
+                  ...(formData.dob && { inputProps: { placeholder: '' }})
                 }}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth sx={{ bgcolor: formData.gender ? 'rgba(232, 240, 254,1)' : 'transparent' }}>
-                    <InputLabel>Gender</InputLabel>
-                    <Select
-                      value={formData.gender}
-                      onChange={handleChange}
-                      name="gender"
-                      required
-                    >
-                      <MenuItem value="male">Male</MenuItem>
-                      <MenuItem value="female">Female</MenuItem>
-                      <MenuItem value="other">Other</MenuItem>
-                     
-                    </Select>
-                  </FormControl>
-                </Grid>
+              <Grid item xs={12} sm={6}>
+              
+                     <FormControl fullWidth>
+                        <InputLabel>Gender</InputLabel>
+                        <Select
+                          value={mapGender(formData.gender)}
+                          onChange={(e) => handleChange({ target: { name: "gender", value: mapGenderReverse(e.target.value) } })} 
+                          name="gender"
+                          required
+                        >
+                          <MenuItem value="male">Male</MenuItem>
+                          <MenuItem value="female">Female</MenuItem>
+                          <MenuItem value="other">Other</MenuItem>
+                        </Select>
+                      </FormControl>
+            </Grid>
+
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
@@ -206,20 +288,10 @@ function OwnerForm() {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Desigantion Details"
-                value={`${formData.managerName} | ${formData.designation}`}
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
+           
             <Grid item xs={12} sm={6}>
           
                     <Grid container spacing={2}>
-
                     <Grid item xs={12} sm={6}>
                         <TextField
                         fullWidth
@@ -241,30 +313,40 @@ function OwnerForm() {
                         required
                         />
                     </Grid>
-
-                    </Grid>
-
+                  </Grid>
                 </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <div style={{ marginLeft: '36%', marginTop: '1%' }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={3}>
+           
+            <div style={{ marginLeft: '68%', marginTop: '1%' }}>
+              <Grid container spacing={5}>
+                  <Grid item xs={6}>
                     <Button variant="contained" color="primary" type="submit">
                       Save
                     </Button>
                   </Grid>
-                  <Grid item xs={3}>
+
+                  <Grid item xs={6}>
                     <Button variant="contained" color="secondary" type="button" component={Link} to="/">
                       Back
                     </Button>
                   </Grid>
+
                 </Grid>
               </div>
+
+             </Grid>
+             </form>   
             </Grid>
+
+            <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
+            <Grid item xs={12} sm={12}>
+              <ChangePassword/>
+            </Grid>
+            </div>
+
           </Grid>
-        </form>
       </Paper>
+
     </div>
   );
 }

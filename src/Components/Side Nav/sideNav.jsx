@@ -3,11 +3,9 @@ import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import SideBarMenu from './SideBarMenu';
 
-
-
 const drawerWidth = 240;
 
-export default function ClippedDrawer({ menus }) {
+export default function ClippedDrawer({ menu }) {
   return (
     <Drawer
       sx={{
@@ -17,16 +15,13 @@ export default function ClippedDrawer({ menus }) {
           width: drawerWidth,
           boxSizing: 'border-box',
           marginTop: 4,
-          
         },
       }}
       variant="permanent"
       anchor="left"
     >
-     
       <List>
-        {menus.map((menuItem, index) => (<SideBarMenu key={index} name={menuItem.name} icon={menuItem.icon} subMenu={menuItem.subMenu} />))}
-        
+        {menu.map((menuItem, index) => (<SideBarMenu index={index} name={menuItem.name} icon={menuItem.icon}  path={menuItem.path} />))}
       </List>
     </Drawer>
   );

@@ -1,158 +1,634 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Headerfile from '../../Components/Page-Header/CardHeader';
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Headerfile from "../../Components/Page-Header/CardHeader";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditIcon from "@mui/icons-material/Edit";
+import {
+  Button,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Select,
+  MenuItem,
+  Autocomplete,
+  InputAdornment,
+  Grid,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
+} from "@mui/material";
 
+const columns = [
+  { id: "itemID", label: "Item ID", minWidth: 170 },
+  { id: "itemName", label: "Item Name", minWidth: 170 },
+
+  { id: "price", label: "Price", minWidth: 170 },
+  { id: "quantity", label: "Quantity", minWidth: 170 },
+  { id: "total", label: "Total", minWidth: 170 },
+  { id: "actions", label: "Actions", minWidth: 170 },
+];
 function Inventory() {
   const [price, setPrice] = useState(0);
-  const [qty, setQty] = useState(0);
+  const [quantity, setQuantity] = useState(0);
   const [total, setTotal] = useState(0);
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [users, setUsers] = useState([]);
   const [name, setName] = useState();
-
+  const [country, setCountry] = useState("");
   const [sum, setSum] = useState();
+  const [open, setOpen] = useState(false);
+  const [description, setDescription] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [row, setRow] = useState("");
+  const [id, setId] = useState(0);
 
-  function Calculation() {
-    users.push({ name, qty, price, sum });
+  const countries = [
+    "India",
+    "United States",
+    "China",
+    "Japan",
+    "Germany",
+    "United Kingdom",
+    "France",
+    "South Korea",
+    "Italy",
+    "Canada",
+    "Spain",
+    "Australia",
+    "Brazil",
+    "Russia",
+    "Mexico",
+    "Indonesia",
+    "Turkey",
+    "Netherlands",
+    "Saudi Arabia",
+    "Switzerland",
+    "Sweden",
+    "Belgium",
+    "Argentina",
+    "Norway",
+    "Austria",
+    "United Arab Emirates",
+    "Iran",
+    "Thailand",
+    "Poland",
+    "South Africa",
+    "Nigeria",
+    "Colombia",
+    "Israel",
+    "Ireland",
+    "Hong Kong",
+    "Singapore",
+    "Malaysia",
+    "Egypt",
+    "Denmark",
+    "Finland",
+    "Chile",
+    "Pakistan",
+    "Philippines",
+    "Greece",
+    "Portugal",
+    "Iraq",
+    "Kazakhstan",
+    "Algeria",
+    "Qatar",
+    "Peru",
+    "Hungary",
+    "Romania",
+    "New Zealand",
+    "Vietnam",
+    "Czech Republic",
+    "Ghana",
+    "Ukraine",
+    "Bangladesh",
+    "Kuwait",
+    "Angola",
+    "Ecuador",
+    "Sri Lanka",
+    "Croatia",
+    "Belarus",
+    "Oman",
+    "Morocco",
+    "Azerbaijan",
+    "Slovakia",
+    "Bulgaria",
+    "Ethiopia",
+    "Kenya",
+    "Puerto Rico",
+    "Costa Rica",
+    "Uruguay",
+    "Luxembourg",
+    "Panama",
+    "Venezuela",
+    "Lebanon",
+    "Tunisia",
+    "Iceland",
+    "Bolivia",
+    "Lithuania",
+    "Latvia",
+    "Slovenia",
+    "Estonia",
+    "Serbia",
+    "Libya",
+    "Jordan",
+    "Paraguay",
+    "Cameroon",
+    "Bahrain",
+    "Cyprus",
+    "Afghanistan",
+    "Honduras",
+    "Uzbekistan",
+    "Ivory Coast",
+    "Bosnia and Herzegovina",
+    "Macedonia",
+    "Albania",
+    "Moldova",
+    "Mauritius",
+    "Georgia",
+    "Nepal",
+    "Armenia",
+    "Mongolia",
+    "Yemen",
+    "Cambodia",
+    "Senegal",
+    "Zambia",
+    "Botswana",
+    "Gabon",
+    "Malta",
+    "Mozambique",
+    "Rwanda",
+    "Tanzania",
+    "Benin",
+    "Burkina Faso",
+    "Togo",
+    "Mali",
+    "Zimbabwe",
+    "Madagascar",
+    "Mauritania",
+    "Haiti",
+    "Chad",
+    "Niger",
+    "Burundi",
+    "Sierra Leone",
+    "Liberia",
+    "Malawi",
+    "Somalia",
+    "Congo",
+    "Guinea",
+    "Eritrea",
+    "Lesotho",
+    "Central African Republic",
+    "South Sudan",
+    "Equatorial Guinea",
+    "Guinea-Bissau",
+    "Swaziland",
+    "Djibouti",
+    "Comoros",
+    "Cabo Verde",
+    "Sao Tome and Principe",
+    "Seychelles",
+  ];
+  const handleCountryChange = (event) => {
+    setCountry(event.target.value);
+  };
 
-    const total = users.reduce((total, user) => {
-      total += Number(user.sum);
-      return total;
-    }, 0);
-    // you want this
-    setTotal(total);
-    // Clear the input fields
-    setName("");
-    setQty("");
-    setPrice("");
-    setSum("");
-  }
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-  const handlePriceChange = (e) => {
-    const newPrice = parseFloat(e.target.value);
-    if (!isNaN(newPrice)) {
-      setPrice(newPrice);
-      calculateTotal(newPrice, qty);
+  const handleClose = () => {
+    setOpen(false);
+    setCountry("");
+  };
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+  useEffect(() => {
+    fetch("http://localhost:5000/center/inventory", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        schema: JSON.parse(window.sessionStorage.getItem("schema")),
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Error fetching inventory data");
+        }
+        return response.json();
+      })
+      .then((data) => setUsers(data.data.inventory))
+      .catch((error) => console.error("Error fetching inventory data:", error));
+  }, []);
+
+  const calculateTotal = (price, quantity) => {
+    const newTotal = price * quantity;
+    return newTotal.toLocaleString({
+      style: "currency",
+    });
+  };
+
+  // function refreshPage() {
+  //   window.location.reload();
+  // }
+  // Function to filter users based on search term
+  const filterUsers = () => {
+    if (searchTerm === "") {
+      return users;
+    } else {
+      return users.filter((user) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
   };
+  // Event handler for search input
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
-  // Event handler for quantity selection
-  const handleQuantityChange = (e) => {
-    const newQuantity = parseInt(e.target.value);
-    if (!isNaN(newQuantity)) {
-      setQty(newQuantity);
-      calculateTotal(price, newQuantity);
+  const handleAddClick = async () => {
+    try {
+      // Create a new object that contains only the properties that we want to send to the server
+      const dataToSend = {
+        schema: JSON.parse(window.sessionStorage.getItem("schema")),
+        name: name,
+        price: price,
+        quantity: quantity,
+        manufacture_country: country,
+        description: description,
+      };
+
+      // Send the data to the server using the fetch API
+      const response = await fetch(
+        "http://localhost:5000/center/addInventory",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataToSend),
+        }
+      );
+
+      // Get the response data and update the users state
+      const data = await response.json();
+      setUsers([...users, { name, price, quantity, country }]);
+      console.log("Data added", data);
+    } catch (error) {
+      console.log(error);
     }
+    handleClose();
   };
 
-  // Calculate the total based on price and quantity
-  const calculateTotal = (price, qty) => {
-    const newTotal = price * qty;
-    setSum(newTotal);
+  const handleRemove = (row) => {
+    const partId = row.part_id;
+    fetch(`http://localhost:5000/center/inventory/${partId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        schema: JSON.parse(window.sessionStorage.getItem("schema")),
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Error deleting data");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Update the users state to remove the deleted row
+
+        setUsers(users.filter((user) => user.part_id !== partId));
+      })
+
+      .catch((error) => console.error("Error deleting data:", error));
+  };
+  const handleEdit = (row) => {
+    setId(row.part_id);
+    setName(row.name);
+    setPrice(row.price);
+    setQuantity(row.quantity);
+
+    setDescription(row.description);
+    setOpenDialog(true);
+    setRow(row);
   };
 
-  function refreshPage() {
-    window.location.reload();
-  }
+  const handleEditSaveClick = async () => {
+    try {
+      // Create a new object that contains only the properties that we want to send to the server
+      const dataToSend = {
+        schema: JSON.parse(window.sessionStorage.getItem("schema")),
+        name: name,
+        price: price,
+        quantity: quantity,
+
+        description: description,
+      };
+
+      // Send the data to the server using the fetch API
+      const response = await fetch(
+        `http://localhost:5000/center/inventory/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataToSend),
+        }
+      );
+
+      // Get the response data and update the users state
+      const data = await response.json();
+      setUsers(
+        users.map((user) =>
+          user.part_id === id ? { ...user, ...dataToSend } : user
+        )
+      );
+      console.log("Data updated", data);
+    } catch (error) {
+      console.log(error);
+    }
+    handleCloseDialog();
+  };
 
   return (
     <div class="bg-2 text-center">
-     <Headerfile title="Inventory" />
-      <Card style={{height: '80vh'}}>
+      <Headerfile title="Inventory" />
+      <Card style={{ height: "80vh" }}>
         <CardContent>
-          <div class="row">
+          <div>
             <div class="col-sm-8">
-              <table class="table table-bordered">
-                <h3 align="left"> Add Products </h3>
-                <tr>
-                  <th>Product Name</th>
-                  <th>Price</th>
-                  <th>Quantity</th>
-                  <th>Amount</th>
-                  <th>Option</th>
-                </tr>
-                <tr>
-                  <td>
-                    <input
-                      type="text"
-                      class="form-control"
-                      placeholder="Item Name"
-                      value={name}
-                      onChange={(event) => {
-                        setName(event.target.value);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      class="form-control"
-                      placeholder="Enter Price"
-                      value={price}
-                      onChange={handlePriceChange}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      class="form-control"
-                      placeholder="Enter Qty"
-                      value={qty}
-                      onChange={handleQuantityChange}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={sum}
-                      class="form-control"
-                      placeholder="Enter Total"
-                      id="total_cost"
-                      name="total_cost"
-                      disabled
-                    />
-                  </td>
-                  <td>
-                    <button
-                      class="btn btn-success"
-                      type="submit"
-                      onClick={Calculation}
-                    >
-                      Add
-                    </button>
-                  </td>
-                </tr>
-              </table>
-              <h3 align="left"> Products </h3>
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Item Name</th>
+              <Grid container spacing={5}>
+                <Grid item xs={5}>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Search by item name"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    style={{ width: "100%" }}
+                  />
+                </Grid>
+                <Grid item xs={5}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleClickOpen}
+                  >
+                    Add Item
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <TableContainer component={Paper} style={{ width: "250%" }}>
+                    <Table aria-label="customized table" padding="normal">
+                      <TableHead>
+                        <TableRow>
+                          {columns.map((column) => (
+                            <TableCell key={column.id} align={column.align}>
+                              {column.label}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {filterUsers().map((row, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{row.part_id}</TableCell>
+                            <TableCell>{row.name}</TableCell>
+                            <TableCell>Rs. {row.price}</TableCell>
 
-                    <th>Price</th>
-                    <th>Qty</th>
-                    <th>Amount</th>
-                  </tr>
-                </thead>
+                            <TableCell>{row.quantity}</TableCell>
+                            <TableCell>
+                              Rs.{" "}
+                              {calculateTotal(
+                                parseFloat(row.price.replace("Rs. ", "")),
+                                row.quantity
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <EditIcon
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleEdit(row)}
+                                style={{
+                                  marginRight: "10px",
+                                  cursor: "pointer",
+                                }}
+                              />
 
-                <tbody>
-                  {users.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.name}</td>
-                      <td>{row.price}</td>
-
-                      <td>{row.qty}</td>
-                      <td>{row.sum}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                              <DeleteForeverIcon
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleRemove(row)}
+                                style={{
+                                  marginRight: "10px",
+                                  cursor: "pointer",
+                                }}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
+              </Grid>
             </div>
           </div>
         </CardContent>
       </Card>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">
+          <h3>
+            <center>Add Item</center>
+          </h3>
+        </DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Item Name"
+                type="text"
+                fullWidth
+                onChange={(event) => setName(event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                margin="dense"
+                id="price"
+                label="Price"
+                type="number"
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">LKR</InputAdornment>
+                  ),
+                }}
+                onChange={(event) => setPrice(event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                margin="dense"
+                id="quantity"
+                label="Quantity"
+                type="number"
+                fullWidth
+                onChange={(event) => setQuantity(event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                value={country}
+                onChange={(event, newValue) => {
+                  setCountry(newValue);
+                }}
+                options={countries}
+                renderInput={(params) => (
+                  <TextField {...params} label="Manufacture Country" />
+                )}
+                onSelect={(event) => setCountry(event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <TextField
+                margin="dense"
+                id="description"
+                label="Description"
+                type="text"
+                fullWidth
+                onChange={(event) => setDescription(event.target.value)}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAddClick} color="primary" variant="contained">
+            Add
+          </Button>
+          <Button onClick={handleClose} color="primary" variant="contained">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">
+          <h3>
+            <center>Update Item</center>
+          </h3>
+        </DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="Item ID"
+                label="Item ID"
+                type="text"
+                fullWidth
+                value={id}
+                disabled
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Item Name"
+                type="text"
+                fullWidth
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                margin="dense"
+                id="price"
+                label="Price"
+                type="number"
+                fullWidth
+                value={price}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">LKR</InputAdornment>
+                  ),
+                }}
+                onChange={(event) => setPrice(event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                margin="dense"
+                id="quantity"
+                label="Quantity"
+                type="number"
+                value={quantity}
+                fullWidth
+                onChange={(event) => setQuantity(event.target.value)}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={12}>
+              <TextField
+                margin="dense"
+                id="description"
+                label="Description"
+                type="text"
+                value={description}
+                fullWidth
+                onChange={(event) => setDescription(event.target.value)}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleEditSaveClick}
+            color="primary"
+            variant="contained"
+          >
+            Save
+          </Button>
+          <Button
+            onClick={handleCloseDialog}
+            color="primary"
+            variant="contained"
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

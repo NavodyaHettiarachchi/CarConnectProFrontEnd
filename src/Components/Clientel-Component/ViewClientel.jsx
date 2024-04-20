@@ -29,22 +29,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Headerfile from '../../Components/Page-Header/CardHeader';
 
-//sample data set
-let USERS = [],
-  STATUES = ["Active", "Inactive"];
-for (let i = 0; i < 14; i++) {
-  USERS[i] = {
-    name: `User${i + 1}`,
-    nic: `99344037${i + 1}`,
-    address: `no${i + 1},road${i + 1}, city${i + 1} `,
-    email: `user${i + 1}@example.com`,
-    phone: `123-456-789${i}`,
-    vehicleID: `V${i + 1}`,
-    vehicleName: `Vehicle ${i + 1}`,
-    joinDate: new Date().toLocaleDateString(),
-    status: STATUES[Math.floor(Math.random() * STATUES.length)],
-  };
-}
+const allowedRoles = new Set(['cp:ad', 's:ad']);
 
 const columns = [
   {
@@ -57,6 +42,7 @@ const columns = [
 
 function ViewClientel() {
   const [open, openchange] = useState(false);
+  const [editRole, setEditRole] = useState(false);
   const [searchName, setSearchName] = useState("");
   const [searchVehicleNP, setSearchVehicleID] = useState("");
   const [clientData, setClientData] = useState([]);
@@ -68,17 +54,18 @@ function ViewClientel() {
     mileage_on_reg: 0
   });
 
-
+  useEffect(() => { 
+    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
+    setEditRole(allowedRoles.has(roles.find(role => role === 'cp:ad' || role === 's:ad')));
+  }, []);
 
   const functionopenpopup = async () => {
     await getVehiclesAndOwners();
-    console.log(vehicleData);
     openchange(true);
   };
   const closepopup = () => {
     openchange(false);
   };
-
 
   const handleMileageChange = (event) => { 
     setClient((client) => ({ ...client, mileage_on_reg: event.target.value }));
@@ -93,12 +80,10 @@ function ViewClientel() {
     setSearchVehicleID(event.target.value);
   };
 
-
   const setNumberPlate = (value) => {
     let tempObj = client;
     client.vehicle = value;
     setVehicleData(tempObj);
-    console.log(client);
   };
 
   const getVehiclesAndOwners = async () => {
@@ -133,14 +118,13 @@ function ViewClientel() {
         'Content-type': 'application/json',
       },
       body: JSON.stringify({
-        schema: 'service_pqr_service_center',
+        schema: JSON.parse(window.sessionStorage.getItem('schema')),
       })
     })
       .then((res) => res.json())
       .then((data) => {
         setClientData(data.data.clients);
       })
-      //new Date().toJSON().slice(0, 10)
       .catch((error) => { console.log(error) });
   }, []);
 
@@ -154,11 +138,9 @@ function ViewClientel() {
         return true;
       }
     }
-
     // Validation failed
     return false;
   };
-
 
   const submitClient = async () => {
     if (isValidClient(client)) {
@@ -168,7 +150,7 @@ function ViewClientel() {
           'Content-type': 'application/json',
         },
         body: JSON.stringify({
-          schema: 'service_pqr_service_center',
+          schema: JSON.parse(window.sessionStorage.getItem('schema')),
           vehicle_id: client.vehicle_id,
           date_of_reg: client.date_of_reg,
           mileage_on_reg: client.mileage_on_reg,
@@ -222,6 +204,7 @@ function ViewClientel() {
                 color="primary"
                 className="new-client-button"
                 onClick={functionopenpopup}
+                disabled={!editRole}
               >
                 New Client
               </Button>
