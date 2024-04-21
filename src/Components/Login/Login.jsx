@@ -5,19 +5,28 @@ import Minilogo from '../../../src/Images/sidelogin.svg';
 import Heading from '../Page-Header/header';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+
 
 function Login() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const handleClose = () => {
+    setError(null);
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
 
-      const response = await axios.post('http://localhost:5000/login/', {username, password});
-      const loginData = response.data.data;
+      const response = await axios.post('http://localhost:5000/login/', { username, password });
       if (response.status === 200) {
+        const loginData = response.data.data;
         navigate('/');
         window.sessionStorage.setItem('schema', JSON.stringify(loginData.schema));
         window.sessionStorage.setItem('roles', JSON.stringify(loginData.user.roles));
@@ -38,28 +47,42 @@ function Login() {
         window.sessionStorage.setItem('IsLoggedIn', false);
       }
     } catch (e) {
-      console.log(e);
+      console.log('fuck', e);
+      setError(e.response.data.message ? e.response.data.message : 'An error occurred. Please try again.');
     }
   };
+
   return (
     <div className='hero-landing-login'>
+      {error &&
+        <Snackbar
+          open={error}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          message={error}
+        >
+          <Alert severity="error">
+            {error}
+          </Alert>
+        </Snackbar>
+      }
       <div className='hero-img'>
         <img src={landingimg} alt="" />
       </div>
-      <div className="hero-form module-border-wrap" >
-        <div className='module'>
+      <div className="hero-form module-border-wrap" style={{position: 'relative'}}>
+        <div className='module' >
           <img src={Minilogo} alt="" />
           <Heading title="Welcome to Car Connect Pro" />
           <form className='form-container' onSubmit={handleSubmit}>
             <label htmlFor="" className='left-aligned'>Enter your Email</label>
             <br />
-            <input type="text"onChange={(e) => {setUsername(e.target.value)}} className='name-field ' />
+            <input type="text" onChange={(e) => { setUsername(e.target.value) }} className='name-field ' />
             <br />
             <label htmlFor="" className=' left-aligned top-spacer'>Enter your Password</label>
             <br />
-            <input type="text" onChange={(e) => { setPassword(e.target.value) }} className='name-field ' />
+            <input type="password" onChange={(e) => { setPassword(e.target.value) }} className='name-field ' />
             <br />
-            <span className='left-aligned'>
+            {/* <span className='left-aligned'>
               <div>
                 <input type="checkbox" name="remember-me" className='top-spacer checkbox' id="" />
                 <label className='top-spacer checkbox' htmlFor="remember-me">Remember Me</label>
@@ -67,7 +90,7 @@ function Login() {
               <div>
                 <label htmlFor="" className='fgt-pwd top-spacer link-text'> Forgot password</label>
               </div>
-            </span>
+            </span> */}
             <input className='sub-btn' onClick={handleSubmit} type="submit" value="LOGIN" />
             <br />
             <div className="signup-btn  top-spacer">Not a member? <a className='link-text' href="/signup">Signup</a></div>
