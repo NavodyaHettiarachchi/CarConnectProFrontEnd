@@ -25,8 +25,11 @@ import {
   TableCell,
   TableBody,
   Paper,
+  IconButton,
 } from "@mui/material";
 
+
+const allowedRoles = new Set(["s:ad", "ip:ad"]);
 const columns = [
   { id: "name", label: "Item Name", minWidth: 170 },
 
@@ -34,6 +37,8 @@ const columns = [
   { id: "quantity", label: "Quantity", minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 },
 ];
+
+
 function Inventory() {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
