@@ -27,6 +27,7 @@ import VehicleCard from "./VehicleCard";
 import AddButtonCard from "./AddButtonCard.jsx";
 import CancelPresentationOutlinedIcon from "@mui/icons-material/CancelPresentationOutlined";
 import PdfInvoice from "../PDFInvoice/PdfInvoice";
+import IconButton from '@mui/material/IconButton';
 
 const columns = [
   { id: "type", label: "Type", minWidth: 170 },
@@ -35,6 +36,8 @@ const columns = [
   { id: "quantity", label: "Quantity", minWidth: 170 },
   { id: "total", label: "Total", minWidth: 170 },
 ];
+
+const allowedRoles = new Set(["os:ad", "s:ad"]);
 
 const ServicePage = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -47,6 +50,7 @@ const ServicePage = () => {
   const [tableData, setTableData] = useState([]);
   const [data, setData] = useState([]);
   const [serviceItems, setServiceItems] = useState([]);
+  const [editRole, setEditRole] = useState(false);
 
   const [inputFields, setInputFields] = useState([
     { type: "", item: "", price: "", quantity: "1", total: "" },
@@ -92,6 +96,7 @@ const ServicePage = () => {
         value={selectedVehicle}
         onChange={(event, value) => filterData(value)}
         getOptionLabel={(option) => option.number || ""}
+        disabled={!editRole}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -326,7 +331,13 @@ const ServicePage = () => {
     }, 0);
   };
 
+  const setEditParams = () => { 
+    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
+    setEditRole(allowedRoles.has(roles.find(role => role === 'os:ad' || role === 's:ad')));
+  }
+
   useEffect(() => {
+    setEditParams();
     getAllOngoingServices();
   }, []);
 
@@ -399,6 +410,7 @@ const ServicePage = () => {
         value={selectedEmployee}
         onChange={(event, value) => filterData(value)}
         getOptionLabel={(option) => option.name || ""}
+        disabled={!editRole}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -431,16 +443,13 @@ const ServicePage = () => {
 
       <Grid container spacing={1} direction="row" style={{ margin: "8px" }}>
         <Grid item style={{ display: "flex" }}>
-          <AddButtonCard onAdd={handleClickOpen} />
+          <AddButtonCard onAdd={handleClickOpen} editRole={editRole} />
           {allOngoingServices.map((item) => (
             <Grid item key={item.client_id}>
               <VehicleCard
-                //image={item.image}
-                //  model={item.model}
-                // fuel={item.fuel}
-                // milage={item.milage}
                 clientId={item.client_id}
                 selected
+                editRole={editRole}
               />
             </Grid>
           ))}
@@ -488,6 +497,7 @@ const ServicePage = () => {
                 <TextField
                   value={milage}
                   name="Mileage"
+                  disabled={!editRole}
                   onChange={(event) => setMilage(event.target.value)}
                   sx={{ width: "200px", mr: "10px" }}
                   type="number"
@@ -537,6 +547,7 @@ const ServicePage = () => {
                             label="Select Type"
                             value={inputField.type}
                             name="type"
+                            disabled={!editRole}
                             onChange={(event) =>
                               handleInputChange(index, event)
                             }
@@ -555,6 +566,7 @@ const ServicePage = () => {
                             label="Item"
                             value={inputField.item}
                             name="item"
+                            disabled={!editRole}
                             onChange={(event) =>
                               handleInputChange(index, event)
                             }
@@ -581,6 +593,7 @@ const ServicePage = () => {
                           label="Price"
                           value={inputField.price}
                           name="price"
+                          disabled={!editRole}
                           onChange={(event) => handleInputChange(index, event)}
                           sx={{ width: "200px", mr: "10px" }}
                         />
@@ -590,19 +603,20 @@ const ServicePage = () => {
                           label="Quantity"
                           value={inputField.quantity}
                           name="quantity"
+                          disabled={!editRole}
                           onChange={(event) => handleInputChange(index, event)}
                           sx={{ width: "200px", mr: "10px" }}
                         />
                       </TableCell>
                       <TableCell>{inputField.total}</TableCell>
                       <TableCell>
-                        <CancelPresentationOutlinedIcon
-                          variant="contained"
-                          color="primary"
-                          onClick={() => handleRemoveClick(index)}
-                          fontSize="large"
-                          sx={{ cursor: "pointer" }}
-                        />
+                        <IconButton aira-label="remove" onClick={() => handleRemoveClick(index)} disabled={!editRole}>
+                          <CancelPresentationOutlinedIcon
+                            variant="contained"
+                            color="primary"
+                            fontSize="large"
+                          />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -617,6 +631,7 @@ const ServicePage = () => {
                   variant="contained"
                   color="primary"
                   onClick={handleAddClick}
+                  disabled={!editRole}
                 >
                   Add
                 </Button>
@@ -630,7 +645,7 @@ const ServicePage = () => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" color="primary" onClick={handleSaveClick}>
+          <Button variant="contained" color="primary" onClick={handleSaveClick} disabled={!editRole}>
             Save
           </Button>
           {/* <Button

@@ -14,7 +14,7 @@ const allowedRoles = new Set(["pp:ad", "s:ad"]);
 function EmployeeForm() {
 
   // get user ID from local storage or null
- const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || null;
+  const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || null;
   const [UserID] = useState(initialUserID);
   const [editRole, setEditRole] = useState(false);
 
@@ -22,9 +22,9 @@ function EmployeeForm() {
     const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
     setEditRole(allowedRoles.has(roles.find(role => role === 'pp:ad' || role === 's:ad')));
   }, []);
-  
+
   const mapGender = (value) => {
-    switch(value) {
+    switch (value) {
       case "M":
         return "male";
       case "F":
@@ -38,7 +38,7 @@ function EmployeeForm() {
 
   //Mapping function to convert "Male", "Female", "Other" to "M", "F", "O"
   const mapGenderReverse = (value) => {
-    switch(value) {
+    switch (value) {
       case "male":
         return "M";
       case "female":
@@ -66,9 +66,9 @@ function EmployeeForm() {
 
   // Fetch user data when component mounts
   useEffect(() => {
-    axios.get(`http://localhost:5000/center/employee/`+UserID)
+    axios.get(`http://localhost:5000/center/employee/` + UserID)
       .then(response => {
-        const { username, email, name, dob, gender, nic,  managerName,  designation, phone, profile_pic } = response.data.data.userData;
+        const { username, email, name, dob, gender, nic, managerName, designation, phone, profile_pic } = response.data.data.userData;
         const dateOnly = dob.split('T')[0]; // Format date of birth to YYYY-MM-DD
         console.log(response.data);
         setFormData({
@@ -132,7 +132,7 @@ function EmployeeForm() {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.patch(`http://localhost:5000/center/employee/`+UserID, formData)
+    axios.patch(`http://localhost:5000/center/employee/` + UserID, formData)
       .then(response => {
         console.log('Profile updated successfully:', response.data);
       })
@@ -151,35 +151,36 @@ function EmployeeForm() {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
 
-                <Paper style={{ padding: 5 }}>
-                  <div style={{
-                    width: 200,
-                    height: 200,
-                    borderRadius: '50%',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    margin: '10px auto',
-                    background: '#f0f0f0'
-                  }}>
-                    {formData.profile_pic ? (
-                      <img src={formData.profile_pic} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '50%' }} />
-                    ) : (
-                      <Avatar alt="Avatar" style={{ width: '100%', height: '100%' }}><AccountIcon style={{ width: '100%', height: '100%', color: '#f0f0f0' }}/></Avatar>
-                    )}
-                    {formData.profile_pic && (
-                      <Button onClick={handleDeleteImage} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left:780 }}><DeleteIcon/></Button>
-                    )}
-                  </div>
-                  <input
-                    accept="image/*"
-                    id="contained-button-file"
-                    multiple
-                    type="file"
-                  // value={formData.profile_pic}
-                    onChange={handleImageChange}
-                  />
+                  <Paper style={{ padding: 5 }}>
+                    <div style={{
+                      width: 200,
+                      height: 200,
+                      borderRadius: '50%',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      margin: '10px auto',
+                      background: '#f0f0f0'
+                    }}>
+                      {formData.profile_pic ? (
+                        <img src={formData.profile_pic} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '50%' }} />
+                      ) : (
+                        <Avatar alt="Avatar" style={{ width: '100%', height: '100%' }}><AccountIcon style={{ width: '100%', height: '100%', color: '#f0f0f0' }} /></Avatar>
+                      )}
+                      {formData.profile_pic && (
+                        <Button onClick={handleDeleteImage} variant="contained" disabled={!editRole} color="secondary" style={{ position: 'absolute', top: 345, left: 780 }}><DeleteIcon /></Button>
+                      )}
+                    </div>
+                    <input
+                      accept="image/*"
+                      id="contained-button-file"
+                      multiple
+                      type="file"
+                      disabled={!editRole}
+                      // value={formData.profile_pic}
+                      onChange={handleImageChange}
+                    />
                   </Paper>
                 </Grid>
 
@@ -190,6 +191,7 @@ function EmployeeForm() {
                         fullWidth
                         label="Username"
                         name="username"
+                        disabled={!editRole}
                         value={formData.username}
                         InputProps={{
                           readOnly: true,
@@ -202,6 +204,7 @@ function EmployeeForm() {
                         label="Email"
                         name="email"
                         type="email"
+                        disabled={!editRole}
                         value={formData.email}
                         InputProps={{
                           readOnly: true,
@@ -213,6 +216,7 @@ function EmployeeForm() {
                         fullWidth
                         label="Phone"
                         name="phone"
+                        disabled={!editRole}
                         value={formData.phone}
                         onChange={handleChange}
                         required
@@ -226,6 +230,7 @@ function EmployeeForm() {
                     fullWidth
                     label="Name"
                     name="name"
+                    disabled={!editRole}
                     value={formData.name}
                     onChange={handleChange}
                     required
@@ -237,6 +242,7 @@ function EmployeeForm() {
                     label="Date of Birth"
                     name="dob"
                     type="date"
+                    disabled={!editRole}
                     value={formData.dob}
                     onChange={handleChange}
                     required
@@ -249,12 +255,13 @@ function EmployeeForm() {
                   <FormControl fullWidth>
                     <InputLabel>Gender</InputLabel>
                     <Select
-                          value={mapGender(formData.gender)}
-                          onChange={(e) => handleChange({ target: { name: "gender", value: mapGenderReverse(e.target.value) } })} 
-                          name="gender"
-                          required
-                        >
-                          
+                      value={mapGender(formData.gender)}
+                      onChange={(e) => handleChange({ target: { name: "gender", value: mapGenderReverse(e.target.value) } })}
+                      name="gender"
+                      disabled={!editRole}
+                      required
+                    >
+
                       <MenuItem value="male">Male</MenuItem>
                       <MenuItem value="female">Female</MenuItem>
                       <MenuItem value="other">Other</MenuItem>
@@ -266,6 +273,7 @@ function EmployeeForm() {
                     fullWidth
                     label="NIC"
                     name="nic"
+                    disabled={!editRole}
                     value={formData.nic}
                     InputProps={{
                       readOnly: true,
@@ -278,6 +286,7 @@ function EmployeeForm() {
                     fullWidth
                     label="Designation Details"
                     value={`${formData.managerName} | ${formData.designation}`}
+                    disabled={!editRole}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -287,7 +296,7 @@ function EmployeeForm() {
                 <Grid item xs={12}>
                   <Grid container justifyContent="flex-end" spacing={2}>
                     <Grid item>
-                      <Button variant="contained" color="primary" type="submit">
+                      <Button variant="contained" disabled={!editRole} color="primary" type="submit">
                         Save
                       </Button>
                     </Grid>
@@ -304,7 +313,7 @@ function EmployeeForm() {
 
           <Grid container justifyContent="center">
             <Grid item xs={12}>
-              <ChangePassword />
+              {editRole && <ChangePassword />}
             </Grid>
           </Grid>
         </Grid>

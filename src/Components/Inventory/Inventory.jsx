@@ -24,6 +24,7 @@ import {
   TableCell,
   TableBody,
   Paper,
+  IconButton,
 } from "@mui/material";
 
 const columns = [
@@ -35,6 +36,9 @@ const columns = [
   { id: "total", label: "Total", minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 },
 ];
+
+const allowedRoles = new Set(["s:ad", "ip:ad"]);
+
 function Inventory() {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
@@ -49,6 +53,7 @@ function Inventory() {
   const [openDialog, setOpenDialog] = useState(false);
   const [row, setRow] = useState("");
   const [id, setId] = useState(0);
+  const [editRole, setEditRole] = useState(false);
 
   const countries = [
     "India",
@@ -196,6 +201,7 @@ function Inventory() {
     "Sao Tome and Principe",
     "Seychelles",
   ];
+
   const handleCountryChange = (event) => {
     setCountry(event.target.value);
   };
@@ -208,13 +214,22 @@ function Inventory() {
     setOpen(false);
     setCountry("");
   };
+
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
+
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+
+  const setEditParams = () => { 
+    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
+    setEditRole(allowedRoles.has(roles.find(role => role === 'ip:ad' || role === 's:ad')));
+  };
+
   useEffect(() => {
+    setEditParams();
     fetch("http://localhost:5000/center/inventory", {
       method: "POST",
       headers: {
@@ -241,10 +256,6 @@ function Inventory() {
     });
   };
 
-  // function refreshPage() {
-  //   window.location.reload();
-  // }
-  // Function to filter users based on search term
   const filterUsers = () => {
     if (searchTerm === "") {
       return users;
@@ -390,13 +401,14 @@ function Inventory() {
                     variant="contained"
                     color="primary"
                     onClick={handleClickOpen}
+                    disabled={!editRole}
                   >
                     Add Item
                   </Button>
                 </Grid>
                 <Grid item>
                   <TableContainer component={Paper} style={{ width: "250%" }}>
-                    <Table aria-label="customized table" padding="normal">
+                    <Table stickyHeader size="small" aria-label="a dense table">
                       <TableHead>
                         <TableRow>
                           {columns.map((column) => (
@@ -422,25 +434,12 @@ function Inventory() {
                               )}
                             </TableCell>
                             <TableCell>
-                              <EditIcon
-                                variant="contained"
-                                color="primary"
-                                onClick={() => handleEdit(row)}
-                                style={{
-                                  marginRight: "10px",
-                                  cursor: "pointer",
-                                }}
-                              />
-
-                              <DeleteForeverIcon
-                                variant="contained"
-                                color="primary"
-                                onClick={() => handleRemove(row)}
-                                style={{
-                                  marginRight: "10px",
-                                  cursor: "pointer",
-                                }}
-                              />
+                              <IconButton aria-label="edit" onClick={() => handleEdit(row)}>
+                                <EditIcon/>
+                              </IconButton>
+                              <IconButton aria-label="delete" onClick={() => handleRemove(row)} disabled={!editRole}>
+                                <DeleteForeverIcon />
+                              </IconButton>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -568,6 +567,7 @@ function Inventory() {
                 type="text"
                 fullWidth
                 value={name}
+                disabled={!editRole}
                 onChange={(event) => setName(event.target.value)}
               />
             </Grid>
@@ -578,6 +578,7 @@ function Inventory() {
                 label="Price"
                 type="number"
                 fullWidth
+                disabled={!editRole}
                 value={price}
                 InputProps={{
                   startAdornment: (
@@ -595,6 +596,7 @@ function Inventory() {
                 type="number"
                 value={quantity}
                 fullWidth
+                disabled={!editRole}
                 onChange={(event) => setQuantity(event.target.value)}
               />
             </Grid>
@@ -607,6 +609,7 @@ function Inventory() {
                 type="text"
                 value={description}
                 fullWidth
+                disabled={!editRole}
                 onChange={(event) => setDescription(event.target.value)}
               />
             </Grid>
@@ -617,6 +620,7 @@ function Inventory() {
             onClick={handleEditSaveClick}
             color="primary"
             variant="contained"
+            disabled={!editRole}
           >
             Save
           </Button>

@@ -21,6 +21,7 @@ import {
   TableCell,
   TextField,
   Typography,
+  IconButton
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
@@ -43,6 +44,7 @@ const VehicleCard = ({
   // milage,
   clientId,
   selected,
+  editRole
 }) => {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
@@ -449,6 +451,7 @@ const VehicleCard = ({
                             label="Select Type"
                             value={inputField.type}
                             name="type"
+                            disabled={!editRole}
                             onChange={(event) =>
                               handleInputChange(index, event)
                             }
@@ -466,6 +469,7 @@ const VehicleCard = ({
                             label="Item"
                             value={inputField.item}
                             name="item"
+                            disabled={!editRole}
                             onChange={(event) =>
                               handleInputChange(index, event)
                             }
@@ -492,6 +496,7 @@ const VehicleCard = ({
                           label="Price"
                           value={inputField.price}
                           name="price"
+                          disabled={!editRole}
                           onChange={(event) => handleInputChange(index, event)}
                           sx={{ width: "200px", mr: "10px" }}
                         />
@@ -501,19 +506,20 @@ const VehicleCard = ({
                           label="Quantity"
                           value={inputField.quantity}
                           name="quantity"
+                          disabled={!editRole}
                           onChange={(event) => handleInputChange(index, event)}
                           sx={{ width: "200px", mr: "10px" }}
                         />
                       </TableCell>
                       <TableCell>{inputField.total}</TableCell>
                       <TableCell>
-                        <CancelPresentationOutlinedIcon
-                          variant="contained"
-                          color="primary"
-                          onClick={() => handleRemoveClick(index)}
-                          fontSize="large"
-                          sx={{ cursor: "pointer" }}
-                        />
+                        <IconButton aira-label="edit" disabled={!editRole} onClick={() => handleRemoveClick(index)} >
+                          <CancelPresentationOutlinedIcon
+                            variant="contained"
+                            color="primary"
+                            fontSize="large"
+                          />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -527,6 +533,7 @@ const VehicleCard = ({
                   variant="contained"
                   color="primary"
                   onClick={handleAddClick}
+                  disabled={!editRole}
                 >
                   Add
                 </Button>
@@ -540,16 +547,17 @@ const VehicleCard = ({
           </div>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" color="primary" onClick={handleSaveClick}>
+          <Button variant="contained" color="primary" disabled={!editRole} onClick={handleSaveClick}>
             Save
           </Button>
-          <Button variant="contained" color="primary" onClick={handleFinish}>
+          <Button variant="contained" color="primary" disabled={!editRole} onClick={handleFinish}>
             Finish
           </Button>
           <Button
             variant="contained"
             color="secondary"
             onClick={generateInvoiceData}
+            disabled={!editRole}
           >
             Genarate Invoice
           </Button>
