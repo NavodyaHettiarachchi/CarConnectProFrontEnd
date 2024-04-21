@@ -5,6 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import Headerfile from "../../Components/Page-Header/CardHeader";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
+import axios from "axios";
 import {
   Button,
   TextField,
@@ -24,7 +25,6 @@ import {
   TableCell,
   TableBody,
   Paper,
-  IconButton,
 } from "@mui/material";
 
 const columns = [
@@ -34,9 +34,6 @@ const columns = [
   { id: "quantity", label: "Quantity", minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 },
 ];
-
-const allowedRoles = new Set(["s:ad", "ip:ad"]);
-
 function Inventory() {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
@@ -51,155 +48,22 @@ function Inventory() {
   const [openDialog, setOpenDialog] = useState(false);
   const [row, setRow] = useState("");
   const [id, setId] = useState(0);
+  const [countries, setCountries] = useState([]);
   const [editRole, setEditRole] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
 
-  const countries = [
-    "India",
-    "United States",
-    "China",
-    "Japan",
-    "Germany",
-    "United Kingdom",
-    "France",
-    "South Korea",
-    "Italy",
-    "Canada",
-    "Spain",
-    "Australia",
-    "Brazil",
-    "Russia",
-    "Mexico",
-    "Indonesia",
-    "Turkey",
-    "Netherlands",
-    "Saudi Arabia",
-    "Switzerland",
-    "Sweden",
-    "Belgium",
-    "Argentina",
-    "Norway",
-    "Austria",
-    "United Arab Emirates",
-    "Iran",
-    "Thailand",
-    "Poland",
-    "South Africa",
-    "Nigeria",
-    "Colombia",
-    "Israel",
-    "Ireland",
-    "Hong Kong",
-    "Singapore",
-    "Malaysia",
-    "Egypt",
-    "Denmark",
-    "Finland",
-    "Chile",
-    "Pakistan",
-    "Philippines",
-    "Greece",
-    "Portugal",
-    "Iraq",
-    "Kazakhstan",
-    "Algeria",
-    "Qatar",
-    "Peru",
-    "Hungary",
-    "Romania",
-    "New Zealand",
-    "Vietnam",
-    "Czech Republic",
-    "Ghana",
-    "Ukraine",
-    "Bangladesh",
-    "Kuwait",
-    "Angola",
-    "Ecuador",
-    "Sri Lanka",
-    "Croatia",
-    "Belarus",
-    "Oman",
-    "Morocco",
-    "Azerbaijan",
-    "Slovakia",
-    "Bulgaria",
-    "Ethiopia",
-    "Kenya",
-    "Puerto Rico",
-    "Costa Rica",
-    "Uruguay",
-    "Luxembourg",
-    "Panama",
-    "Venezuela",
-    "Lebanon",
-    "Tunisia",
-    "Iceland",
-    "Bolivia",
-    "Lithuania",
-    "Latvia",
-    "Slovenia",
-    "Estonia",
-    "Serbia",
-    "Libya",
-    "Jordan",
-    "Paraguay",
-    "Cameroon",
-    "Bahrain",
-    "Cyprus",
-    "Afghanistan",
-    "Honduras",
-    "Uzbekistan",
-    "Ivory Coast",
-    "Bosnia and Herzegovina",
-    "Macedonia",
-    "Albania",
-    "Moldova",
-    "Mauritius",
-    "Georgia",
-    "Nepal",
-    "Armenia",
-    "Mongolia",
-    "Yemen",
-    "Cambodia",
-    "Senegal",
-    "Zambia",
-    "Botswana",
-    "Gabon",
-    "Malta",
-    "Mozambique",
-    "Rwanda",
-    "Tanzania",
-    "Benin",
-    "Burkina Faso",
-    "Togo",
-    "Mali",
-    "Zimbabwe",
-    "Madagascar",
-    "Mauritania",
-    "Haiti",
-    "Chad",
-    "Niger",
-    "Burundi",
-    "Sierra Leone",
-    "Liberia",
-    "Malawi",
-    "Somalia",
-    "Congo",
-    "Guinea",
-    "Eritrea",
-    "Lesotho",
-    "Central African Republic",
-    "South Sudan",
-    "Equatorial Guinea",
-    "Guinea-Bissau",
-    "Swaziland",
-    "Djibouti",
-    "Comoros",
-    "Cabo Verde",
-    "Sao Tome and Principe",
-    "Seychelles",
-  ];
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get("https://restcountries.com/v3.1/all");
+        setCountries(response.data.map((country) => country.name.common));
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    };
+
+    fetchCountries();
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -209,22 +73,25 @@ function Inventory() {
     setOpen(false);
     setCountry("");
   };
-
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
-
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
 
   const setEditParams = () => {
-    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
-    setEditRole(allowedRoles.has(roles.find(role => role === 'ip:ad' || role === 's:ad')));
+    const roles = JSON.parse(window.sessionStorage.getItem("roles")).split(
+      ", "
+    );
+    setEditRole(
+      allowedRoles.has(
+        roles.find((role) => role === "ip:ad" || role === "s:ad")
+      )
+    );
   };
 
   useEffect(() => {
-    setEditParams();
     fetch("http://localhost:5000/center/inventory", {
       method: "POST",
       headers: {
@@ -256,7 +123,6 @@ function Inventory() {
   );
   // Event handler for search input
 
-
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -274,16 +140,13 @@ function Inventory() {
       };
 
       // Send the data to the server using the fetch API
-      await fetch(
-        "http://localhost:5000/center/addInventory",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dataToSend),
-        }
-      );
+      await fetch("http://localhost:5000/center/addInventory", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
 
       setIsUpdated(!isUpdated);
     } catch (error) {
@@ -337,16 +200,13 @@ function Inventory() {
       };
 
       // Send the data to the server using the fetch API
-      await fetch(
-        `http://localhost:5000/center/inventory/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dataToSend),
-        }
-      );
+      await fetch(`http://localhost:5000/center/inventory/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
 
       setIsUpdated(!isUpdated);
     } catch (error) {
@@ -358,7 +218,7 @@ function Inventory() {
   return (
     <div class="bg-2 text-center">
       <Headerfile title="Inventory" />
-      <Card style={{ height: "80vh", boxShadow: 'none' }}>
+      <Card style={{ height: "80vh", boxShadow: "none" }}>
         <CardContent>
           <div>
             <div class="col-sm-8">
@@ -378,61 +238,70 @@ function Inventory() {
                     variant="contained"
                     color="primary"
                     onClick={handleClickOpen}
-                    disabled={!editRole}
                   >
                     Add Item
                   </Button>
                 </Grid>
               </Grid>
             </div>
-            <div style={{ overflowX: 'auto', position: 'relative' }}>
-              <TableContainer component={Paper} sx={{ height: '72vh', minWidth: '1600px', marginTop: '1%' }} style={{ overflowX: 'auto' }}>
+            <div style={{ overflowX: "auto", position: "relative" }}>
+              <TableContainer
+                component={Paper}
+                sx={{ height: "72vh", minWidth: "1600px", marginTop: "1%" }}
+                style={{ overflowX: "auto" }}
+              >
                 <Table stickyHeader size="small">
                   <TableHead>
                     <TableRow>
                       {columns.map((column) => (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                        >
+                        <TableCell key={column.id} align={column.align}>
                           {column.label}
                         </TableCell>
                       ))}
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {
-                      filteredInventory.map((row) => {
-                        return (
-                          <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                            {
-                              columns.map((col) => {
-                                const value = row[col.id];
-                                return (
-                                  col.id === 'price' ? <TableCell>
-                                    Rs.{" "}
-                                    {calculateTotal(
-                                      parseFloat(row.price.replace("Rs. ", "")),
-                                      row.quantity
-                                    )}
-                                  </TableCell> : col.id === 'actions' ? <TableCell>
-                                    <IconButton aria-label="edit" onClick={() => handleEdit(row)}>
-                                      <EditIcon />
-                                    </IconButton>
-                                    <IconButton aria-label="delete" onClick={() => handleRemove(row)} disabled={!editRole}>
-                                      <DeleteForeverIcon />
-                                    </IconButton>
-                                  </TableCell> :
-                                    <TableCell>
-                                      {value}
-                                    </TableCell>
-                                );
-                              })
-                            }
-                          </TableRow>
-                        );
-                      })
-                    }
+                    {filteredInventory.map((row) => {
+                      return (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={row.id}
+                        >
+                          {columns.map((col) => {
+                            const value = row[col.id];
+                            return col.id === "price" ? (
+                              <TableCell>
+                                Rs.{" "}
+                                {calculateTotal(
+                                  parseFloat(row.price.replace("Rs. ", "")),
+                                  row.quantity
+                                )}
+                              </TableCell>
+                            ) : col.id === "actions" ? (
+                              <TableCell>
+                                <IconButton
+                                  aria-label="edit"
+                                  onClick={() => handleEdit(row)}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                                <IconButton
+                                  aria-label="delete"
+                                  onClick={() => handleRemove(row)}
+                                  disabled={!editRole}
+                                >
+                                  <DeleteForeverIcon />
+                                </IconButton>
+                              </TableCell>
+                            ) : (
+                              <TableCell>{value}</TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -497,7 +366,8 @@ function Inventory() {
                 }}
                 options={countries}
                 renderInput={(params) => (
-                  <TextField {...params}
+                  <TextField
+                    {...params}
                     label="Manufacture Country"
                     InputLabelProps={{
                       shrink: true,
@@ -550,7 +420,6 @@ function Inventory() {
                 type="text"
                 fullWidth
                 value={name}
-                disabled={!editRole}
                 onChange={(event) => setName(event.target.value)}
               />
             </Grid>
@@ -561,7 +430,6 @@ function Inventory() {
                 label="Price"
                 type="number"
                 fullWidth
-                disabled={!editRole}
                 value={price}
                 InputProps={{
                   startAdornment: (
@@ -579,7 +447,6 @@ function Inventory() {
                 type="number"
                 value={quantity}
                 fullWidth
-                disabled={!editRole}
                 onChange={(event) => setQuantity(event.target.value)}
               />
             </Grid>
@@ -592,7 +459,6 @@ function Inventory() {
                 type="text"
                 value={description}
                 fullWidth
-                disabled={!editRole}
                 onChange={(event) => setDescription(event.target.value)}
               />
             </Grid>
@@ -603,7 +469,6 @@ function Inventory() {
             onClick={handleEditSaveClick}
             color="primary"
             variant="contained"
-            disabled={!editRole}
           >
             Save
           </Button>
