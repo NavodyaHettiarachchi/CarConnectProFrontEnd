@@ -21,7 +21,6 @@ import {
   TableCell,
   TextField,
   Typography,
-  IconButton
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
@@ -44,7 +43,6 @@ const VehicleCard = ({
   // milage,
   clientId,
   selected,
-  editRole
 }) => {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
@@ -55,7 +53,7 @@ const VehicleCard = ({
   const [ongoingServices, setOngoingServices] = useState([]);
   const [vehiData, setVehiData] = useState([]);
   const [invoiceData, setInvoiceData] = useState(null);
-
+  const [parts, setParts] = useState([]);
   const getVehicleNumber = () => {
     const vehicle = vehiData.find((vehicle) => vehicle.id === clientId);
     return vehicle ? vehicle.number_plate : null;
@@ -78,7 +76,7 @@ const VehicleCard = ({
     setOpen(true);
     getOngoingServices();
     getAllServices();
-
+    getAllInventory();
     setInputFields([
       { type: "", item: "", price: "", quantity: "1", total: "" },
     ]);
@@ -98,7 +96,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem('schema')),
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
           }),
         }
       );
@@ -118,7 +116,7 @@ const VehicleCard = ({
       console.error("Error fetching data:", error);
     }
   };
-  
+
   const getAllVehicles = async () => {
     try {
       const response = await fetch("http://localhost:5000/center/getclients", {
@@ -127,7 +125,7 @@ const VehicleCard = ({
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          schema: JSON.parse(window.sessionStorage.getItem('schema')),
+          schema: JSON.parse(window.sessionStorage.getItem("schema")),
         }),
       });
 
@@ -166,7 +164,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem('schema')),
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
             details: JSON.stringify(updatedClientData.details),
           }),
         }
@@ -212,6 +210,14 @@ const VehicleCard = ({
         values[index].price = "Rs. " + selectedService.cost;
       }
     }
+    if (event.target.name === "item" && values[index].type === "Inventory") {
+      const selectedService = parts.find(
+        (service) => service.name === event.target.value
+      );
+      if (selectedService) {
+        values[index].price = "Rs. " + selectedService.price;
+      }
+    }
 
     // Parse price and quantity as floats
     const price = parseFloat(values[index].price.replace("Rs. ", ""));
@@ -254,7 +260,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem('schema')),
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
           }),
         }
       );
@@ -299,11 +305,34 @@ const VehicleCard = ({
     setOngoingServices(updatedClientData);
   };
 
-  const InventoryItems = [
-    { id: 1, name: "Inventory 1" },
-    { id: 2, name: "Inventory 2" },
-    { id: 3, name: "Inventory 3" },
-  ];
+  // const InventoryItems = [
+  //   { id: 1, name: "Inventory 1" },
+  //   { id: 2, name: "Inventory 2" },
+  //   { id: 3, name: "Inventory 3" },
+  // ];
+  const getAllInventory = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/center/inventory", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          schema: JSON.parse(window.sessionStorage.getItem("schema")),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const data = await response.json();
+      setParts(data.data.inventory);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const disableOngoingService = async () => {
     try {
       const response = await fetch(
@@ -314,7 +343,7 @@ const VehicleCard = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem('schema')),
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
             isOngoing: false,
           }),
         }
@@ -369,7 +398,7 @@ const VehicleCard = ({
     generateInvoiceData();
     disableOngoingService();
   };
-  
+
   useEffect(() => {
     getAllVehicles();
   }, []);
@@ -451,7 +480,6 @@ const VehicleCard = ({
                             label="Select Type"
                             value={inputField.type}
                             name="type"
-                            disabled={!editRole}
                             onChange={(event) =>
                               handleInputChange(index, event)
                             }
@@ -469,7 +497,6 @@ const VehicleCard = ({
                             label="Item"
                             value={inputField.item}
                             name="item"
-                            disabled={!editRole}
                             onChange={(event) =>
                               handleInputChange(index, event)
                             }
@@ -483,7 +510,7 @@ const VehicleCard = ({
                               ))}
 
                             {inputField.type === "Inventory" &&
-                              InventoryItems.map((item) => (
+                              parts.map((item) => (
                                 <MenuItem value={item.name} key={item.id}>
                                   {item.name}
                                 </MenuItem>
@@ -496,7 +523,6 @@ const VehicleCard = ({
                           label="Price"
                           value={inputField.price}
                           name="price"
-                          disabled={!editRole}
                           onChange={(event) => handleInputChange(index, event)}
                           sx={{ width: "200px", mr: "10px" }}
                         />
@@ -506,20 +532,19 @@ const VehicleCard = ({
                           label="Quantity"
                           value={inputField.quantity}
                           name="quantity"
-                          disabled={!editRole}
                           onChange={(event) => handleInputChange(index, event)}
                           sx={{ width: "200px", mr: "10px" }}
                         />
                       </TableCell>
                       <TableCell>{inputField.total}</TableCell>
                       <TableCell>
-                        <IconButton aira-label="edit" disabled={!editRole} onClick={() => handleRemoveClick(index)} >
-                          <CancelPresentationOutlinedIcon
-                            variant="contained"
-                            color="primary"
-                            fontSize="large"
-                          />
-                        </IconButton>
+                        <CancelPresentationOutlinedIcon
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleRemoveClick(index)}
+                          fontSize="large"
+                          sx={{ cursor: "pointer" }}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -533,7 +558,6 @@ const VehicleCard = ({
                   variant="contained"
                   color="primary"
                   onClick={handleAddClick}
-                  disabled={!editRole}
                 >
                   Add
                 </Button>
@@ -547,17 +571,16 @@ const VehicleCard = ({
           </div>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" color="primary" disabled={!editRole} onClick={handleSaveClick}>
+          <Button variant="contained" color="primary" onClick={handleSaveClick}>
             Save
           </Button>
-          <Button variant="contained" color="primary" disabled={!editRole} onClick={handleFinish}>
+          <Button variant="contained" color="primary" onClick={handleFinish}>
             Finish
           </Button>
           <Button
             variant="contained"
             color="secondary"
             onClick={generateInvoiceData}
-            disabled={!editRole}
           >
             Genarate Invoice
           </Button>

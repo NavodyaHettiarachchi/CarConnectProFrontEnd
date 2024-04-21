@@ -5,6 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import Headerfile from "../../Components/Page-Header/CardHeader";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
+import axios from "axios";
 import {
   Button,
   TextField,
@@ -24,7 +25,6 @@ import {
   TableCell,
   TableBody,
   Paper,
-  IconButton,
 } from "@mui/material";
 
 const columns = [
@@ -36,9 +36,6 @@ const columns = [
   { id: "total", label: "Total", minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 },
 ];
-
-const allowedRoles = new Set(["s:ad", "ip:ad"]);
-
 function Inventory() {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
@@ -53,154 +50,20 @@ function Inventory() {
   const [openDialog, setOpenDialog] = useState(false);
   const [row, setRow] = useState("");
   const [id, setId] = useState(0);
-  const [editRole, setEditRole] = useState(false);
+  const [countries, setCountries] = useState([]);
 
-  const countries = [
-    "India",
-    "United States",
-    "China",
-    "Japan",
-    "Germany",
-    "United Kingdom",
-    "France",
-    "South Korea",
-    "Italy",
-    "Canada",
-    "Spain",
-    "Australia",
-    "Brazil",
-    "Russia",
-    "Mexico",
-    "Indonesia",
-    "Turkey",
-    "Netherlands",
-    "Saudi Arabia",
-    "Switzerland",
-    "Sweden",
-    "Belgium",
-    "Argentina",
-    "Norway",
-    "Austria",
-    "United Arab Emirates",
-    "Iran",
-    "Thailand",
-    "Poland",
-    "South Africa",
-    "Nigeria",
-    "Colombia",
-    "Israel",
-    "Ireland",
-    "Hong Kong",
-    "Singapore",
-    "Malaysia",
-    "Egypt",
-    "Denmark",
-    "Finland",
-    "Chile",
-    "Pakistan",
-    "Philippines",
-    "Greece",
-    "Portugal",
-    "Iraq",
-    "Kazakhstan",
-    "Algeria",
-    "Qatar",
-    "Peru",
-    "Hungary",
-    "Romania",
-    "New Zealand",
-    "Vietnam",
-    "Czech Republic",
-    "Ghana",
-    "Ukraine",
-    "Bangladesh",
-    "Kuwait",
-    "Angola",
-    "Ecuador",
-    "Sri Lanka",
-    "Croatia",
-    "Belarus",
-    "Oman",
-    "Morocco",
-    "Azerbaijan",
-    "Slovakia",
-    "Bulgaria",
-    "Ethiopia",
-    "Kenya",
-    "Puerto Rico",
-    "Costa Rica",
-    "Uruguay",
-    "Luxembourg",
-    "Panama",
-    "Venezuela",
-    "Lebanon",
-    "Tunisia",
-    "Iceland",
-    "Bolivia",
-    "Lithuania",
-    "Latvia",
-    "Slovenia",
-    "Estonia",
-    "Serbia",
-    "Libya",
-    "Jordan",
-    "Paraguay",
-    "Cameroon",
-    "Bahrain",
-    "Cyprus",
-    "Afghanistan",
-    "Honduras",
-    "Uzbekistan",
-    "Ivory Coast",
-    "Bosnia and Herzegovina",
-    "Macedonia",
-    "Albania",
-    "Moldova",
-    "Mauritius",
-    "Georgia",
-    "Nepal",
-    "Armenia",
-    "Mongolia",
-    "Yemen",
-    "Cambodia",
-    "Senegal",
-    "Zambia",
-    "Botswana",
-    "Gabon",
-    "Malta",
-    "Mozambique",
-    "Rwanda",
-    "Tanzania",
-    "Benin",
-    "Burkina Faso",
-    "Togo",
-    "Mali",
-    "Zimbabwe",
-    "Madagascar",
-    "Mauritania",
-    "Haiti",
-    "Chad",
-    "Niger",
-    "Burundi",
-    "Sierra Leone",
-    "Liberia",
-    "Malawi",
-    "Somalia",
-    "Congo",
-    "Guinea",
-    "Eritrea",
-    "Lesotho",
-    "Central African Republic",
-    "South Sudan",
-    "Equatorial Guinea",
-    "Guinea-Bissau",
-    "Swaziland",
-    "Djibouti",
-    "Comoros",
-    "Cabo Verde",
-    "Sao Tome and Principe",
-    "Seychelles",
-  ];
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get("https://restcountries.com/v3.1/all");
+        setCountries(response.data.map((country) => country.name.common));
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    };
+
+    fetchCountries();
+  }, []);
 
   const handleCountryChange = (event) => {
     setCountry(event.target.value);
@@ -214,22 +77,13 @@ function Inventory() {
     setOpen(false);
     setCountry("");
   };
-
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
-
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-
-  const setEditParams = () => { 
-    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
-    setEditRole(allowedRoles.has(roles.find(role => role === 'ip:ad' || role === 's:ad')));
-  };
-
   useEffect(() => {
-    setEditParams();
     fetch("http://localhost:5000/center/inventory", {
       method: "POST",
       headers: {
@@ -256,7 +110,10 @@ function Inventory() {
     });
   };
 
-
+  // function refreshPage() {
+  //   window.location.reload();
+  // }
+  // Function to filter users based on search term
   const filterUsers = () => {
     if (searchTerm === "") {
       return users;
@@ -402,14 +259,13 @@ function Inventory() {
                     variant="contained"
                     color="primary"
                     onClick={handleClickOpen}
-                    disabled={!editRole}
                   >
                     Add Item
                   </Button>
                 </Grid>
                 <Grid item>
                   <TableContainer component={Paper} style={{ width: "250%" }}>
-                    <Table stickyHeader size="small" aria-label="a dense table">
+                    <Table aria-label="customized table" padding="normal">
                       <TableHead>
                         <TableRow>
                           {columns.map((column) => (
@@ -435,12 +291,25 @@ function Inventory() {
                               )}
                             </TableCell>
                             <TableCell>
-                              <IconButton aria-label="edit" onClick={() => handleEdit(row)}>
-                                <EditIcon/>
-                              </IconButton>
-                              <IconButton aria-label="delete" onClick={() => handleRemove(row)} disabled={!editRole}>
-                                <DeleteForeverIcon />
-                              </IconButton>
+                              <EditIcon
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleEdit(row)}
+                                style={{
+                                  marginRight: "10px",
+                                  cursor: "pointer",
+                                }}
+                              />
+
+                              <DeleteForeverIcon
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleRemove(row)}
+                                style={{
+                                  marginRight: "10px",
+                                  cursor: "pointer",
+                                }}
+                              />
                             </TableCell>
                           </TableRow>
                         ))}
@@ -568,7 +437,6 @@ function Inventory() {
                 type="text"
                 fullWidth
                 value={name}
-                disabled={!editRole}
                 onChange={(event) => setName(event.target.value)}
               />
             </Grid>
@@ -579,7 +447,6 @@ function Inventory() {
                 label="Price"
                 type="number"
                 fullWidth
-                disabled={!editRole}
                 value={price}
                 InputProps={{
                   startAdornment: (
@@ -597,7 +464,6 @@ function Inventory() {
                 type="number"
                 value={quantity}
                 fullWidth
-                disabled={!editRole}
                 onChange={(event) => setQuantity(event.target.value)}
               />
             </Grid>
@@ -610,7 +476,6 @@ function Inventory() {
                 type="text"
                 value={description}
                 fullWidth
-                disabled={!editRole}
                 onChange={(event) => setDescription(event.target.value)}
               />
             </Grid>
@@ -621,7 +486,6 @@ function Inventory() {
             onClick={handleEditSaveClick}
             color="primary"
             variant="contained"
-            disabled={!editRole}
           >
             Save
           </Button>
