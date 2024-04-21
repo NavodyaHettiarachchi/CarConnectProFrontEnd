@@ -57,15 +57,16 @@ function VehicleCard(props) {
     const [open, openchange] = useState(false);
     const classes = useStyles();
     const [isSearchDialogOpen, setSearchDialogOpen] = useState(false);
+    const [openAddVehicle, setopenAddVehicle] = useState(false);
     const [modal, setModal] = useState(false);
     const [value, setValue] = React.useState(0);
     const [vehicleData, setvehicleData] = useState([]);
     const [openHistory, setOpenHistory] = useState(false);
 
-    const openPopupHistory = () => { 
+    const openPopupHistory = () => {
         setOpenHistory(true);
-      }
- 
+    }
+
 
 
     const togglemodal = () => {
@@ -111,6 +112,15 @@ function VehicleCard(props) {
         setSearchDialogOpen(false);
     };
 
+    const openAddVehiclePopup = async (vehicle) => {
+
+        setopenAddVehicle(true);
+    };
+
+    const closeAddVehiclePopup = () => {
+
+        setopenAddVehicle(false);
+    };
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -157,13 +167,81 @@ function VehicleCard(props) {
                     }}>
                         <Typography sx={{ fontSize: 80 }} color="text.secondary" gutterBottom>
                             <Button sx={{ "&:hover": { backgroundColor: "transparent" } }} onClick={handleOpenSearchDialog}>
-                                <Typography sx={{ fontSize: 80 }} >
+                                <Typography sx={{ fontSize: 80 }} onClick={() => openAddVehiclePopup()}  >
                                     +
                                 </Typography>
                             </Button>
                         </Typography>
                     </CardContent></Item>
-                   
+
+                    <Dialog
+                        // fullScreen
+                        open={openAddVehicle}
+                        onClose={closeAddVehiclePopup}
+                        fullWidth
+                        maxWidth="xl"
+                        
+                        
+                    >
+                        <div>
+                            <IconButton onClick={closeAddVehiclePopup} style={{ float: "right" }}>
+                                <CloseIcon color="primary"></CloseIcon>
+                            </IconButton>{" "}
+                            <Headerfile title="Add a new vehicle" />
+                            <div style={{ marginRight: 0,width: '100%',display: 'flex' }}>
+                                <div style={{ marginLeft: 60, width: '100%', marginTop: 20 }}>
+
+                                    <Grid container>
+                                        <Grid item container>
+                                            <Grid item xs={1} style={{display: 'flex'}}>
+                                                <Typography style={{display:'flex'}} variant="h6">
+                                                    Vehicle No:
+                                                   
+                                                </Typography>
+                                                <TextField 
+                                                        required
+                                                        id="standard-required"
+                                                        label="Required"
+                                                        defaultValue="Hello World"
+                                                        variant="standard"
+                                                    />
+                                            </Grid>
+                                            <Grid item xs={5}>
+
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Typography variant="h6">
+                                                    Model: {selectedVehicle ? selectedVehicle.model : ""}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid item container>
+                                            <Grid item xs={6}>
+                                                <Typography variant="h6">
+                                                    Fuel Type: {selectedVehicle ? selectedVehicle.fuel : ""}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                Mileage:{" "}
+                                                <TextField
+
+                                                    name="Mileage"
+
+                                                    //   onChange={(event) => setMilage(event.target.value)}
+                                                    sx={{ width: "200px", mr: "10px" }}
+                                                    type="number"
+                                                />
+                                            </Grid>
+
+                                        </Grid>
+                                    </Grid>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </Dialog>
 
                 </Grid>
 
@@ -177,156 +255,156 @@ function VehicleCard(props) {
                                     {item.number_plate}
                                 </Typography>
                                 <Button onClick={togglemodal}>
-                                    <Typography vehicle ={item?.make} onClick={() => functionopenpopup(item)}>
+                                    <Typography vehicle={item?.make} onClick={() => functionopenpopup(item)}>
                                         View
                                     </Typography>
                                 </Button>
                             </CardContent></Item>
                             <Dialog
-                        // fullScreen
-                        open={open}
-                        onClose={closepopup}
-                        fullWidth
-                        maxWidth="xl"
-                        style={{}}
-                    >
-                        <div>
-                            <IconButton onClick={closepopup} style={{ float: "right" }}>
-                                <CloseIcon color="primary"></CloseIcon>
-                            </IconButton>{" "}
-                            <Headerfile title="My Vehicle" />
-                            <div style={{ marginRight: 70, display: 'flex' }}>
-                                <div style={{ marginLeft: 60, width: '45%', marginTop: 20 }}> {loading ? (
-                                    <Skeleton variant="rectangular" width="40%">
-                                        <div style={{ paddingTop: 5 }} />
-                                    </Skeleton>
-                                ) : (
-                                    <Image style={{
-                                        width: 640,
-                                        height: 400, marginLeft: 20
-                                    }}
-                                        src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhcnN8ZW58MHx8MHx8fDA%3D"
-                                        alt=""
-                                    />
-                                )
-                                }
-                                    <Box sx={{ height: 10, width: '100%', marginTop: 4, marginLeft: 2 }}>
+                                // fullScreen
+                                open={open}
+                                onClose={closepopup}
+                                fullWidth
+                                maxWidth="xl"
+                                style={{}}
+                            >
+                                <div>
+                                    <IconButton onClick={closepopup} style={{ float: "right" }}>
+                                        <CloseIcon color="primary"></CloseIcon>
+                                    </IconButton>{" "}
+                                    <Headerfile title="My Vehicle" />
+                                    <div style={{ marginRight: 70, display: 'flex' }}>
+                                        <div style={{ marginLeft: 60, width: '45%', marginTop: 20 }}> {loading ? (
+                                            <Skeleton variant="rectangular" width="40%">
+                                                <div style={{ paddingTop: 5 }} />
+                                            </Skeleton>
+                                        ) : (
+                                            <Image style={{
+                                                width: 640,
+                                                height: 400, marginLeft: 20
+                                            }}
+                                                src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhcnN8ZW58MHx8MHx8fDA%3D"
+                                                alt=""
+                                            />
+                                        )
+                                        }
+                                            <Box sx={{ height: 10, width: '100%', marginTop: 4, marginLeft: 2 }}>
 
-                                        <div className={classes.divs}>
-                                            <h2>Major Information</h2>
+                                                <div className={classes.divs}>
+                                                    <h2>Major Information</h2>
 
-                                            <div >
+                                                    <div >
+                                                        <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
+                                                            Make
+                                                        </Typography>
+                                                            <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                                id="standard-basic"
+                                                                disabled
+                                                                variant="standard"
+                                                                onChange={handleChange}
+                                                                value={selectedVehicle?.make}
+                                                            /></div>
+                                                        <div style={{ display: 'flex' }}>
+                                                            <Typography sx={{ marginRight: 3, padding: 2 }}>
+                                                                Model
+                                                            </Typography>
+                                                            <TextField sx={{ width: 300, padding: 2, marginLeft: 3 }} className='TextField1'
+                                                                id="standard-basic"
+                                                                disabled
+                                                                variant="standard"
+                                                                onChange={handleChange}
+                                                                value={selectedVehicle?.model}
+                                                            />
+                                                        </div>
+                                                        <Button variant="contained" onClick={openPopupHistory} color="primary" className='Button' sx={{ right: 0, left: 'auto' }}>
+                                                            View history
+                                                        </Button>
+                                                    </div>
+                                                </div>
+
+
+                                            </Box>
+                                        </div>
+                                        <div style={{ marginLeft: 150, marginTop: 15, height: '80vh', width: '40%' }}>
+                                            <div className={classes.divs}>
+                                                <h2>Chassis and Engine No</h2>
+                                                <div >
+                                                    <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
+                                                        Chassis number
+                                                    </Typography>
+                                                        <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                            id="standard-basic"
+                                                            disabled
+                                                            variant="standard"
+                                                            onChange={handleChange}
+                                                            value={selectedVehicle?.chassis_number}
+                                                        /></div>
+                                                    <div style={{ display: 'flex' }}>
+                                                        <Typography sx={{ marginRight: 3, padding: 2 }}>
+                                                            Enginer Number
+                                                        </Typography>
+                                                        <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                            id="standard-basic"
+                                                            disabled
+                                                            variant="standard"
+                                                            onChange={handleChange}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className={classes.divs}>
+                                                <h2>Mileage</h2>
                                                 <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
-                                                    Make
+                                                    Current
                                                 </Typography>
                                                     <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
                                                         id="standard-basic"
                                                         disabled
                                                         variant="standard"
                                                         onChange={handleChange}
-                                                        value={selectedVehicle?.make}
                                                     /></div>
                                                 <div style={{ display: 'flex' }}>
                                                     <Typography sx={{ marginRight: 3, padding: 2 }}>
-                                                        Model
+                                                        Last Update
                                                     </Typography>
-                                                    <TextField sx={{ width: 300, padding: 2,marginLeft:3 }} className='TextField1'
+                                                    <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
                                                         id="standard-basic"
                                                         disabled
                                                         variant="standard"
                                                         onChange={handleChange}
-                                                        value={selectedVehicle?.model}
                                                     />
                                                 </div>
-                                                <Button variant="contained" onClick={openPopupHistory} color="primary" className='Button' sx={{ right: 0, left: 'auto' }}>
-                                                   View history
-                                                </Button>
                                             </div>
-                                        </div>
-
-
-                                    </Box>
-                                </div>
-                                <div style={{ marginLeft: 150, marginTop: 15, height: '80vh', width: '40%' }}>
-                                    <div className={classes.divs}>
-                                        <h2>Chassis and Engine No</h2>
-                                        <div >
-                                            <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
-                                                Chassis number
-                                            </Typography>
-                                                <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                                    id="standard-basic"
-                                                    disabled
-                                                    variant="standard"
-                                                    onChange={handleChange}
-                                                    value={selectedVehicle?.chassis_number}
-                                                /></div>
-                                            <div style={{ display: 'flex' }}>
-                                                <Typography sx={{ marginRight: 3, padding: 2 }}>
-                                                   Enginer Number
+                                            <div className={classes.divs}>
+                                                <h2>Registration details</h2>
+                                                <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
+                                                    Manufactured year
                                                 </Typography>
-                                                <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                                    id="standard-basic"
-                                                    disabled
-                                                    variant="standard"
-                                                    onChange={handleChange}
-                                                />
+                                                    <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                        id="standard-basic"
+                                                        disabled
+                                                        variant="standard"
+                                                        onChange={handleChange}
+                                                    /></div>
+                                                <div style={{ display: 'flex' }}>
+                                                    <Typography sx={{ marginRight: 3, padding: 2 }}>
+                                                        Registered year
+                                                    </Typography>
+                                                    <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                                                        id="standard-basic"
+                                                        disabled
+                                                        variant="standard"
+                                                        onChange={handleChange}
+                                                        value={selectedVehicle?.reg_year}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div className={classes.divs}>
-                                        <h2>Mileage</h2>
-                                        <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
-                                            Current
-                                        </Typography>
-                                            <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                                id="standard-basic"
-                                                disabled
-                                                variant="standard"
-                                                onChange={handleChange}
-                                            /></div>
-                                        <div style={{ display: 'flex' }}>
-                                            <Typography sx={{ marginRight: 3, padding: 2 }}>
-                                                Last Update
-                                            </Typography>
-                                            <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                                id="standard-basic"
-                                                disabled
-                                                variant="standard"
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className={classes.divs}>
-                                        <h2>Registration details</h2>
-                                        <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
-                                            Manufactured year
-                                        </Typography>
-                                            <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                                id="standard-basic"
-                                                disabled
-                                                variant="standard"
-                                                onChange={handleChange}
-                                            /></div>
-                                        <div style={{ display: 'flex' }}>
-                                            <Typography sx={{ marginRight: 3, padding: 2 }}>
-                                                Registered year
-                                            </Typography>
-                                            <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
-                                                id="standard-basic"
-                                                disabled
-                                                variant="standard"
-                                                onChange={handleChange}
-                                                value={selectedVehicle?.reg_year}
-                                            />
-                                        </div>
-                                    </div>
                                 </div>
-                            </div>
-                        </div>
 
-                    </Dialog>
+                            </Dialog>
                         </Grid>
 
 
@@ -338,8 +416,8 @@ function VehicleCard(props) {
             <VehicleHistory
                 open={openHistory}
                 vehicleId={1}
-                closeVehicleHistory={() => {setOpenHistory(false)}}
-             />
+                closeVehicleHistory={() => { setOpenHistory(false) }}
+            />
 
 
 

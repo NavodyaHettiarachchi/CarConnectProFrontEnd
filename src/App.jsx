@@ -33,7 +33,7 @@ function App() {
 
     const userType = window.sessionStorage.getItem('userType');//@Harindu Ashen 
     setUserType(JSON.parse(userType));
-  },[]);
+  },[location]);
 
   const islogged = window.sessionStorage.getItem('IsLoggedIn');
   const sep_roles = userRole?.split(', ');
