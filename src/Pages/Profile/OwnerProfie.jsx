@@ -174,14 +174,15 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                     <Avatar alt="Avatar" style={{ width: '100%', height: '100%' }}><AccountIcon style={{ width: '100%', height: '100%', color: '#f0f0f0' }}/></Avatar>
                   )}
                   {formData.profile_pic && (
-                    <Button onClick={handleDeleteImage} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left:780 }}><DeleteIcon/></Button>
+                        <Button disabled={!editRole} onClick={handleDeleteImage} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left:780 }}><DeleteIcon/></Button>
                   )}
                 </div>
                 <input
                   accept="image/*"
                   id="contained-button-file"
                   multiple
-                  type="file"
+                      type="file"
+                      disabled={!editRole}
                  // value={formData.profile_pic}
                   onChange={handleImageChange}
                 />
@@ -195,7 +196,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                     fullWidth
                     label="Username"
                     name="username"
-                    value={formData.username}
+                        value={formData.username}
+                        disabled={!editRole}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -205,7 +207,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                   <TextField
                     fullWidth
                     label="Email"
-                    name="email"
+                        name="email"
+                        disabled={!editRole}
                     type="email"
                     // value={truncatedEmail + '@' + domain}
                      value={formData.email}
@@ -218,7 +221,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                   <TextField
                     fullWidth
                     label="Phone"
-                    name="phone"
+                        name="phone"
+                        disabled={!editRole}
                     value={formData.phone}
                     onChange={handleChange}
                     required
@@ -230,7 +234,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Name"
+                    label="Name"
+                    disabled={!editRole}
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
@@ -245,7 +250,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                 name="dob"
                 type="date"
                 value={formData.dob}
-                onChange={handleChange}
+                    onChange={handleChange}
+                    disabled={!editRole}
                 required
                 InputLabelProps={{
                   shrink: true,
@@ -266,6 +272,7 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                           value={mapGender(formData.gender)}
                           onChange={(e) => handleChange({ target: { name: "gender", value: mapGenderReverse(e.target.value) } })} 
                           name="gender"
+                          disabled={!editRole}
                           required
                         >
                           <MenuItem value="male">Male</MenuItem>
@@ -278,7 +285,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="NIC"
+                        label="NIC"
+                        disabled={!editRole}
                     name="nic"
                     value={formData.nic}
                     InputProps={{
@@ -296,6 +304,7 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                         <TextField
                         fullWidth
                         label="City"
+                        disabled={!editRole}
                         name="city"
                         value={formData.city}
                         onChange={handleChange}
@@ -307,6 +316,7 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                         <TextField
                         fullWidth
                         label="Province"
+                        disabled={!editRole}
                         name="province"
                         value={formData.province}
                         onChange={handleChange}
@@ -320,7 +330,7 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
             <div style={{ marginLeft: '68%', marginTop: '1%' }}>
               <Grid container spacing={5}>
                   <Grid item xs={6}>
-                    <Button variant="contained" color="primary" type="submit">
+                      <Button variant="contained" disabled={!editRole} color="primary" type="submit">
                       Save
                     </Button>
                   </Grid>
@@ -340,7 +350,7 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
 
             <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
             <Grid item xs={12} sm={12}>
-              <ChangePassword/>
+              { editRole && <ChangePassword/>}
             </Grid>
             </div>
 

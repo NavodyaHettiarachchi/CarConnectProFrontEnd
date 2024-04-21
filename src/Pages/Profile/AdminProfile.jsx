@@ -107,7 +107,7 @@ function AdminProfile() {
                     <Avatar alt="Avatar" style={{ width: '100%', height: '100%' }}><AccountIcon style={{ width: '100%', height: '100%', color: '#f0f0f0' }}/></Avatar>
                   )}
                   {formData.image && (
-                    <Button onClick={handleDeleteImage} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left:780 }}><DeleteIcon/></Button>
+                    <Button onClick={handleDeleteImage} disabled={!editRole} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left:780 }}><DeleteIcon/></Button>
                   )}
                 </div>
                 <input
@@ -115,7 +115,8 @@ function AdminProfile() {
                   id="contained-button-file"
                   multiple
                   type="file"
-                  onChange={handleImageChange}
+                      onChange={handleImageChange}
+                      disabled={!editRole}
                 />
 
 
@@ -128,7 +129,8 @@ function AdminProfile() {
                     fullWidth
                     label="Username"
                     name="username"
-                    value={formData.username}
+                        value={formData.username}
+                        disabled={!editRole}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -140,7 +142,8 @@ function AdminProfile() {
                     label="Email"
                     name="email"
                     type="email"
-                    value={formData.email}
+                        value={formData.email}
+                        disabled={!editRole}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -151,7 +154,8 @@ function AdminProfile() {
                     fullWidth
                     label="Phone"
                     name="phone"
-                    value={formData.phone}
+                        value={formData.phone}
+                        disabled={!editRole}
                     onChange={handleChange}
                     required
                   />
@@ -164,7 +168,8 @@ function AdminProfile() {
                 label="Name"
                 name="name"
                 value={formData.name}
-                onChange={handleChange}
+                    onChange={handleChange}
+                    disabled={!editRole}
                 required
               />
             </Grid>
@@ -175,7 +180,8 @@ function AdminProfile() {
                 name="dob"
                 type="date"
                 value={formData.dob}
-                onChange={handleChange}
+                    onChange={handleChange}
+                    disabled={!editRole}
                 required
                 InputLabelProps={{
                   shrink: true,
@@ -190,7 +196,8 @@ function AdminProfile() {
                     <InputLabel>Gender</InputLabel>
                     <Select
                       value={formData.gender}
-                      onChange={handleChange}
+                          onChange={handleChange}
+                          disabled={!editRole}
                       name="gender"
                       required
                     >
@@ -206,7 +213,8 @@ function AdminProfile() {
                     fullWidth
                     label="NIC"
                     name="nic"
-                    value={formData.nic}
+                        value={formData.nic}
+                        disabled={!editRole}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -225,6 +233,7 @@ function AdminProfile() {
                         label="City"
                         name="city"
                         value={formData.city}
+                        disabled={!editRole}
                         onChange={handleChange}
                         required
                         />
@@ -236,6 +245,7 @@ function AdminProfile() {
                         label="Province"
                         name="province"
                         value={formData.province}
+                        disabled={!editRole}
                         onChange={handleChange}
                         required
                         />
@@ -248,7 +258,7 @@ function AdminProfile() {
                 <div style={{ marginLeft: '68%', marginTop: '1%' }}>
               <Grid container spacing={5}>
                   <Grid item xs={6}>
-                    <Button variant="contained" color="primary" type="submit">
+                      <Button variant="contained" color="primary" disabled={!editRole} type="submit">
                       Save
                     </Button>
                   </Grid>
@@ -267,7 +277,7 @@ function AdminProfile() {
 
             <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
               <Grid item xs={12} sm={12}>
-              <ChangePassword/>
+              {editRole && <ChangePassword/>}
               </Grid>
             </div>
 
