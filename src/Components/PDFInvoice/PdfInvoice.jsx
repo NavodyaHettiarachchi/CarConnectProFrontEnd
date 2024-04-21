@@ -14,33 +14,28 @@ class PdfInvoice extends React.Component {
     // }
 
     const {
-        // totalAmount,
-        // billNumber,
-        // formattedDate,
-        // formattedTime,
-        // fullname,
         vehicle_id,
         fuel_type,
         model,
         mileage,
         full_Amount,
         selectedItems,
-        // CompanyLogo,
-        // CompanyName,
-        // street_1, street_2, 
-        // city, 
-        // province, 
-        // phone, 
-        // email,
-        // discount,
-        // noteText1,
-        // noteText2,
-        // noteText3,
+        CompanyName,
+        street_1,
+        street_2,
+        city,
+        province,
+        phone,
+        email,
+        owner_name,
+        owner_phoneNo,
     } = invoiceData;
 
-    const billNumber = "INV-001";
-    const formattedDate = "2024-02-27";
-    const formattedTime = "14:30";
+
+
+    const billNumber = `INV-${vehicle_id}`;
+    const formattedDate = new Date().toLocaleDateString();
+    const formattedTime = new Date().toLocaleTimeString('en-GB', { hour: "numeric", minute: "numeric"});;
     const discount = 10;
     const totalAmount = full_Amount - (full_Amount * discount/100);
 
@@ -89,13 +84,13 @@ class PdfInvoice extends React.Component {
       pdf.setTextColor(40);
     //   pdf.addImage( 'PNG', 40, 20, 70, 70);
       headerText();
-      pdf.text("CompanyName", 115, 35);
+      pdf.text(`${CompanyName}`, 45, 35);
       pdftext2();
-      pdf.text("street_1 , street_2", 115, 50);
-      pdf.text("city", 115, 63);
-      pdf.text("province", 115, 76);
-      pdf.text("email", 115, 89);
-      pdf.text("phone", 115, 102);
+      pdf.text("Address: ", 45, 50);
+      pdf.text(`${street_1}, ${street_2}`, 45, 63);
+      pdf.text(`${city}, ${province}`, 45, 76);
+      pdf.text(`email: ${email}`, 45, 89);
+      pdf.text(`phone No: ${phone}`, 45, 102);
     };
 
     const headerRight = function (data) {
@@ -109,14 +104,18 @@ class PdfInvoice extends React.Component {
     };
 
     const customerDetails = function (data) {
-      pdf.text(`Vehicle Id:`, 45, 150);
-      pdf.text(`${vehicle_id}`, 140, 150);
-      pdf.text(`Model:`, 45, 165);
-      pdf.text(`${model}`, 140, 165);
-      pdf.text(`Fuel Type:`, 360, 150);
-      pdf.text(`${fuel_type}`, 430, 150);
-      pdf.text('Mileage:' , 360 , 165);
-      pdf.text(`${mileage}`, 430 , 165);
+      pdf.text(`Owner:`, 45, 150);
+      pdf.text(`${owner_name}`,110, 150);
+      pdf.text(`Phone No:`, 45, 165);
+      pdf.text(`${owner_phoneNo}`,110, 165);
+      pdf.text(`Vehicle Id:`, 45, 180);
+      pdf.text(`${vehicle_id}`, 110, 180);
+      pdf.text(`Model:`, 360, 150);
+      pdf.text(`${model}`, 430, 150);
+      pdf.text(`Fuel Type:`, 360, 165);
+      pdf.text(`${fuel_type}`, 430, 165);
+      pdf.text('Mileage:' , 360 , 180);
+      pdf.text(`${mileage}`, 430 , 180);
     };
 
     const addTransactionTabel = (
@@ -164,14 +163,14 @@ class PdfInvoice extends React.Component {
         pdf.autoTable.previous.finalY + marginAdjustment + 35
       );
       pdf.text(
-        "For any inquiries, please contact us at example@example.com.",
+        `For any inquiries, please contact us at ${email}.`,
         60,
         pdf.autoTable.previous.finalY + marginAdjustment + 50
       );
       pdftext1();
       pdf.text(
         "Thank You!",
-        230,
+        250,
         pdf.autoTable.previous.finalY + marginAdjustment + 100
       );
     };
