@@ -39,6 +39,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs, { Dayjs } from 'dayjs';
+import VehicleHistory from '../Vehicle/VehicleHistory';
 
 const columns = [
   { id: 'profile_pic', label: '', minWidth: 50, maxWidth: 50 },
@@ -56,6 +57,7 @@ const allowedRoles = new Set(['ep:ad', 's:ad']);
 function Employees() {
 
   const [open, openchange] = useState(false);
+  const [openHistory, setOpenHistory] = useState(false);
   const [searchName, setSearchName] = useState('');
   const [searchEmpNIC, setSearchEmpNIC] = useState('');
   const [empData, setEmpData] = useState([]);
@@ -96,6 +98,10 @@ function Employees() {
     openchange(false);
   };
 
+  const openPopupHistory = () => { 
+    setOpenHistory(true);
+  }
+
   const openPopupNewEmp = () => {
     setIsNewEmp(true);
     setEmp({
@@ -115,6 +121,8 @@ function Employees() {
     });
     functionopenpopup();
   }
+
+
 
   const handleEmpDataChange = (event, property) => {
     setEmp(prevEmp => ({
@@ -292,6 +300,9 @@ function Employees() {
             />
             <Button variant="contained" onClick={openPopupNewEmp} color="primary" className='Button' sx={{ right: 0, left: 'auto' }} disabled={!editRole}>
               New Employee
+            </Button>
+            <Button variant="contained" onClick={openPopupHistory} color="primary" className='Button' sx={{ right: 0, left: 'auto' }}>
+              View history
             </Button>
             {/* Add employee popup  */}
             <Dialog
@@ -476,6 +487,12 @@ function Employees() {
           </div>
         </CardContent>
       </Card>
+
+      <VehicleHistory
+        open={openHistory}
+        vehicleId={1}
+        closeVehicleHistory={() => {setOpenHistory(false)}}
+      />
     </div>
   )
 }

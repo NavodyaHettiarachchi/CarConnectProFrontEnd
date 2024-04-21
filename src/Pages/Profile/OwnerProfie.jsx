@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Paper, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import Headerfile from '../../Components/Page-Header/CardHeader';
-import { Link} from 'react-router-dom';
-import axios from 'axios'; 
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { useEffect } from 'react';
 
 import Avatar from '@mui/material/Avatar';
@@ -15,8 +15,8 @@ const allowedRoles = new Set(["pp:ad", "s:ad"]);
 
 function OwnerForm() {
 
-// get user ID from local storage or null
-const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || null;
+  // get user ID from local storage or null
+  const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || null;
   const [UserID] = useState(initialUserID);
   const [editRole, setEditRole] = useState(false);
 
@@ -26,7 +26,7 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
   }, []);
 
   const mapGender = (value) => {
-    switch(value) {
+    switch (value) {
       case "M":
         return "male";
       case "F":
@@ -37,10 +37,10 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
         return "";
     }
   };
-  
+
   // Mapping function to convert "Male", "Female", "Other" to "M", "F", "O"
   const mapGenderReverse = (value) => {
-    switch(value) {
+    switch (value) {
       case "male":
         return "M";
       case "female":
@@ -51,7 +51,7 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
         return "";
     }
   };
-  
+
   // store form data
   const [formData, setformData] = useState({
     username: '',
@@ -61,16 +61,16 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
     dob: '',
     gender: '',
     nic: '',
-    city:'',
-    province:'',
-    profile_pic:''
+    city: '',
+    province: '',
+    profile_pic: ''
   });
-  
+
   useEffect(() => {
-   
-    axios.get('http://localhost:5000/owner/profile/'+UserID) 
+
+    axios.get('http://localhost:5000/owner/profile/' + UserID)
       .then(response => {
-        const { username, email, name, dob,gender , nic, city, province, phone,profile_pic } = response.data.data.userData;
+        const { username, email, name, dob, gender, nic, city, province, phone, profile_pic } = response.data.data.userData;
         const dateOnly = dob.split('T')[0];
         console.log(response.data);
         setformData({
@@ -78,7 +78,7 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
           email,
           phone,
           name,
-          dob:dateOnly, 
+          dob: dateOnly,
           gender,
           nic,
           city,
@@ -92,7 +92,7 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
       });
 
   }, [UserID]);
-  
+
 
   // const MAX_VISIBLE_CHARACTERS = 4;
   // const [email, domain] = formData.email.split('@');
@@ -137,140 +137,140 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.patch('http://localhost:5000/owner/profile/'+UserID, formData)
+    axios.patch('http://localhost:5000/owner/profile/' + UserID, formData)
       .then(response => {
-        console.log('Profile updated successfully:', response.data); 
+        console.log('Profile updated successfully:', response.data);
       })
       .catch(error => {
-        console.error('Error updating profile:', error);  
-    });
+        console.error('Error updating profile:', error);
+      });
   };
 
   return (
     <div>
-      <Headerfile title="Owner Profile"/>
+      <Headerfile title="Owner Profile" />
       <Paper style={{ padding: 15, top: 5, maxWidth: 1200, display: 'flex' }}>
-          <Grid container spacing={2}>
-            <Grid item  xs={12}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
             <form onSubmit={handleSubmit}>
-                <Grid container spacing={2}>
+              <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
 
-              <Paper style={{ padding: 5 }}>
-                <div style={{
-                  width: 200,
-                  height: 200,
-                  borderRadius: '50%',
-                  overflow: 'hidden',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  margin: '10px auto',
-                  background: '#f0f0f0'
-                }}>
-                  {formData.profile_pic ? (
-                    <img src={formData.profile_pic} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '50%' }} />
-                  ) : (
-                    <Avatar alt="Avatar" style={{ width: '100%', height: '100%' }}><AccountIcon style={{ width: '100%', height: '100%', color: '#f0f0f0' }}/></Avatar>
-                  )}
-                  {formData.profile_pic && (
-                        <Button disabled={!editRole} onClick={handleDeleteImage} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left:780 }}><DeleteIcon/></Button>
-                  )}
-                </div>
-                <input
-                  accept="image/*"
-                  id="contained-button-file"
-                  multiple
+                  <Paper style={{ padding: 5 }}>
+                    <div style={{
+                      width: 200,
+                      height: 200,
+                      borderRadius: '50%',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      margin: '10px auto',
+                      background: '#f0f0f0'
+                    }}>
+                      {formData.profile_pic ? (
+                        <img src={formData.profile_pic} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '50%' }} />
+                      ) : (
+                        <Avatar alt="Avatar" style={{ width: '100%', height: '100%' }}><AccountIcon style={{ width: '100%', height: '100%', color: '#f0f0f0' }} /></Avatar>
+                      )}
+                      {formData.profile_pic && (
+                        <Button disabled={!editRole} onClick={handleDeleteImage} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left: 780 }}><DeleteIcon /></Button>
+                      )}
+                    </div>
+                    <input
+                      accept="image/*"
+                      id="contained-button-file"
+                      multiple
                       type="file"
                       disabled={!editRole}
-                 // value={formData.profile_pic}
-                  onChange={handleImageChange}
-                />
-              </Paper>
-            </Grid>
+                      // value={formData.profile_pic}
+                      onChange={handleImageChange}
+                    />
+                  </Paper>
+                </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <Grid container spacing={4.8} sx={{paddingTop:2}}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Username"
-                    name="username"
+                <Grid item xs={12} sm={6}>
+                  <Grid container spacing={4.8} sx={{ paddingTop: 2 }}>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        label="Username"
+                        name="username"
                         value={formData.username}
                         disabled={!editRole}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Email"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        label="Email"
                         name="email"
                         disabled={!editRole}
-                    type="email"
-                    // value={truncatedEmail + '@' + domain}
-                     value={formData.email}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Phone"
+                        type="email"
+                        // value={truncatedEmail + '@' + domain}
+                        value={formData.email}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        label="Phone"
                         name="phone"
                         disabled={!editRole}
-                    value={formData.phone}
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Name"
+                    disabled={!editRole}
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
                     required
                   />
                 </Grid>
-              </Grid>
-            </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                    label="Name"
-                    disabled={!editRole}
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Date of Birth"
-                name="dob"
-                type="date"
-                value={formData.dob}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Date of Birth"
+                    name="dob"
+                    type="date"
+                    value={formData.dob}
                     onChange={handleChange}
                     disabled={!editRole}
-                required
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                InputProps={{
-                  ...(formData.dob && { inputProps: { placeholder: '' }})
-                }}
-              />
-            </Grid>
+                    required
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    InputProps={{
+                      ...(formData.dob && { inputProps: { placeholder: '' } })
+                    }}
+                  />
+                </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-              
-                     <FormControl fullWidth>
+                <Grid item xs={12} sm={6}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+
+                      <FormControl fullWidth>
                         <InputLabel>Gender</InputLabel>
                         <Select
                           value={mapGender(formData.gender)}
-                          onChange={(e) => handleChange({ target: { name: "gender", value: mapGenderReverse(e.target.value) } })} 
+                          onChange={(e) => handleChange({ target: { name: "gender", value: mapGenderReverse(e.target.value) } })}
                           name="gender"
                           disabled={!editRole}
                           required
@@ -280,28 +280,28 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                           <MenuItem value="other">Other</MenuItem>
                         </Select>
                       </FormControl>
-            </Grid>
+                    </Grid>
 
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
                         label="NIC"
                         disabled={!editRole}
-                    name="nic"
-                    value={formData.nic}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+                        name="nic"
+                        value={formData.nic}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Grid>
-           
-            <Grid item xs={12} sm={6}>
-          
-                    <Grid container spacing={2}>
+
+                <Grid item xs={12} sm={6}>
+
+                  <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
-                        <TextField
+                      <TextField
                         fullWidth
                         label="City"
                         disabled={!editRole}
@@ -309,11 +309,11 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                         value={formData.city}
                         onChange={handleChange}
                         required
-                        />
+                      />
                     </Grid>
 
                     <Grid item xs={12} sm={6}>
-                        <TextField
+                      <TextField
                         fullWidth
                         label="Province"
                         disabled={!editRole}
@@ -321,40 +321,40 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                         value={formData.province}
                         onChange={handleChange}
                         required
-                        />
+                      />
                     </Grid>
                   </Grid>
                 </Grid>
 
-           
-            <div style={{ marginLeft: '68%', marginTop: '1%' }}>
-              <Grid container spacing={5}>
-                  <Grid item xs={6}>
+
+                <div style={{ marginLeft: '68%', marginTop: '1%' }}>
+                  <Grid container spacing={5}>
+                    <Grid item xs={6}>
                       <Button variant="contained" disabled={!editRole} color="primary" type="submit">
-                      Save
-                    </Button>
+                        Save
+                      </Button>
+                    </Grid>
+
+                    <Grid item xs={6}>
+                      <Button variant="contained" color="secondary" type="button" component={Link} to="/">
+                        Back
+                      </Button>
+                    </Grid>
+
                   </Grid>
+                </div>
 
-                  <Grid item xs={6}>
-                    <Button variant="contained" color="secondary" type="button" component={Link} to="/">
-                      Back
-                    </Button>
-                  </Grid>
-
-                </Grid>
-              </div>
-
-             </Grid>
-             </form>   
-            </Grid>
-
-            <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
-            <Grid item xs={12} sm={12}>
-              { editRole && <ChangePassword/>}
-            </Grid>
-            </div>
-
+              </Grid>
+            </form>
           </Grid>
+
+          <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
+            <Grid item xs={12} sm={12}>
+              {editRole && <ChangePassword />}
+            </Grid>
+          </div>
+
+        </Grid>
       </Paper>
 
     </div>

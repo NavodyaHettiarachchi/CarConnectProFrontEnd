@@ -256,7 +256,6 @@ function Inventory() {
     });
   };
 
-
   const filterUsers = () => {
     if (searchTerm === "") {
       return users;

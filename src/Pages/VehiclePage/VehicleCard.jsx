@@ -18,6 +18,7 @@ import Headerfile from '../../Components/Page-Header/CardHeader';
 import { TextField, IconButton } from '@mui/material'
 import CloseIcon from "@mui/icons-material/Close";
 import { data } from '../../Components/ServiceHome/VBarChart';
+import VehicleHistory from '../../Components/Vehicle/VehicleHistory';
 
 const Image = styled('img')({
     width: '100%',
@@ -59,6 +60,14 @@ function VehicleCard(props) {
     const [modal, setModal] = useState(false);
     const [value, setValue] = React.useState(0);
     const [vehicleData, setvehicleData] = useState([]);
+    const [openHistory, setOpenHistory] = useState(false);
+
+    const openPopupHistory = () => { 
+        setOpenHistory(true);
+      }
+ 
+
+
     const togglemodal = () => {
         setModal(!modal);
     }
@@ -68,7 +77,7 @@ function VehicleCard(props) {
     };
 
     useEffect(() => {
-        fetch("http://localhost:4000/owner/vehicles", {
+        fetch("http://localhost:5000/owner/vehicles", {
             method: "POST",
             headers: {
                 'Content-type': 'application/json'
@@ -205,6 +214,7 @@ function VehicleCard(props) {
 
                                         <div className={classes.divs}>
                                             <h2>Major Information</h2>
+
                                             <div >
                                                 <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
                                                     Make
@@ -228,6 +238,9 @@ function VehicleCard(props) {
                                                         value={selectedVehicle?.model}
                                                     />
                                                 </div>
+                                                <Button variant="contained" onClick={openPopupHistory} color="primary" className='Button' sx={{ right: 0, left: 'auto' }}>
+                                                   View history
+                                                </Button>
                                             </div>
                                         </div>
 
@@ -322,7 +335,11 @@ function VehicleCard(props) {
             </Grid>
 
 
-
+            <VehicleHistory
+                open={openHistory}
+                vehicleId={1}
+                closeVehicleHistory={() => {setOpenHistory(false)}}
+             />
 
 
 
@@ -332,6 +349,7 @@ function VehicleCard(props) {
       </DialogContent>
     </Dialog> */}
         </div>
+
     )
 }
 
