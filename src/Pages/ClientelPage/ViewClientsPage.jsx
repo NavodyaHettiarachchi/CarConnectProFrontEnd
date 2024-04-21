@@ -5,9 +5,9 @@ import ViewClientel from '../../Components/Clientel-Component/ViewClientel'
 function ViewClientsPage() {
   return (
     <div>
-         <Box>
-            <ViewClientel />
-         </Box>
+      <Box>
+        <ViewClientel />
+      </Box>
     </div>
   )
 }
