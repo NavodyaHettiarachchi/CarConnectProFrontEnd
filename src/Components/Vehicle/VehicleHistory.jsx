@@ -159,36 +159,36 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
         </DialogTitle>
         <DialogContent style={{ 'margin': '30px' }}>
           <div>
-            <Grid container spacing={3} justifyContent="center">
+            <Grid container spacing={3} justifyContent="center" bgcolor={'#CCD0FF'} padding={2}>
               <Grid item xs={6} sm={2}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {`Owner :  ${vehicleData.name}`}
+                <Typography variant="button"  display="block" gutterBottom>
+                <strong>Owner :</strong>  {vehicleData.name}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {`Date of register :  ${handleDateConversions(vehicleData.reg_year)}`}
+                <Typography variant="button"  display="block" gutterBottom>
+                  <strong>Date of register :</strong>  {handleDateConversions(vehicleData.reg_year)}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {`Number Plate :  ${vehicleData.number_plate}`}
+                <Typography variant="button"  display="block" gutterBottom>
+                <strong>Number Plate : </strong> {vehicleData.number_plate}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {`Make :  ${vehicleData.make}`}
+                <Typography variant="button"  display="block" gutterBottom>
+                <strong>Make : </strong> {vehicleData.make}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {`Model :  ${vehicleData.model}`}
+                <Typography variant="button"  display="block" gutterBottom>
+                <strong>Model : </strong> {vehicleData.model}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2} style={{position: 'relative'}}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    {`Mileage :  ${vehicleData.mileage}`}
+                  <Typography variant="button"  display="block" gutterBottom>
+                    <strong>Mileage : </strong> {vehicleData.mileage}
                   </Typography>
                   <IconButton onClick={handleFilter} style={{ marginLeft: '30%', marginTop: '-2%' }}>
                     <MenuIcon color="primary"></MenuIcon>
@@ -199,39 +199,42 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
           </div>
           <div>
             <List
-              sx={{width: '95%', minWidth: 400, marginTop: 5, marginLeft: 6, bgcolor: 'background.paper' }}
+              sx={{width: '94%', minWidth: 300, marginTop: 5, marginLeft: 6, bgcolor: 'background.paper' }}
               component="nav"
               aria-labelledby="service-history-subheader"
               subheader={
                 <Typography variant="h6" gutterBottom component="div" id="service-history-subheader" sx={{marginBottom: 2 }}>
-                  Service History
+                  SERVICE HISTORY
                 </Typography>
               }
             >
                {Object.entries(groupByYear()).map(([year, services]) => (
                 <React.Fragment key={year}>
                   <ListItemButton onClick={() => handleYearClick(year)}>
-                    <ListItemText primary={`Year: ${year}`} />
+                    <ListItemText primary={` ${year}`} />
                     {openm === year ? <ExpandLess /> : <ExpandMore />}
                   </ListItemButton>
                   <Collapse in={openm === year} timeout="auto" unmountOnExit sx={{marginBottom: 2}}>
                     <List disablePadding>
                       <div style={{ overflowX: 'auto', position: 'relative' }}>
-                        <TableContainer component={Paper} sx={{ minWidth: 400, marginTop: '1%' }} style={{ overflowX: 'auto' }}>
-                          <Table stickyHeader>
-                            <TableHead component={Paper}>
+                        <TableContainer  sx={{ minWidth: 400, marginTop: '1%' }} style={{ overflowX: 'auto' }}>
+                          <Table>
+                            <TableHead component={Paper} sx={{minHeight: '3px', padding: 0, bgcolor: '#CCD0FF' , boxShadow: 'none' }}>
                               <TableRow>
-                                <TableCell >
-                                  Service Date
+                                <TableCell style={{ fontWeight: 'bold' }}>
+                                  SERVICE DATE
                                 </TableCell>
-                                <TableCell  >
-                                  Description
+                                <TableCell style={{ fontWeight: 'bold' }}>
+                                  DESCRIPTION
                                 </TableCell>
-                                <TableCell  >
-                                  Mileage
+                                <TableCell style={{ fontWeight: 'bold' }}>
+                                  MILEAGE
                                 </TableCell>
-                                <TableCell  >
-                                  Cost: Rs.
+                                <TableCell style={{ fontWeight: 'bold' }}>
+                                  COST
+                                </TableCell>
+                                <TableCell style={{ fontWeight: 'bold' }}>
+                                  
                                 </TableCell>
                               </TableRow>
                             </TableHead>
@@ -242,7 +245,7 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
                                   <TableCell>{service.description}</TableCell>
                                   <TableCell>{service.mileage}</TableCell>
                                   <TableCell>{`Rs. ${parseFloat(service.cost).toFixed(2)}`}</TableCell>
-                                  <TableCell>
+                                  <TableCell align='right'>
                                     <IconButton aria-label="delete" sx={{fontSize: 'small'}} >
                                       Download Invoice <DownloadForOfflineIcon sx={{marginLeft: 1}} color="primary"/>
                                     </IconButton>
