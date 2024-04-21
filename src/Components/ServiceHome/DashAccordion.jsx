@@ -1,10 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export default function DashAccordion() {
   const [services, setServices] = useState([]);
@@ -65,26 +61,18 @@ export default function DashAccordion() {
       const vehicle = vehicles.find((v) => v.id === service.client_id);
       return { ...service, vehicle };
     });
-    setCombinedData(combined);
+    
+    setCombinedData(combined.sort((a, b) => new Date(b.service_date) - new Date(a.service_date)));
+
+    console.log(combinedData);
   }, [services, vehicles]);
 
   return (
     <div>
-      {combinedData.map((item, index) => (
-        <Accordion key={index}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>{item.vehicle?.number_plate}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>Service Date: {item.service_date}</Typography>
-            <Typography>Description: {item.description}</Typography>
-            <Typography>Cost: {item.cost}</Typography>
-          </AccordionDetails>
-        </Accordion>
+      {combinedData.map((item) => (
+        <Typography>
+          { item.vehicle?.number_plate + ':    ' + item.service_date.split('T')[0] + '   -   ' + item.description + '   -   ' + item.cost }
+        </Typography>
       ))}
     </div>
   );

@@ -36,11 +36,15 @@ function Login() {
         window.sessionStorage.setItem('userType', JSON.stringify(loginData.roleType));//@Harindu
         let roles = loginData.user.roles.split(', ');
         const found = roles.filter((role) => role === 'mv:ad');
-        console.log(found);
         if (found.length > 0) {
           navigate('/vehicle');
         } else {
-          navigate('/service/');
+          const isAdmin = roles.filter((role) => role === 's:ad' || role === 'sp:ad' || role === 'sp:v');
+          if (isAdmin.length > 0) {
+            navigate('/dashboard');
+          } else { 
+            navigate('/service/');
+          }
         }
       } else {
         alert("Invalid Credentials");

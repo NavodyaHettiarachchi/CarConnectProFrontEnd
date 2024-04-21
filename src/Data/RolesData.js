@@ -2,6 +2,14 @@ import React from 'react';
 
 export const roles = [
   {
+    name: 'Dashboard',
+    description: 'View or edit dashboard of a center',
+    roles: {
+      view: 'sp:ad',
+      edit: 'sp:ad',
+    }
+  },
+  {
     name: 'On Going Services',
     description: 'View or edit on going services of a center',
     roles: {

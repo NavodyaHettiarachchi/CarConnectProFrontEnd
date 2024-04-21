@@ -8,18 +8,18 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import "../../Components/ServiceHome/Dashboard.css";
 import StorefrontIcon from "@mui/icons-material/Storefront";
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
 import VBarChart from "../../Components/ServiceHome/VBarChart";
-import CountUp from "react-countup";
 import Headerfile from "../../Components/Page-Header/CardHeader";
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import PersonIcon from '@mui/icons-material/Person';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
+import CarRepairIcon from '@mui/icons-material/CarRepair';
 
 function ServiceHome() {
   const [finishedServices, setFinishedServices] = useState([]);
   const [ongoingServices, setOngoingServices] = useState([]);
   const [clients, setClients] = useState([]);
   const [employees, setEmployees] = useState([]);
-  // const [filterServices, setFilterServices] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:5000/center/finishedServices", {
@@ -140,7 +140,7 @@ function ServiceHome() {
   }
 
   return (
-    <div style={{ height: 630 }}>
+    <div>
       <Headerfile />
       <Box sx={{ display: "flex" }}>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -152,7 +152,7 @@ function ServiceHome() {
                   sx={{ width: "50%", height: "100%" }}
                 >
                   <div className="iconstylewhite">
-                    <CreditCardIcon />
+                    <AttachMoneyIcon />
                   </div>
                   <CardContent>
                     <Typography
@@ -173,37 +173,12 @@ function ServiceHome() {
                     </Typography>
                   </CardContent>
                 </Card>
-                {/* <Card
-                  className="gradientlight"
-                  sx={{ width: "100%", height: "100%" }}
-                >
-                  <div className="iconstylewhite">
-                    <ShoppingBagIcon />
-                  </div>
-                  <CardContent>
-                    <Typography
-                      gutterBottom
-                      variant="h5"
-                      component="div"
-                      sx={{ color: "#f0fcfc" }}
-                    >
-                      $<CountUp delay={0.2} end={900} duration={0.4} />
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ color: "#ccd1d1" }}
-                    >
-                      Total Order
-                    </Typography>
-                  </CardContent>
-                </Card> */}
                 <Grid item xs={12} md={6}>
                   <Stack spacing={2}>
                     <Card className="gradientlight" sx={{ width: "100%" }}>
                       <Stack spacing={2} direction="row">
                         <div className="iconstylewhite">
-                          <StorefrontIcon />
+                          <PersonIcon />
                         </div>
                         <div className="paddingall">
                           <span className="pricetitle fontwhite">
@@ -242,7 +217,7 @@ function ServiceHome() {
                 <Card className="gradientlight" sx={{ width: "100%" }}>
                   <Stack spacing={2} direction="row">
                     <div className="iconstylewhite">
-                      <StorefrontIcon />
+                      <WarehouseIcon />
                     </div>
                     <div className="paddingall">
                       <span className="pricetitle fontwhite">
@@ -258,7 +233,7 @@ function ServiceHome() {
                 <Card className="gradientlight" sx={{ width: "100%" }}>
                   <Stack spacing={2} direction="row">
                     <div className="iconstylewhite">
-                      <StorefrontIcon />
+                      <CarRepairIcon />
                     </div>
                     <div className="paddingall">
                       <span className="pricetitle fontwhite">

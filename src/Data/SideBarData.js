@@ -7,6 +7,7 @@ import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DirectionsCarFilledOutlinedIcon from '@mui/icons-material/DirectionsCarFilledOutlined';
 import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import { AppRoutes as Routes } from "../AppRoutes/Approutes";
 
 const getPath = () => {
@@ -43,6 +44,14 @@ const getComponent = () => {
 
 
 export const menu = [
+  {
+    key: 0,
+    name: "Dashboard",
+    icon: <DashboardIcon />,
+    allowedRoles: ["s:ad", "sp:ad", "sp:v"],
+    path: Routes.home.path,
+    component: Routes.home.component
+  },
   {
     key: 1,
     name: "Services",
