@@ -23,10 +23,10 @@ function RegisterFormPartOne({ data, setData }) {
     const type = event.target.value;
     setSelectedType(type);
     setData({ ...data, isOwner: type === 'user' ? true : false, 
-                      //  center_type: type === 'user' ? null : '', 
-                      //  gender: type === 'center' ? null : '', 
-                      //  dob: type === 'center' ? null : '', 
-                      //  nic: type === 'center' ? null : '' 
+                       center_type: type === 'user' ? null : '', 
+                       gender: type === 'center' ? null : '', 
+                       dob: type === 'center' ? null : '', 
+                       nic: type === 'center' ? null : '' 
                       });
   };
 
@@ -57,6 +57,7 @@ function RegisterFormPartOne({ data, setData }) {
               <>
                 <label htmlFor="" className='left-aligned top-spacer'>Gender</label>
                 <select id="gender" onChange={(e) => setData({ ...data, gender: e.target.value })} value={data.gender} className='select-field'>
+                  <option value="">Select gender</option>
                   <option value="M" className='select-field'>Male</option>
                   <option value="F">Female</option>
                   <option value="O">Other</option>
@@ -68,6 +69,7 @@ function RegisterFormPartOne({ data, setData }) {
               <>
                 <label htmlFor="" className='left-aligned top-spacer'>Center_Type</label>
                 <select id="center_type" onChange={(e) => setData({ ...data, center_type: e.target.value })} value={data.center_type} className='select-field'>
+                  <option value="">Select Center Type</option>
                   <option value="B">Service and Repair Center</option>
                   <option value="R">Repair Center</option>
                   <option value="S">Service Center</option>
