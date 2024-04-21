@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import "./ViewClientel.css";
 import { Card, CardContent } from '@mui/material';
 import {
@@ -28,6 +28,8 @@ import { DateField } from '@mui/x-date-pickers/DateField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Headerfile from '../../Components/Page-Header/CardHeader';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
 const allowedRoles = new Set(['cp:ad', 's:ad']);
 
@@ -47,10 +49,11 @@ function ViewClientel() {
   const [searchVehicleNP, setSearchVehicleID] = useState("");
   const [clientData, setClientData] = useState([]);
   const [vehicleData, setVehicleData] = useState([]);
+  const [isUpdated, setIsUpdated] = useState(false);
   const [client, setClient] = useState({
     owner_id: '',
-    vehicle: '',
-    date_of_reg: null, // Initialize with the current date
+    vehicle_id: null,
+    date_of_reg: dayjs(), // Initialize with the current date
     mileage_on_reg: 0
   });
 
@@ -64,13 +67,30 @@ function ViewClientel() {
     openchange(true);
   };
   const closepopup = () => {
+    setClient({
+      owner_id: '',
+      vehicle_id: null,
+      date_of_reg: dayjs(), // Initialize with the current date
+      mileage_on_reg: 0
+    });
     openchange(false);
   };
 
-  const handleMileageChange = (event) => { 
-    setClient((client) => ({ ...client, mileage_on_reg: event.target.value }));
+  const handleChange = (event, property) => {
+    setClient((prevClient) => ({
+      ...prevClient,
+      [property]: property === 'date_of_reg' ? event : event.target.value,
+    }));
   }
 
+  const handleKeyPress = (event) => {
+    const charCode = event.charCode;
+
+    // Only allow numeric characters and the decimal point
+    if (charCode < 48 || charCode > 57 || (charCode === 46 && client.mileage_on_reg.includes('.'))) {
+      event.preventDefault();
+    }
+  };
 
   const handleNameChange = (event) => {
     setSearchName(event.target.value);
@@ -78,12 +98,6 @@ function ViewClientel() {
 
   const handleVehicleIDChange = (event) => {
     setSearchVehicleID(event.target.value);
-  };
-
-  const setNumberPlate = (value) => {
-    let tempObj = client;
-    client.vehicle = value;
-    setVehicleData(tempObj);
   };
 
   const getVehiclesAndOwners = async () => {
@@ -126,17 +140,15 @@ function ViewClientel() {
         setClientData(data.data.clients);
       })
       .catch((error) => { console.log(error) });
-  }, []);
+  }, [isUpdated]);
 
   const isValidClient = (client) => {
-    const { owner_id, vehicle } = client;
+    console.log(client);
+    const { owner_id, vehicle_id } = client;
 
     // Check if owner_id and vehicle exist and are not empty objects
-    if (owner_id && vehicle && Object.keys(vehicle).length > 0) {
-      if (vehicle.mileage_on_reg !== null && vehicle.date_of_reg !== null) {
-        // Validation passed
-        return true;
-      }
+    if (owner_id && vehicle_id) {
+      return true;
     }
     // Validation failed
     return false;
@@ -153,16 +165,21 @@ function ViewClientel() {
           schema: JSON.parse(window.sessionStorage.getItem('schema')),
           vehicle_id: client.vehicle_id,
           date_of_reg: client.date_of_reg,
-          mileage_on_reg: client.mileage_on_reg,
+          mileage_on_reg: client.mileage_on_reg / 1,
           owner_id: client.owner_id 
         }),
       });
       await response.json();
-
+      setIsUpdated(!isUpdated);
+      closepopup();
     } else { 
       // show error notif
     }
   };
+
+  const filteredVehicleData = vehicleData.filter((vehicle) => {
+    return clientData.find((client) => client.vehicle_id === vehicle.vehicle_id) === undefined;
+  });
 
   let filteredClients = clientData.filter(
     (user) =>
@@ -229,11 +246,16 @@ function ViewClientel() {
                 <Grid item xs={12} sm={4}>
                   <Autocomplete
                     id="combo-box-demo"
-                    options={Array.isArray(vehicleData) ? vehicleData : []}
-                    getOptionLabel={(option) => option.number_plate} // Display number_plate in the dropdown
-                    value={null}
+                    options={Array.isArray(vehicleData) && filteredVehicleData ? filteredVehicleData : []}
+                    getOptionLabel={(option) => option.number_plate}
+                    value={client.vehicle_id ? vehicleData.find((vehicle) => vehicle.vehicle_id === client.vehicle_id) : null}
                     onChange={(event, newValue) => {
-                      setNumberPlate(newValue); // Save the selected vehicle
+                      setClient({
+                        ...client,
+                        vehicle_id: newValue ? newValue.vehicle_id : null,
+                        owner_id: newValue ? newValue.owner_id : null,
+                        vehicle: newValue ? newValue : null
+                      })
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -246,16 +268,39 @@ function ViewClientel() {
                       />
                     )}
                     renderOption={(props, option) => (
-                      <li {...props}>{option.number_plate}</li> // Customize how options are displayed
+                      <li {...props}>{option.number_plate}</li>
                     )}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <TextField id="standard-basic" onChange={handleMileageChange} value={client.mileage_on_reg} label="Mileage On Registration" fullWidth variant="standard" />
+                  <TextField
+                    variant="standard"
+                    id="standard-basic"
+                    label="Mileage on Registration"
+                    onKeyPress={handleKeyPress}
+                    fullWidth
+                    value={client.mileage_on_reg || ''}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      const mileage = value ? parseFloat(value) / 1 : null;
+                      setClient({ ...client, mileage_on_reg: mileage });
+                    }}
+                  />
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
-                    <DateField label="Date" defaultValue={dayjs()} fullWidth variant="standard"/>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DatePicker']}>
+                      <DatePicker
+                        label="Date of Register"
+                        value={client.date_of_reg}
+                        variant="standard"
+                        id="standard-basic"
+                        fullWidth
+                        defaultValue={dayjs()}
+                        onChange={(newValue) => handleChange(newValue, 'date_of_reg')}
+                        disabled={!editRole}
+                      />
+                    </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
                 <Grid item xs={12} sm={4}>
