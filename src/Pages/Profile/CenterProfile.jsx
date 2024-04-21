@@ -126,7 +126,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
             fullWidth
             label="Username"
             name="username"
-            value={formData.username}
+                    value={formData.username}
+                    disabled={!editRole}
             InputProps={{
                 readOnly: true,
               }}
@@ -139,7 +140,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
             label="Email"
             name="email"
             type="email"
-             value={formData.email}
+                    value={formData.email}
+                    disabled={!editRole}
             // value={truncatedEmail + '@' + domain}
                     InputProps={{
                       readOnly: true,
@@ -152,7 +154,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
             fullWidth
             label="Center Name"
             name="name"
-            value={formData.name}
+                    value={formData.name}
+                    disabled={!editRole}
             onChange={handleChange}
             required
           />
@@ -163,7 +166,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
             fullWidth
             label="Phone"
             name="phone"
-            value={formData.phone}
+                    value={formData.phone}
+                    disabled={!editRole}
             onChange={handleChange}
             required
           />
@@ -178,7 +182,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                 <FormControl fullWidth>
                 <InputLabel>Center Type</InputLabel>
                 <Select
-                value={mapCenterType(formData.center_type)}
+                          value={mapCenterType(formData.center_type)}
+                          disabled={!editRole}
                 onChange={(e) => handleChange({ target: { name: "center_type", value: mapCenterTypeReverse(e.target.value) } })} 
                 name="center_type"
                 required
@@ -198,7 +203,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
                 fullWidth
                 label="Street 1"
                 name="street_1"
-                value={formData.street_1}
+                        value={formData.street_1}
+                        disabled={!editRole}
                 onChange={handleChange}
                 required
             />
@@ -214,7 +220,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
             fullWidth
             label="Street 2"
             name="street_2"
-            value={formData.street_2}
+                    value={formData.street_2}
+                    disabled={!editRole}
             onChange={handleChange}
             required
           />
@@ -226,7 +233,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
             fullWidth
             label="City"
             name="city"
-            value={formData.city}
+                    value={formData.city}
+                    disabled={!editRole}
             onChange={handleChange}
             required
            />
@@ -237,7 +245,8 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
               fullWidth
               label="Province"
               name="province"
-              value={formData.province}
+                    value={formData.province}
+                    disabled={!editRole}
               onChange={handleChange}
               required
               />
@@ -246,7 +255,7 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
             <div style={{ marginLeft: '68%', marginTop: '1%' }}>
               <Grid container spacing={5}>
                   <Grid item xs={6}>
-                    <Button variant="contained" color="primary" type="submit">
+                      <Button variant="contained" disabled={!editRole} color="primary" type="submit">
                       Save
                     </Button>
                   </Grid>
@@ -264,7 +273,7 @@ const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || nul
 
             <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
               <Grid item xs={12} sm={12}>
-                <ChangePassword/>
+                { editRole && <ChangePassword/>}
               </Grid>
             </div>
 
