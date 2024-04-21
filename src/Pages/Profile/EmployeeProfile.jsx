@@ -313,7 +313,7 @@ function EmployeeForm() {
 
           <Grid container justifyContent="center">
             <Grid item xs={12}>
-              { editRole && <ChangePassword />}
+              {editRole && <ChangePassword />}
             </Grid>
           </Grid>
         </Grid>

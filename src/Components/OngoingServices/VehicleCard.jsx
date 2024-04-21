@@ -23,7 +23,7 @@ import {
   Typography,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
-
+import axios from "axios";
 import CancelPresentationOutlinedIcon from "@mui/icons-material/CancelPresentationOutlined";
 import PdfInvoice from "../PDFInvoice/PdfInvoice";
 
@@ -54,6 +54,18 @@ const VehicleCard = ({
   const [vehiData, setVehiData] = useState([]);
   const [invoiceData, setInvoiceData] = useState(null);
   const [parts, setParts] = useState([]);
+  const [centerData, setCenterData] = useState({
+    username: "",
+    email: "",
+    name: "",
+    phone: "",
+    center_type: "",
+    street_1: "",
+    street_2: "",
+    city: "",
+    province: "",
+  });
+
   const getVehicleNumber = () => {
     const vehicle = vehiData.find((vehicle) => vehicle.id === clientId);
     return vehicle ? vehicle.number_plate : null;
@@ -70,6 +82,16 @@ const VehicleCard = ({
   const getFuel = () => {
     const vehicle = vehiData.find((vehicle) => vehicle.id === clientId);
     return vehicle ? vehicle.fuel_type : null;
+  };
+
+  const getOwner = () => {
+    const vehicle = vehiData.find((vehicle) => vehicle.id === clientId);
+    return vehicle ? vehicle.owner_name : null;
+  };
+
+  const getOwnerPhoneNo = () => {
+    const vehicle = vehiData.find((vehicle) => vehicle.id === clientId);
+    return vehicle ? vehicle.owner_contact : null;
   };
 
   const handleClickOpen = () => {
@@ -359,8 +381,54 @@ const VehicleCard = ({
 
   //pdfInvoice genaration
   //collect final values
+  const initialUserID =
+    JSON.parse(window.sessionStorage.getItem("userId")) || null;
+  const [UserID] = useState(initialUserID);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/center/profile/" + UserID)
+      .then((response) => {
+        const {
+          username,
+          email,
+          phone,
+          name,
+          center_type,
+          street_1,
+          street_2,
+          city,
+          province,
+        } = response.data.data.userData;
+        console.log(response.data);
+        setCenterData({
+          username,
+          email,
+          phone,
+          name,
+          center_type,
+          street_1,
+          street_2,
+          city,
+          province,
+        });
+      })
+
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, [UserID]);
 
   const generateInvoiceData = () => {
+    const owner_name = getOwner();
+    const owner_phoneNo = getOwnerPhoneNo();
+    const CompanyName = centerData.name;
+    const street_1 = centerData.street_1;
+    const street_2 = centerData.street_2;
+    const city = centerData.city;
+    const province = centerData.province;
+    const phone = centerData.phone;
+    const email = centerData.email;
     const vehicle_id = getVehicleNumber();
     const fuel_type = getFuel();
     const model = getModel();
@@ -381,6 +449,15 @@ const VehicleCard = ({
       mileage,
       selectedItems,
       full_Amount,
+      CompanyName,
+      street_1,
+      street_2,
+      city,
+      province,
+      phone,
+      email,
+      owner_name,
+      owner_phoneNo,
     });
 
     console.log("in genarate invoiceData", invoiceData);
@@ -395,7 +472,6 @@ const VehicleCard = ({
     console.log("finish clicked");
     handleSaveClick();
     handleClose();
-    generateInvoiceData();
     disableOngoingService();
   };
 

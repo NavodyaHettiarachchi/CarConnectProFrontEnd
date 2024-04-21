@@ -28,12 +28,10 @@ import {
 } from "@mui/material";
 
 const columns = [
-  { id: "itemID", label: "Item ID", minWidth: 170 },
-  { id: "itemName", label: "Item Name", minWidth: 170 },
+  { id: "name", label: "Item Name", minWidth: 170 },
 
   { id: "price", label: "Price", minWidth: 170 },
   { id: "quantity", label: "Quantity", minWidth: 170 },
-  { id: "total", label: "Total", minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 },
 ];
 function Inventory() {
@@ -41,7 +39,7 @@ function Inventory() {
   const [quantity, setQuantity] = useState(0);
   const [total, setTotal] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [users, setUsers] = useState([]);
+  const [inventory, setInventory] = useState([]);
   const [name, setName] = useState();
   const [country, setCountry] = useState("");
   const [sum, setSum] = useState();
@@ -51,6 +49,8 @@ function Inventory() {
   const [row, setRow] = useState("");
   const [id, setId] = useState(0);
   const [countries, setCountries] = useState([]);
+  const [editRole, setEditRole] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -64,10 +64,6 @@ function Inventory() {
 
     fetchCountries();
   }, []);
-
-  const handleCountryChange = (event) => {
-    setCountry(event.target.value);
-  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -83,6 +79,18 @@ function Inventory() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+
+  const setEditParams = () => {
+    const roles = JSON.parse(window.sessionStorage.getItem("roles")).split(
+      ", "
+    );
+    setEditRole(
+      allowedRoles.has(
+        roles.find((role) => role === "ip:ad" || role === "s:ad")
+      )
+    );
+  };
+
   useEffect(() => {
     fetch("http://localhost:5000/center/inventory", {
       method: "POST",
@@ -99,9 +107,9 @@ function Inventory() {
         }
         return response.json();
       })
-      .then((data) => setUsers(data.data.inventory))
+      .then((data) => setInventory(data.data.inventory))
       .catch((error) => console.error("Error fetching inventory data:", error));
-  }, []);
+  }, [isUpdated]);
 
   const calculateTotal = (price, quantity) => {
     const newTotal = price * quantity;
@@ -110,20 +118,11 @@ function Inventory() {
     });
   };
 
-  // function refreshPage() {
-  //   window.location.reload();
-  // }
-  // Function to filter users based on search term
-  const filterUsers = () => {
-    if (searchTerm === "") {
-      return users;
-    } else {
-      return users.filter((user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-  };
+  const filteredInventory = inventory.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   // Event handler for search input
+
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -141,21 +140,15 @@ function Inventory() {
       };
 
       // Send the data to the server using the fetch API
-      const response = await fetch(
-        "http://localhost:5000/center/addInventory",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dataToSend),
-        }
-      );
+      await fetch("http://localhost:5000/center/addInventory", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
 
-      // Get the response data and update the users state
-      const data = await response.json();
-      setUsers([...users, { name, price, quantity, country }]);
-      console.log("Data added", data);
+      setIsUpdated(!isUpdated);
     } catch (error) {
       console.log(error);
     }
@@ -180,11 +173,8 @@ function Inventory() {
         return response.json();
       })
       .then((data) => {
-        // Update the users state to remove the deleted row
-
-        setUsers(users.filter((user) => user.part_id !== partId));
+        setIsUpdated(!isUpdated);
       })
-
       .catch((error) => console.error("Error deleting data:", error));
   };
   const handleEdit = (row) => {
@@ -206,30 +196,19 @@ function Inventory() {
         name: name,
         price: price,
         quantity: quantity,
-
         description: description,
       };
 
       // Send the data to the server using the fetch API
-      const response = await fetch(
-        `http://localhost:5000/center/inventory/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dataToSend),
-        }
-      );
+      await fetch(`http://localhost:5000/center/inventory/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
 
-      // Get the response data and update the users state
-      const data = await response.json();
-      setUsers(
-        users.map((user) =>
-          user.part_id === id ? { ...user, ...dataToSend } : user
-        )
-      );
-      console.log("Data updated", data);
+      setIsUpdated(!isUpdated);
     } catch (error) {
       console.log(error);
     }
@@ -239,7 +218,7 @@ function Inventory() {
   return (
     <div class="bg-2 text-center">
       <Headerfile title="Inventory" />
-      <Card style={{ height: "80vh" }}>
+      <Card style={{ height: "80vh", boxShadow: "none" }}>
         <CardContent>
           <div>
             <div class="col-sm-8">
@@ -263,61 +242,69 @@ function Inventory() {
                     Add Item
                   </Button>
                 </Grid>
-                <Grid item>
-                  <TableContainer component={Paper} style={{ width: "250%" }}>
-                    <Table aria-label="customized table" padding="normal">
-                      <TableHead>
-                        <TableRow>
-                          {columns.map((column) => (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.label}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {filterUsers().map((row, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{row.part_id}</TableCell>
-                            <TableCell>{row.name}</TableCell>
-                            <TableCell>Rs. {row.price}</TableCell>
-
-                            <TableCell>{row.quantity}</TableCell>
-                            <TableCell>
-                              Rs.{" "}
-                              {calculateTotal(
-                                parseFloat(row.price.replace("Rs. ", "")),
-                                row.quantity
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <EditIcon
-                                variant="contained"
-                                color="primary"
-                                onClick={() => handleEdit(row)}
-                                style={{
-                                  marginRight: "10px",
-                                  cursor: "pointer",
-                                }}
-                              />
-
-                              <DeleteForeverIcon
-                                variant="contained"
-                                color="primary"
-                                onClick={() => handleRemove(row)}
-                                style={{
-                                  marginRight: "10px",
-                                  cursor: "pointer",
-                                }}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Grid>
               </Grid>
+            </div>
+            <div style={{ overflowX: "auto", position: "relative" }}>
+              <TableContainer
+                component={Paper}
+                sx={{ height: "72vh", minWidth: "1600px", marginTop: "1%" }}
+                style={{ overflowX: "auto" }}
+              >
+                <Table stickyHeader size="small">
+                  <TableHead>
+                    <TableRow>
+                      {columns.map((column) => (
+                        <TableCell key={column.id} align={column.align}>
+                          {column.label}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredInventory.map((row) => {
+                      return (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={row.id}
+                        >
+                          {columns.map((col) => {
+                            const value = row[col.id];
+                            return col.id === "price" ? (
+                              <TableCell>
+                                Rs.{" "}
+                                {calculateTotal(
+                                  parseFloat(row.price.replace("Rs. ", "")),
+                                  row.quantity
+                                )}
+                              </TableCell>
+                            ) : col.id === "actions" ? (
+                              <TableCell>
+                                <IconButton
+                                  aria-label="edit"
+                                  onClick={() => handleEdit(row)}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                                <IconButton
+                                  aria-label="delete"
+                                  onClick={() => handleRemove(row)}
+                                  disabled={!editRole}
+                                >
+                                  <DeleteForeverIcon />
+                                </IconButton>
+                              </TableCell>
+                            ) : (
+                              <TableCell>{value}</TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </div>
           </div>
         </CardContent>
@@ -372,15 +359,23 @@ function Inventory() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <Autocomplete
+                id="combo-box-demo"
                 value={country}
                 onChange={(event, newValue) => {
                   setCountry(newValue);
                 }}
                 options={countries}
                 renderInput={(params) => (
-                  <TextField {...params} label="Manufacture Country" />
+                  <TextField
+                    {...params}
+                    label="Manufacture Country"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    variant="standard"
+                  />
                 )}
-                onSelect={(event) => setCountry(event.target.value)}
+                // onSelect={(event) => setCountry(event.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={12}>
@@ -416,18 +411,6 @@ function Inventory() {
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="Item ID"
-                label="Item ID"
-                type="text"
-                fullWidth
-                value={id}
-                disabled
-              />
-            </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 autoFocus

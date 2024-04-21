@@ -21,8 +21,8 @@ function AdminProfile() {
     dob: '',
     gender: '',
     nic: '',
-    city:'',
-    province:'',
+    city: '',
+    province: '',
     image: ''
   });
 
@@ -80,155 +80,155 @@ function AdminProfile() {
 
   return (
     <div>
-      <Headerfile title="Admin Profile"/>
+      <Headerfile title="Admin Profile" />
       <Paper style={{ padding: 15, top: 5, maxWidth: 1200, display: 'flex' }}>
-        
-      <Grid container spacing={2}>
-          <Grid item xs={12}>
-          <form onSubmit={handleSubmit}>
 
-          <Grid container spacing={2}>
-            <Grid item sm={6} xs={12}>
-              <Paper style={{ padding: 5 }}>
-                <div style={{
-                  width: 200,
-                  height: 200,
-                  borderRadius: '50%',
-                  overflow: 'hidden',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  margin: '10px auto',
-                  background: '#f0f0f0'
-                }}>
-                  {formData.image ? (
-                    <img src={formData.image} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '50%' }} />
-                  ) : (
-                    <Avatar alt="Avatar" style={{ width: '100%', height: '100%' }}><AccountIcon style={{ width: '100%', height: '100%', color: '#f0f0f0' }}/></Avatar>
-                  )}
-                  {formData.image && (
-                    <Button onClick={handleDeleteImage} disabled={!editRole} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left:780 }}><DeleteIcon/></Button>
-                  )}
-                </div>
-                <input
-                  accept="image/*"
-                  id="contained-button-file"
-                  multiple
-                  type="file"
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <form onSubmit={handleSubmit}>
+
+              <Grid container spacing={2}>
+                <Grid item sm={6} xs={12}>
+                  <Paper style={{ padding: 5 }}>
+                    <div style={{
+                      width: 200,
+                      height: 200,
+                      borderRadius: '50%',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      margin: '10px auto',
+                      background: '#f0f0f0'
+                    }}>
+                      {formData.image ? (
+                        <img src={formData.image} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '50%' }} />
+                      ) : (
+                        <Avatar alt="Avatar" style={{ width: '100%', height: '100%' }}><AccountIcon style={{ width: '100%', height: '100%', color: '#f0f0f0' }} /></Avatar>
+                      )}
+                      {formData.image && (
+                        <Button onClick={handleDeleteImage} disabled={!editRole} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left: 780 }}><DeleteIcon /></Button>
+                      )}
+                    </div>
+                    <input
+                      accept="image/*"
+                      id="contained-button-file"
+                      multiple
+                      type="file"
                       onChange={handleImageChange}
                       disabled={!editRole}
-                />
+                    />
 
 
-            </Paper>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Grid container spacing={4.8} sx={{paddingTop:2}}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Username"
-                    name="username"
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Grid container spacing={4.8} sx={{ paddingTop: 2 }}>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        label="Username"
+                        name="username"
                         value={formData.username}
                         disabled={!editRole}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Email"
-                    name="email"
-                    type="email"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        label="Email"
+                        name="email"
+                        type="email"
                         value={formData.email}
                         disabled={!editRole}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Phone"
-                    name="phone"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        label="Phone"
+                        name="phone"
                         value={formData.phone}
                         disabled={!editRole}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Name"
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
+                    disabled={!editRole}
                     required
                   />
                 </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Name"
-                name="name"
-                value={formData.name}
-                    onChange={handleChange}
-                    disabled={!editRole}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Date of Birth"
-                name="dob"
-                type="date"
-                value={formData.dob}
-                    onChange={handleChange}
-                    disabled={!editRole}
-                required
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel>Gender</InputLabel>
-                    <Select
-                      value={formData.gender}
-                          onChange={handleChange}
-                          disabled={!editRole}
-                      name="gender"
-                      required
-                    >
-                      <MenuItem value="male">Male</MenuItem>
-                      <MenuItem value="female">Female</MenuItem>
-                      <MenuItem value="other">Other</MenuItem>
-                     
-                    </Select>
-                  </FormControl>
-                </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="NIC"
-                    name="nic"
-                        value={formData.nic}
-                        disabled={!editRole}
-                    InputProps={{
-                      readOnly: true,
+                    label="Date of Birth"
+                    name="dob"
+                    type="date"
+                    value={formData.dob}
+                    onChange={handleChange}
+                    disabled={!editRole}
+                    required
+                    InputLabelProps={{
+                      shrink: true,
                     }}
+
                   />
                 </Grid>
-              </Grid>
-            </Grid>
-           
-            <Grid item xs={12} sm={6}>
-          
-                    <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <FormControl fullWidth>
+                        <InputLabel>Gender</InputLabel>
+                        <Select
+                          value={formData.gender}
+                          onChange={handleChange}
+                          disabled={!editRole}
+                          name="gender"
+                          required
+                        >
+                          <MenuItem value="male">Male</MenuItem>
+                          <MenuItem value="female">Female</MenuItem>
+                          <MenuItem value="other">Other</MenuItem>
+
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        label="NIC"
+                        name="nic"
+                        value={formData.nic}
+                        disabled={!editRole}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+
+                  <Grid container spacing={2}>
 
                     <Grid item xs={12} sm={6}>
-                        <TextField
+                      <TextField
                         fullWidth
                         label="City"
                         name="city"
@@ -236,11 +236,11 @@ function AdminProfile() {
                         disabled={!editRole}
                         onChange={handleChange}
                         required
-                        />
+                      />
                     </Grid>
 
                     <Grid item xs={12} sm={6}>
-                        <TextField
+                      <TextField
                         fullWidth
                         label="Province"
                         name="province"
@@ -248,43 +248,43 @@ function AdminProfile() {
                         disabled={!editRole}
                         onChange={handleChange}
                         required
-                        />
+                      />
                     </Grid>
 
-                    </Grid>
+                  </Grid>
 
                 </Grid>
 
                 <div style={{ marginLeft: '68%', marginTop: '1%' }}>
-              <Grid container spacing={5}>
-                  <Grid item xs={6}>
+                  <Grid container spacing={5}>
+                    <Grid item xs={6}>
                       <Button variant="contained" color="primary" disabled={!editRole} type="submit">
-                      Save
-                    </Button>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Button variant="contained" color="secondary" type="button" component={Link} to="/">
-                      Back
-                    </Button>
-                  </Grid>
-                </Grid>
-              </div>
+                        Save
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Button variant="contained" color="secondary" type="button" component={Link} to="/">
+                        Back
+                      </Button>
+                    </Grid>
+                  </Grid >
+                </div >
 
 
-            </Grid>
-            </form>  
-          </Grid>
+              </Grid >
+            </form >
+          </Grid >
 
-            <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
-              <Grid item xs={12} sm={12}>
-              {editRole && <ChangePassword/>}
-              </Grid>
-            </div>
+          <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
+            <Grid item xs={12} sm={12}>
+              {editRole && <ChangePassword />}
+            </Grid >
+          </div >
 
-          </Grid>
-      
-      </Paper>
-    </div>
+        </Grid >
+
+      </Paper >
+    </div >
   );
 }
 
