@@ -18,6 +18,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEditRole, isUpdatedRole, editRole }) {
 
@@ -32,6 +34,9 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
     { name: 'settings', label: 'Settings', view: false, edit: false, viewVal: 'sp:v', editVal: 'sp:ad' },
     { name: 'profile', label: 'Profile', view: false, edit: false, viewVal: 'pp:v', editVal: 'pp:ad' },
   ]);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("");
   const addRoleCols = [
     { id: 'name', label: 'Page', },
     { id: 'privileges', label: 'Privileges', minWidth: 150, maxWidth: 150 }
@@ -81,6 +86,12 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
     closeAddRole();
     CloseEditRole();
     isUpdatedRole();
+  }
+
+  const handleAlertClose = () => {
+    setAlertMessage("");
+    setAlertType("");
+    setOpenAlert(false);
   }
 
   const handleNameChange = (event) => {
@@ -150,8 +161,14 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
         if (response.ok) {
           roleData ? CloseEditRole(data.data.role) : closeAddRole(data.data.role);
         }
+        setAlertMessage(`Successfully ${roleId ? 'edited': 'added'}  role`);
+        setAlertType("success");
+        setOpenAlert(true);
         handleClose();
       } catch (error) {
+        setAlertMessage("Edit Role Failed");
+        setAlertType("error");
+        setOpenAlert(true);
         console.error('Failed to add/edit role:', error);
       }
     } else {
@@ -161,6 +178,19 @@ function AddEditRole({ open, openedit, roleData, isEdit, closeAddRole, CloseEdit
 
   return (
     <div >
+      {
+        openAlert &&
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleAlertClose}
+        >
+          <Alert severity={alertType}>
+            {alertMessage}
+          </Alert>
+        </Snackbar>
+      }
       <Dialog
         // fullScreen
         open={openedit || open}

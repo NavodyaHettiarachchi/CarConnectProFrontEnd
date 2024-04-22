@@ -27,7 +27,9 @@ import VehicleCard from "./VehicleCard";
 import AddButtonCard from "./AddButtonCard.jsx";
 import CancelPresentationOutlinedIcon from "@mui/icons-material/CancelPresentationOutlined";
 import PdfInvoice from "../PDFInvoice/PdfInvoice";
-import IconButton from '@mui/material/IconButton';
+import IconButton from "@mui/material/IconButton";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const columns = [
   { id: "type", label: "Type", minWidth: 170 },
@@ -51,7 +53,9 @@ const ServicePage = () => {
   const [data, setData] = useState([]);
   const [serviceItems, setServiceItems] = useState([]);
   const [editRole, setEditRole] = useState(false);
-
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("");
   const [inputFields, setInputFields] = useState([
     { type: "", item: "", price: "", quantity: "1", total: "" },
   ]);
@@ -124,7 +128,7 @@ const ServicePage = () => {
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem('schema')),
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
           }),
         }
       );
@@ -138,6 +142,12 @@ const ServicePage = () => {
 
       // Handle error here
     }
+  };
+
+  const handleAlertClose = () => {
+    setAlertMessage("");
+    setAlertType("");
+    setOpenAlert(false);
   };
 
   const handleClickOpen = () => {
@@ -179,7 +189,7 @@ const ServicePage = () => {
               "Content-type": "application/json",
             },
             body: JSON.stringify({
-              schema: JSON.parse(window.sessionStorage.getItem('schema')),
+              schema: JSON.parse(window.sessionStorage.getItem("schema")),
               client_id: selectedVehicle.client_id,
               service_date: new Date().toISOString().split("T")[0],
               description: "Full Service",
@@ -206,6 +216,11 @@ const ServicePage = () => {
       setMilage("");
       setSelectedEmployee(null);
     }
+    setAlertMessage(
+      `Successfully Created Ongoing Service for ${selectedVehicle.number} !`
+    );
+    setAlertType("success");
+    setOpenAlert(true);
   };
   useEffect(() => {
     // Calculate the full amount
@@ -225,7 +240,7 @@ const ServicePage = () => {
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          schema: JSON.parse(window.sessionStorage.getItem('schema')),
+          schema: JSON.parse(window.sessionStorage.getItem("schema")),
         }),
       });
 
@@ -250,7 +265,7 @@ const ServicePage = () => {
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem('schema')),
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
           }),
         }
       );
@@ -331,10 +346,16 @@ const ServicePage = () => {
     }, 0);
   };
 
-  const setEditParams = () => { 
-    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
-    setEditRole(allowedRoles.has(roles.find(role => role === 'os:ad' || role === 's:ad')));
-  }
+  const setEditParams = () => {
+    const roles = JSON.parse(window.sessionStorage.getItem("roles")).split(
+      ", "
+    );
+    setEditRole(
+      allowedRoles.has(
+        roles.find((role) => role === "os:ad" || role === "s:ad")
+      )
+    );
+  };
 
   useEffect(() => {
     setEditParams();
@@ -430,6 +451,16 @@ const ServicePage = () => {
   };
   return (
     <>
+      {openAlert && (
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleAlertClose}
+        >
+          <Alert severity={alertType}>{alertMessage}</Alert>
+        </Snackbar>
+      )}
       <Grid>
         <TextField
           type="search"
@@ -610,7 +641,11 @@ const ServicePage = () => {
                       </TableCell>
                       <TableCell>{inputField.total}</TableCell>
                       <TableCell>
-                        <IconButton aira-label="remove" onClick={() => handleRemoveClick(index)} disabled={!editRole}>
+                        <IconButton
+                          aira-label="remove"
+                          onClick={() => handleRemoveClick(index)}
+                          disabled={!editRole}
+                        >
                           <CancelPresentationOutlinedIcon
                             variant="contained"
                             color="primary"
@@ -645,7 +680,12 @@ const ServicePage = () => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" color="primary" onClick={handleSaveClick} disabled={!editRole}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSaveClick}
+            disabled={!editRole}
+          >
             Save
           </Button>
           {/* <Button

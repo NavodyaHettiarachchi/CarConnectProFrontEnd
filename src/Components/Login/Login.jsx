@@ -60,6 +60,7 @@ function Login() {
     <div className='hero-landing-login'>
       {error &&
         <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={error}
           autoHideDuration={3000}
           onClose={handleClose}
