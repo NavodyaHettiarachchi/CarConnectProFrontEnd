@@ -37,7 +37,7 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // states
+  // State to store filter data
   const [filterData, setFilterData] = useState({
     fromDate: dayjs("01-01-1990"),
     toDate: dayjs(),
@@ -62,7 +62,7 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
   }, [openFilter])
 
 
-
+  // Function to handle mileage change
   const handleMileageChange = (event, newValue, activeThumb) => { 
     if (!Array.isArray(newValue)) {
       return;
@@ -93,6 +93,7 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
     }
   }
 
+  // Function to handle other filter changes
   const handleChange = (event, value, property) => {
     if (property === 'fromDate' || property === 'toDate') {
       const value = event;
@@ -110,9 +111,9 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
   };
 
   const fetchFilteredHistory = async () => {
+    console.log("filter data: ", filterData);
     try {
       const response = await axios.post(`http://localhost:5000/owner/vehicles/${vehicleId}/filter`, { filterData })
-      
       .then((res) => {
         const filteredHistory = res.data.data.filteredHistory[0];
         console.log('Response data:', res.data.data.filteredHistory[0]);
@@ -134,13 +135,25 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
 
 
   const handleClose = () => { 
-    setFilterData({
+    // setFilterData({
+    //   fromDate: dayjs("01-01-1990"),
+    //   toDate: dayjs(),
+    //   center: null,
+    //   mileage: [0, 300000]
+    // });
+    // setCenterData([]);
+    closeFilterPopup();
+  }
+
+  const handleClearFilter = () => {
+     setFilterData({
       fromDate: dayjs("01-01-1990"),
       toDate: dayjs(),
       center: null,
       mileage: [0, 300000]
     });
     setCenterData([]);
+    onFilteredHistory(filterData);
     closeFilterPopup();
   }
 
@@ -254,7 +267,7 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
         </DialogContent>
 
         <Button onClick={handleFilterSubmit}>Apply Filter</Button>
-        <Button onClick={handleFilterSubmit}>Clear Filter</Button>
+        <Button onClick={handleClearFilter}>Clear Filter</Button>
       </Dialog>
     </div>
   );
