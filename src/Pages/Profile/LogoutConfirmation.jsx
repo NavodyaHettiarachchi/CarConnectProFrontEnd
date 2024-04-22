@@ -9,9 +9,6 @@ function LogoutConfirmation({ onConfirm, onCancel }) {
         <h2>Logout</h2>
         <p>Are you sure you want to log out?</p>
         <div>
-         
-          
-
           <Grid container spacing={6} >
             <Grid item xs={6}>
                 <Button  component={Link} to="/login" variant="contained" color="primary" onClick={onConfirm}>Confirm</Button>

@@ -43,8 +43,6 @@ const allowedRoles = new Set(["os:ad", "s:ad"]);
 const ServicePage = () => {
   const [vehicles, setVehicles] = useState([]);
   const [open, setOpen] = useState(false);
-  const [fullWidth, setFullWidth] = React.useState(true);
-  const [maxWidth, setMaxWidth] = React.useState("sm");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [vehiData, setVehiData] = useState([]);
@@ -67,16 +65,7 @@ const ServicePage = () => {
   const [invoiceData, setInvoiceData] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const handleMaxxWidthChange = (event) => {
-    setMaxxWidth(
-      // @ts-expect-error autofill of arbitrary value is not handled.
-      event.target.value
-    );
-  };
-
-  const handleFulllWidthChange = (event) => {
-    setFulllWidth(event.target.checked);
-  };
+  const [isUpdated, setIsUpdated] = useState(false);
 
   const VehicleAutocomplete = ({ filterData, vehiData }) => {
     const options = vehiData.map((vehicle) => ({
@@ -211,9 +200,28 @@ const ServicePage = () => {
         // Handle error here
       }
       setVehicles((prevVehicles) => [...prevVehicles, newCard]);
+
+      let inventoryArr = inputFields.filter((obj) => obj.type === "Inventory");
+
+      for (let i = 0; i < inventoryArr.length; i++) { 
+        let q = (parts.filter((part) => part.part_id === inventoryArr[i].id))[0].quantity;
+        await fetch(`http://localhost:5000/center/inventory/${inventoryArr[i].id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
+            quantity: q - inventoryArr[i].quantity,
+          }),
+        });
+      }
+
       handleClose();
       setMilage("");
       setSelectedEmployee([]);
+      document.dispatchEvent(new Event('customUpdateEvent'));
+      getAllOngoingServices();
     }
   };
   useEffect(() => {
@@ -292,11 +300,12 @@ const ServicePage = () => {
       }
 
       const data = await response.json();
-      setParts(data.data.inventory);
+      setParts(data.data.inventory.filter((item) => item.quantity !== 0));
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
   const handleAddClick = () => {
     setData([
       ...data,
@@ -313,13 +322,6 @@ const ServicePage = () => {
       ...inputFields,
       { type: "", item: "", price: "", quantity: "1", total: "" },
     ]);
-    // Add the newly added item to the selectedItems state
-    // if (inputFields[inputFields.length - 1].item) {
-    //   setSelectedItems([
-    //     ...selectedItems,
-    //     inputFields[inputFields.length - 1].item,
-    //   ]);
-    // }
   };
 
   useEffect(() => {
@@ -345,6 +347,7 @@ const ServicePage = () => {
       );
       if (selectedService) {
         values[index].price = "Rs. " + selectedService.cost;
+        values[index].id = selectedService.id;
       }
     }
     if (event.target.name === "item" && values[index].type === "Inventory") {
@@ -353,6 +356,7 @@ const ServicePage = () => {
       );
       if (selectedService) {
         values[index].price = "Rs. " + selectedService.price;
+        values[index].id = selectedService.part_id;
       }
     }
 
@@ -360,26 +364,12 @@ const ServicePage = () => {
     const price = parseFloat(values[index].price.replace("Rs. ", ""));
     const quantity = parseFloat(values[index].quantity);
 
-    // if (values[index].price && values[index].quantity) {
-    //   const price = parseFloat(values[index].price.replace("Rs. ", ""));
-    //   const quantity = parseFloat(values[index].quantity);
-
     // Calculate total if both price and quantity are valid numbers
     if (!isNaN(price) && !isNaN(quantity)) {
       values[index].total = "Rs. " + (price * quantity).toFixed(2);
     } else {
       values[index].total = "";
     }
-
-    // else {
-    //   values[index].total = "";
-    // }
-    // if (values[index].tax) {
-    //   values[index].tax = "Rs. " + values[index].tax;
-    // }
-    // Calculate the total of all the total fields
-
-    // Set the fullAmount state with the total cost
 
     setInputFields(values);
 
@@ -416,39 +406,11 @@ const ServicePage = () => {
   useEffect(() => {
     setEditParams();
     getAllOngoingServices();
-  }, []);
+  }, [isUpdated]);
 
   //pdfInvoice genaration
   //collect final values
 
-  const generateInvoiceData = () => {
-    const vehicle_id = vehicle_id;
-    const fuel_type = selectedVehicle.fuel;
-    const model = model;
-    const mileage = milage;
-    const selectedItems = inputFields.map((item) => ({
-      Type: item.type,
-      Item: item.item,
-      Price: parseFloat(item.price),
-      Quantity: parseFloat(item.quantity),
-      Total: parseFloat(item.total),
-    }));
-    const full_Amount = fullAmount;
-
-    setInvoiceData({
-      vehicle_id,
-      fuel_type,
-      model,
-      mileage,
-      selectedItems,
-      full_Amount,
-    });
-  };
-
-  const handleGenerateInvoice = () => {
-    generateInvoiceData();
-    console.log("in handle genarate invoiceData", invoiceData);
-  };
   const getAllEmployees = async () => {
     try {
       const response = await fetch("http://localhost:5000/center/getemployee", {
@@ -510,6 +472,7 @@ const ServicePage = () => {
       setSelectedEmployee(selectedEmployee);
     }
   };
+
   return (
     <>
       <Grid>
@@ -533,6 +496,7 @@ const ServicePage = () => {
                 clientId={item.client_id}
                 selected
                 editRole={editRole}
+                isUpdated={() => setIsUpdated(!isUpdated)}
               />
             </Grid>
           ))}
@@ -750,20 +714,6 @@ const ServicePage = () => {
           >
             Save
           </Button>
-          {/* <Button
-            // onClick={handleFinishServiceClick}
-            variant="contained"
-            color="primary"
-          >
-            Finish Service
-          </Button> */}
-          {/* <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleGenerateInvoice}
-          >
-            Genarate Invoice
-          </Button> */}
 
           <Button onClick={handleClose} variant="contained" color="primary">
             Close
