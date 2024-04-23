@@ -9,18 +9,32 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import Tooltip from '@mui/material/Tooltip';
 import Badge from '@mui/material/Badge';
 import LogoutConfirmation from '../../Pages/Profile/LogoutConfirmation';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import CloseIcon from '@mui/icons-material/Close';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Notification from './Notification.jsx';
+
+
+
 
 export default function Header({ Role }) {
- 
+
   const [auth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const [rolePerms, setRolePerms] = useState(false);
   const [openNotifs, setOpenNotifs] = useState(false);
   const [notifData, setNotifData] = useState([]);
+
+  
+
+
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -64,7 +78,7 @@ export default function Header({ Role }) {
 
     // Listen for custom event
     document.addEventListener('customUpdateEvent', handleCustomUpdate);
-    
+
     // Clean up event listener
     return () => {
       document.removeEventListener('customUpdateEvent', handleCustomUpdate);
@@ -82,7 +96,7 @@ export default function Header({ Role }) {
         schema: JSON.parse(window.sessionStorage.getItem('schema')),
       })
     }).then((res) => res.json())
-      .then((data) => { 
+      .then((data) => {
         console.log('data ', data.data);
         setNotifData(data.data.parts);
         console.log(' notif', notifData);
@@ -110,12 +124,12 @@ export default function Header({ Role }) {
     setShowLogoutConfirmation(false);
   };
 
-  const getNotificationSummary = () => {
-    if (rolePerms) { 
-      return 'So many makes me wet';
-    }
-    return 'Dry as the sahara';
-  };
+  // const getNotificationSummary = () => {
+  //   if (rolePerms) {
+  //     return 'So many makes me wet';
+  //   }
+  //   return 'Dry as the sahara';
+  // };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -126,51 +140,9 @@ export default function Header({ Role }) {
           </Typography>
           {auth && (
             <div>
-              <Tooltip title={getNotificationSummary()}>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={openNotifD}
-                  color="inherit"
-                >
-                  <NotificationsNoneIcon />
-                  {notifData.length > 0 && (
-                    <Badge badgeContent={notifData.length} color="secondary">
-                      {/* <span style={{ marginLeft: '4px' }}>{notifData.length}</span> */}
-                    </Badge>
-                  )}
-                </IconButton>
-              </Tooltip>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-                open={openNotifs}
-                onClose={handleNotifClose}
-              >
-                <div style={{ padding: '8px', minWidth: '200px' }}>
-                  {notifData.map((notif, index) => (
-                    <div key={index} style={{ marginBottom: '8px' }}>
-                      <Typography variant="body1">
-                        Stocks low: {notif.name}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Remaining: {notif.quantity}
-                      </Typography>
-                    </div>
-                  ))}
-                </div>
-              </Menu>
+              {/* call notification component */}
+              <Notification/>
+
               <IconButton
                 size="large"
                 aria-label="account of current user"
