@@ -36,18 +36,18 @@ const columns = [
 
   { id: "price", label: "Price", minWidth: 170 },
   { id: "quantity", label: "Quantity", minWidth: 170 },
-  { id: "actions", label: "Actions", minWidth: 170 },
+  { id: "reorder_quantity", label: 'Reorder Quantity', minWidth: 170 },
+  { id: "actions", label: "Actions", minWidth: 170 }
 ];
 
 function Inventory() {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
-  const [total, setTotal] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [inventory, setInventory] = useState([]);
   const [name, setName] = useState();
+  const [reorderQuantity, setReorderQuantity] = useState("");
   const [country, setCountry] = useState("");
-  const [sum, setSum] = useState();
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
@@ -59,6 +59,7 @@ function Inventory() {
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
+
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -85,25 +86,18 @@ function Inventory() {
     setOpen(false);
     setCountry("");
   };
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
+
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
 
   const setEditParams = () => {
-    const roles = JSON.parse(window.sessionStorage.getItem("roles")).split(
-      ", "
-    );
-    setEditRole(
-      allowedRoles.has(
-        roles.find((role) => role === "ip:ad" || role === "s:ad")
-      )
-    );
+    const roles = JSON.parse(window.sessionStorage.getItem("roles")).split(", ");
+    setEditRole(allowedRoles.has(roles.find((role) => role === "ip:ad" || role === "s:ad")));
   };
 
   useEffect(() => {
+    setEditParams();
     fetch("http://localhost:5000/center/inventory", {
       method: "POST",
       headers: {
@@ -149,6 +143,7 @@ function Inventory() {
         quantity: quantity,
         manufacture_country: country,
         description: description,
+        reorder_quantity: reorderQuantity,
       };
 
       // Send the data to the server using the fetch API
@@ -161,6 +156,7 @@ function Inventory() {
       });
 
       setIsUpdated(!isUpdated);
+      document.dispatchEvent(new Event('customUpdateEvent'));
       setAlertMessage(`Successfully Added ${name}'} !`);
       setAlertType("success");
       setOpenAlert(true);
@@ -204,7 +200,7 @@ function Inventory() {
     setName(row.name);
     setPrice(row.price);
     setQuantity(row.quantity);
-
+    setReorderQuantity(row.reorder_quantity);
     setDescription(row.description);
     setOpenDialog(true);
     setRow(row);
@@ -219,6 +215,7 @@ function Inventory() {
         price: price,
         quantity: quantity,
         description: description,
+        reorder_quantity: reorderQuantity,
       };
 
       // Send the data to the server using the fetch API
@@ -231,6 +228,7 @@ function Inventory() {
       });
 
       setIsUpdated(!isUpdated);
+      document.dispatchEvent(new Event('customUpdateEvent'));
       setAlertMessage(`Successfully Editted ${name}`);
       setAlertType("success");
       setOpenAlert(true);
@@ -396,6 +394,16 @@ function Inventory() {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+              <TextField
+                margin="dense"
+                id="reorder_quantity"
+                label="Reorder Quantity"
+                type="number"
+                fullWidth
+                onChange={(event) => setReorderQuantity(event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
               <Autocomplete
                 id="combo-box-demo"
                 value={country}
@@ -486,6 +494,17 @@ function Inventory() {
                 value={quantity}
                 fullWidth
                 onChange={(event) => setQuantity(event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                margin="dense"
+                id="reorder_quantity"
+                label="Reorder Quantity"
+                type="number"
+                fullWidth
+                value={reorderQuantity}
+                onChange={(event) => setReorderQuantity(event.target.value)}
               />
             </Grid>
 
