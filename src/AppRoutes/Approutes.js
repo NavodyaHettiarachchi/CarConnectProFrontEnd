@@ -29,10 +29,11 @@ import ServiceHome from "../Pages/ServiceHome/ServiceHome";
 
 export const AppRoutes = {
   // "home": { path: "/", component: (islogged?  null: <Feedback/> )},
+  home: { path: "/dashboard", component: <ServiceHome /> },
   login: { path: "/login", component: <LoginPage /> },
   signup: { path: "/signup", component: <RegisterPage /> },
   ongoing_services: { path: "/service/", component: <OnGoingServicesNew /> },
-  repairs: { path: "/repairs/", component: <ServiceHome /> },
+  repairs: { path: "/repairs/", component: null },
   add_service: { path: "/addservice/", component: <AddServicePage /> },
   view_clients: { path: "/clientel/", component: <ViewClientel /> },
   inventory: { path: "/inventory", component: <Inventory /> },

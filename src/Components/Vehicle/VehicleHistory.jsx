@@ -24,12 +24,14 @@ import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
+import PdfInvoice from "../PDFInvoice/PdfInvoice";
 
 function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
   //vehicle State
   const [vehicleHistory, setVehicleHistory] = useState([]);
   const [filteredHistory, setFilteredHistory] = useState([]);
+  const [invoiceData, setInvoiceData] = useState(null);
   
   const [vehicleData, setVehicleData] = useState({
     vehicle_id: '',
@@ -41,31 +43,40 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
   });
   // filter State
   const [openFilter, setOpenFilter] = useState(false);
-  const [openm, setOpenm] = useState(null);
-
+  const [openm, setOpenm] = useState([]);
+  const [group, setGroup] = useState([]);
+  const [sortedYears, setSortedYears] = useState([]);
+  const [centerData, setCenterData] = useState([]);
+  const [getSchema, setGetschema] = useState([]);
+  
   const handleFilteredHistory = (filteredHistoryData) => {
-    // Update state with filtered history data
     setFilteredHistory(filteredHistoryData);
-    
-  };
-
-  const handleFilterCancel = () => {
-    // Reset filtered history to original history
-    setFilteredHistory(vehicleHistory);
   };
 
   const handleYearClick = (year) => {
-    setOpenm((prevYear) => (prevYear === year ? null : year));
+    console.log("Clicked year:", year);
+    console.log("Current open years:", openm);
+
+    setOpenm((prevYears) => {
+      const isOpen = prevYears.includes(year);
+      if (isOpen) {
+        // Year is already open, close it
+        return prevYears.filter((prevYear) => prevYear !== year);
+      } else {
+        // Year is not open, toggle it
+        return [...prevYears, year];
+      }
+    });
   }
 
 
-  const filtersGiven = [
-    { id: 'f_date', type: 'date', label: 'From Date', description: 'Filter history from this date' },
-    { id: 't_date', type: 'date', label: 'To Date', description: 'Filter history to this date' },
-    { id: 'center_id', type: 'center', label: 'Service/Repair Center', description: 'Filter history from the selected center' },
-    { id: 'f_mileage', type: 'number', label: 'From Mileage', description: 'Filter history from this mileage' },
-    { id: 't_mileage', type: 'number', label: 'To Mileage', description: 'Filter history to this mileage' },
-  ]
+  // const filtersGiven = [
+  //   { id: 'f_date', type: 'date', label: 'From Date', description: 'Filter history from this date' },
+  //   { id: 't_date', type: 'date', label: 'To Date', description: 'Filter history to this date' },
+  //   { id: 'center_id', type: 'center', label: 'Service/Repair Center', description: 'Filter history from the selected center' },
+  //   { id: 'f_mileage', type: 'number', label: 'From Mileage', description: 'Filter history from this mileage' },
+  //   { id: 't_mileage', type: 'number', label: 'To Mileage', description: 'Filter history to this mileage' },
+  // ]
 
   useEffect(() => {
     getInitialData();
@@ -74,22 +85,31 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
   const getInitialData = async () => {
     try {
       // const userId = window.sessionStorage.getItem('userId');
+      // console.log("userid:", userId);
       const userId = 4;
       await axios.post(`http://localhost:5000/owner/vehicles/${vehicleId}`, { id: userId })
-        .then((res) => {
-          setVehicleData(res.data.data.vehicles);
-        })
-        .catch((err) => console.log(err));
+      .then((res) => {
+        setVehicleData(res.data.data.vehicles);
+      })
+      .catch((err) => console.log(err));
+
       await axios.post(`http://localhost:5000/owner/vehicles/${vehicleId}/history`)
-        .then((res) => {
-          setVehicleHistory(res.data.data.serviceHistory[0]);
-        })
-        .catch((err) => console.log(err));
+      .then((res) => {
+        const historyData = res.data.data.serviceHistory[0];
+        setVehicleHistory(historyData);
+        const schema = historyData[0].schema;
+        setGetschema(schema);
+      })
+      .catch((err) => console.log(err));
     } catch (error) {
       console.log(error);
     };
     computeInitialData();
   };
+
+  useEffect(() => {
+    console.log("schema: ", getSchema);
+  }, [getSchema]);
 
   const computeInitialData = () => {
     let mileage = Math.max(...vehicleHistory.map(o => o.mileage));
@@ -116,30 +136,120 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
     closeVehicleHistory();
   };
 
+  useEffect(() => {
+    if (vehicleHistory.length > 0) {
+      groupByYear();
+    }
+  }, [vehicleHistory, filteredHistory]);
+
   const handleYearConversion = (date) => {
-    return date.split('-')[0];
+    return new Date(date).getFullYear();
   }
 
   const groupByYear = () => {
-    console.log("filteredVehicleHistory: ", filteredHistory);
     const historyToGroup = filteredHistory.length > 0 ? filteredHistory : vehicleHistory;
+    let years = Array.from(new Set(historyToGroup.map((service) => handleYearConversion(service.service_date))));
+    years=  years.sort((a, b) => b - a);  // Sort the years in ascending order
+
     const groups = {};
     
+    years.forEach((year) => {
+      groups[year] = [];
+      
+    });
+
     historyToGroup.forEach((service, index) => {
       const year = handleYearConversion(service.service_date);
-      if (!groups[year]) {
-        groups[year] = [];
-      }
       groups[year].push({ ...service, index });
     });
 
-    // console.log("group ", groups);
-    return groups;
+    setGroup(groups);
+    setSortedYears(years);
   };
+
+
 
   const handleDateConversions = (date) => {
     return date.split('T')[0];
   }
+
+   //pdfInvoice genaration
+  //collect final values
+
+  const getCenterData = async () => {
+    try {
+      await axios.post(`http://localhost:5000/owner/vehicle/pdf`, { schema: getSchema })
+      .then((res) => {
+        const center_Data = res.data.data.centerData;
+        setCenterData(center_Data);
+      })
+      .catch((err) => console.log(err));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  const handleRowClick = (details) => {
+    // Check if details object exists
+    if (details && details.details) {
+        let s_details = details.details[0];
+        let s_item = s_details.item;
+        let s_type = s_details.type;
+        let s_price = s_details.price;
+        let s_quantity = s_details.quantity;
+
+        generateInvoiceData(s_item, s_type, s_price, s_quantity);
+        getCenterData();
+    } else {
+        console.log("Details not found or invalid format");
+    }
+};
+
+  const generateInvoiceData = (s_item, s_type, s_price, s_quantity) => {
+    const owner_name = vehicleData.name;
+    const owner_phoneNo = "_";
+    const CompanyName = centerData.name;
+    const street_1 = centerData.street_1;
+    const street_2 = centerData.street_2;
+    const city = centerData.city;
+    const province = centerData.province;
+    const phone = centerData.phone;
+    const email = centerData.email;
+    const vehicle_id = vehicleData.number_plate;
+    const fuel_type = "_";
+    const model = vehicleData.model;
+    const mileage = vehicleData.mileage;
+    const selectedItems = [{
+        Type: s_type,
+        Item: s_item,
+        Price: `Rs. ${s_price}`,
+        Quantity: s_quantity,
+        Total: `Rs. ${s_quantity*s_price}`,
+    }];
+    const full_Amount =  s_quantity * s_price;
+
+    setInvoiceData({
+      vehicle_id,
+      fuel_type,
+      model,
+      mileage,
+      selectedItems,
+      full_Amount,
+      CompanyName,
+      street_1,
+      street_2,
+      city,
+      province,
+      phone,
+      email,
+      owner_name,
+      owner_phoneNo,
+    });
+
+    console.log("in genarate invoiceData", invoiceData);
+  };
+
 
   return (
     <div>
@@ -208,13 +318,13 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
                 </Typography>
               }
             >
-               {Object.entries(groupByYear()).map(([year, services]) => (
+               {sortedYears.map((year) => (
                 <React.Fragment key={year}>
                   <ListItemButton onClick={() => handleYearClick(year)}>
                     <ListItemText primary={` ${year}`} />
-                    {openm === year ? <ExpandLess /> : <ExpandMore />}
+                    {openm.includes(year) ? <ExpandLess /> : <ExpandMore />}
                   </ListItemButton>
-                  <Collapse in={openm === year} timeout="auto" unmountOnExit sx={{marginBottom: 2}}>
+                  <Collapse in={openm.includes(year)} timeout="auto" unmountOnExit sx={{marginBottom: 2}}>
                     <List disablePadding>
                       <div style={{ overflowX: 'auto', position: 'relative' }}>
                         <TableContainer  sx={{ minWidth: 400, marginTop: '1%' }} style={{ overflowX: 'auto' }}>
@@ -236,19 +346,26 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
                                 <TableCell style={{ fontWeight: 'bold' }}>
                                   
                                 </TableCell>
+                                <TableCell style={{ fontWeight: 'bold' }}>
+                                  
+                                </TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
-                              {services.map((service) => (
-                                <TableRow key={service.index}>
+                              {group[year].map((service) => (
+                                <TableRow key={service.index} onClick={() => handleRowClick(service)}>
                                   <TableCell>{handleDateConversions(service.service_date)}</TableCell>
                                   <TableCell>{service.description}</TableCell>
                                   <TableCell>{service.mileage}</TableCell>
                                   <TableCell>{`Rs. ${parseFloat(service.cost).toFixed(2)}`}</TableCell>
+                                  {invoiceData === null &&  (
                                   <TableCell align='right'>
-                                    <IconButton aria-label="delete" sx={{fontSize: 'small'}} >
-                                      Download Invoice <DownloadForOfflineIcon sx={{marginLeft: 1}} color="primary"/>
+                                    <IconButton aria-label="delete" sx={{fontSize: 'small'}}>
+                                      Genarate Invoice <RestartAltRoundedIcon sx={{marginLeft: 1}} color="primary"/>
                                     </IconButton>
+                                  </TableCell>)}
+                                  <TableCell align='right'>
+                                    {invoiceData &&<PdfInvoice invoiceData={invoiceData} />}
                                   </TableCell>
                                 </TableRow>
                               ))}
@@ -262,7 +379,6 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
               ))}
             </List>
           </div>
-
         </DialogContent>
       </Dialog>
 
