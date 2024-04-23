@@ -209,7 +209,6 @@ function ViewClientel() {
       setAlertMessage("Successfully Added Client");
       setAlertType("success");
       setOpenAlert(true);
-      handleClose();
     } else {
       setAlertMessage("Invalid Client Data !");
       setAlertType("error");
