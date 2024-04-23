@@ -56,6 +56,7 @@ const VehicleCard = ({
   const [vehiData, setVehiData] = useState([]);
   const [invoiceData, setInvoiceData] = useState(null);
   const [parts, setParts] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [centerData, setCenterData] = useState({
     username: "",
     email: "",
@@ -112,10 +113,12 @@ const VehicleCard = ({
     setInputFields([
       { type: "", item: "", price: "", quantity: "1", total: "" },
     ]);
+    // setSelectedItems(inputFields.map((item) => item.item));
   };
 
   const handleClose = () => {
     setOpen(false);
+    // setSelectedItems([]);
   };
 
   const getOngoingServices = async () => {
@@ -285,6 +288,12 @@ const VehicleCard = ({
 
     // Update tableData when input fields change
     setTableData(inputFields);
+    // Remove the item from the selectedItems state if it is removed from the input fields
+    if (!values[index].item) {
+      setSelectedItems(
+        selectedItems.filter((item) => item !== inputFields[index].item)
+      );
+    }
   };
 
   const getAllServices = async () => {
@@ -324,13 +333,16 @@ const VehicleCard = ({
         total: "",
       },
     ]);
-
     setInputFields([
       ...inputFields,
       { type: "", item: "", price: "", quantity: "1", total: "" },
     ]);
   };
-
+  useEffect(() => {
+    if (open) {
+      setSelectedItems(inputFields.map((item) => item.item));
+    }
+  }, [open, inputFields]);
   const handleRemoveClick = (index) => {
     const values = [...inputFields];
     values.splice(index, 1);
@@ -342,11 +354,6 @@ const VehicleCard = ({
     setOngoingServices(updatedClientData);
   };
 
-  // const InventoryItems = [
-  //   { id: 1, name: "Inventory 1" },
-  //   { id: 2, name: "Inventory 2" },
-  //   { id: 3, name: "Inventory 3" },
-  // ];
   const getAllInventory = async () => {
     try {
       const response = await fetch("http://localhost:5000/center/inventory", {
@@ -615,14 +622,22 @@ const VehicleCard = ({
                           >
                             {inputField.type === "Service" &&
                               serviceItems.map((item) => (
-                                <MenuItem value={item.name} key={item.id}>
+                                <MenuItem
+                                  value={item.name}
+                                  key={item.id}
+                                  disabled={selectedItems.includes(item.name)}
+                                >
                                   {item.name}
                                 </MenuItem>
                               ))}
 
                             {inputField.type === "Inventory" &&
                               parts.map((item) => (
-                                <MenuItem value={item.name} key={item.id}>
+                                <MenuItem
+                                  value={item.name}
+                                  key={item.id}
+                                  disabled={selectedItems.includes(item.name)}
+                                >
                                   {item.name}
                                 </MenuItem>
                               ))}
