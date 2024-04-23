@@ -14,10 +14,10 @@ function ChangePassword() {
     const [userType, setUserType] = useState('');
 
     useEffect(() => {
-        const storedUserType = localStorage.getItem('userType');
+        const storedUserType = sessionStorage.getItem('userType');
         setUserType(JSON.parse(storedUserType));
 
-        const storedUserID = localStorage.getItem('userID');
+        const storedUserID = sessionStorage.getItem('userId');
         setUserID(JSON.parse(storedUserID));
     }, []);
 
