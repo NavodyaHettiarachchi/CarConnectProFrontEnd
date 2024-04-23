@@ -6,6 +6,7 @@ import './RegisterFormPartTwo.css';
 import axios from 'axios';
 import {getResponseError} from '../../Data/errormsgFunc';
 import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
 
 function RegisterFormPartTwo({data, setData}) {
   const [errors, setErrors] = useState(null);
@@ -37,9 +38,7 @@ function RegisterFormPartTwo({data, setData}) {
 
 
     try {
-
       let payload;
-
         if (isOwner) {
           payload = {
             isOwner,
@@ -174,15 +173,21 @@ function RegisterFormPartTwo({data, setData}) {
       {/* Display alert based on backend response */}
       
       {errors && (
-        <Alert severity="error" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} >
-          {status === 409 || status === 500 ? (
-            <div>{errors}</div>
-          ) : (
-            Object.values(errors).map((errorMsg, index) => (
-              <div key={index}>{errorMsg}</div>
-            ))
-          )}
-        </Alert>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={errors}
+          autoHideDuration={6000}
+        >
+          <Alert severity="error" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} >
+            {status === 409 || status === 500 ? (
+              <div>{errors}</div>
+            ) : (
+              Object.values(errors).map((errorMsg, index) => (
+                <div key={index}>{errorMsg}</div>
+              ))
+            )}
+          </Alert>
+        </Snackbar>
       )}
       {successMessage && (
         <Alert severity="success" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

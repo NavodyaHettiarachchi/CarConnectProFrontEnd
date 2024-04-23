@@ -9,10 +9,21 @@ import {
   Grid,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 
 function AddEditServiceType({ open, serviceData, isEdit, closeEditServiceType, isUpdatedService, editRole }) { 
   const [serviceD, setServiceD] = useState('');
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("");
+
+  const handleAlertClose = () => {
+    setAlertMessage("");
+    setAlertType("");
+    setOpenAlert(false);
+  }
 
   useEffect(() => {
     updateFields();
@@ -63,23 +74,44 @@ function AddEditServiceType({ open, serviceData, isEdit, closeEditServiceType, i
             schema: JSON.parse(window.sessionStorage.getItem('schema')),
             name: serviceD.name,
             description: serviceD.description,
-            cost: serviceD.cost
+            cost: serviceD
           })
         });
 
         await response.json();
-
+        setAlertMessage(`Successfully ${serviceData ? 'edited' : 'added'}  service type`);
+        setAlertType("success");
+        setOpenAlert(true);
         handleClose();
       } catch (error) { 
+        setAlertMessage("Edit service type Failed");
+        setAlertType("error");
+        setOpenAlert(true);
         console.error('Failed to add/edit service type:', error);
       }
     } else {
+      setAlertMessage('Invalid service data');
+      setAlertType("error");
+      setOpenAlert(true);
       console.log('Invalid service data');
     }
   };
 
   return (
     <div>
+      {
+        openAlert &&
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleAlertClose}
+        >
+          <Alert severity={alertType}>
+            {alertMessage}
+          </Alert>
+        </Snackbar>
+      }
       <Dialog
         open={open}
         onClose={handleClose}

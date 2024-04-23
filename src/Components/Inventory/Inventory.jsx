@@ -6,6 +6,8 @@ import Headerfile from "../../Components/Page-Header/CardHeader";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import {
   Button,
   TextField,
@@ -28,7 +30,6 @@ import {
   IconButton,
 } from "@mui/material";
 
-
 const allowedRoles = new Set(["s:ad", "ip:ad"]);
 const columns = [
   { id: "name", label: "Item Name", minWidth: 170 },
@@ -38,7 +39,6 @@ const columns = [
   { id: "reorder_quantity", label: 'Reorder Quantity', minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 }
 ];
-
 
 function Inventory() {
   const [price, setPrice] = useState(0);
@@ -56,6 +56,9 @@ function Inventory() {
   const [countries, setCountries] = useState([]);
   const [editRole, setEditRole] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("");
 
 
   useEffect(() => {
@@ -74,7 +77,11 @@ function Inventory() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-
+  const handleAlertClose = () => {
+    setAlertMessage("");
+    setAlertType("");
+    setOpenAlert(false);
+  };
   const handleClose = () => {
     setOpen(false);
     setCountry("");
@@ -150,8 +157,15 @@ function Inventory() {
 
       setIsUpdated(!isUpdated);
       document.dispatchEvent(new Event('customUpdateEvent'));
+      setAlertMessage(`Successfully Added ${name}'} !`);
+      setAlertType("success");
+      setOpenAlert(true);
+      handleClose();
     } catch (error) {
       console.log(error);
+      setAlertMessage("Add Item  Failed!");
+      setAlertType("error");
+      setOpenAlert(true);
     }
     handleClose();
   };
@@ -175,6 +189,9 @@ function Inventory() {
       })
       .then((data) => {
         setIsUpdated(!isUpdated);
+        setAlertMessage("Successfully Removed Item");
+        setAlertType("success");
+        setOpenAlert(true);
       })
       .catch((error) => console.error("Error deleting data:", error));
   };
@@ -212,8 +229,14 @@ function Inventory() {
 
       setIsUpdated(!isUpdated);
       document.dispatchEvent(new Event('customUpdateEvent'));
+      setAlertMessage(`Successfully Editted ${name}`);
+      setAlertType("success");
+      setOpenAlert(true);
     } catch (error) {
       console.log(error);
+      setAlertMessage(`Edit ${name} Failed`);
+      setAlertType("error");
+      setOpenAlert(true);
     }
     handleCloseDialog();
   };
@@ -221,6 +244,16 @@ function Inventory() {
   return (
     <div class="bg-2 text-center">
       <Headerfile title="Inventory" />
+      {openAlert && (
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleAlertClose}
+        >
+          <Alert severity={alertType}>{alertMessage}</Alert>
+        </Snackbar>
+      )}
       <Card style={{ height: "80vh", boxShadow: "none" }}>
         <CardContent>
           <div>

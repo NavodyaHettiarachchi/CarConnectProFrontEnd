@@ -2,17 +2,11 @@ import React from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import QRCode from 'qrcode-generator';
-import Button from '@mui/material/Button';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import IconButton from '@mui/material/IconButton';
 
 class PdfInvoice extends React.Component {
   generatePdf = (invoiceData) => {
-    console.log("invoice data object",invoiceData);
-    // if (!invoiceData || !invoiceData.selectedItems || !Array.isArray(invoiceData.selectedItems)) {
-      
-    //   console.error('Invoice data or selected items are missing or invalid');
-    //   return;
-    // }
-
     const {
         vehicle_id,
         fuel_type,
@@ -232,23 +226,15 @@ class PdfInvoice extends React.Component {
     });
     
     pdf.save('invoice.pdf');
-    // // const Invoice = pdf.save('invoice.pdf');
-    // // // Invoice.output('dataurlnewwindow');
-    // // return Invoice;
-
-    // const pdfDataUri = pdf.output('datauri');
-    // const pdfWindow = window.open(pdfDataUri, ' ');
-    
-    // if (!pdfWindow) {
-    //   alert('Please allow pop-ups for this site');
-    // }
+    // this.props.clearInvoiceData();
   };
 
   render() {
     return (
-      <div>
-        <Button variant="outlined" onClick={() => this.generatePdf(this.props.invoiceData)} >Open & Download Invoice</Button>
-      </div>
+         <IconButton aria-label="delete" sx={{fontSize: 'small'}} onClick={() => this.generatePdf(this.props.invoiceData)}>
+              Download Invoice <DownloadForOfflineIcon sx={{marginLeft: 1}} color="primary"/>
+         </IconButton>
+          
     );
   }
 }
