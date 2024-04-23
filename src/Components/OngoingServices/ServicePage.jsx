@@ -29,6 +29,8 @@ import AddButtonCard from "./AddButtonCard.jsx";
 import CancelPresentationOutlinedIcon from "@mui/icons-material/CancelPresentationOutlined";
 import PdfInvoice from "../PDFInvoice/PdfInvoice";
 import IconButton from "@mui/material/IconButton";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const columns = [
   { id: "type", label: "Type", minWidth: 170 },
@@ -52,6 +54,9 @@ const ServicePage = () => {
   const [data, setData] = useState([]);
   const [serviceItems, setServiceItems] = useState([]);
   const [editRole, setEditRole] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [inputFields, setInputFields] = useState([
     { type: "", item: "", price: "", quantity: "1", total: "" },
@@ -142,6 +147,12 @@ const ServicePage = () => {
     }
   };
 
+  const handleAlertClose = () => {
+    setAlertMessage("");
+    setAlertType("");
+    setOpenAlert(false);
+  };
+
   const handleClickOpen = () => {
     setOpen(true);
     getAllServices();
@@ -215,6 +226,11 @@ const ServicePage = () => {
       setMilage("");
       setSelectedEmployee([]);
     }
+    setAlertMessage(
+      `Successfully Created Ongoing Service for ${selectedVehicle.number} !`
+    );
+    setAlertType("success");
+    setOpenAlert(true);
   };
   useEffect(() => {
     // Calculate the full amount
@@ -512,6 +528,16 @@ const ServicePage = () => {
   };
   return (
     <>
+      {openAlert && (
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleAlertClose}
+        >
+          <Alert severity={alertType}>{alertMessage}</Alert>
+        </Snackbar>
+      )}
       <Grid>
         <TextField
           type="search"

@@ -21,11 +21,13 @@ import {
   TableCell,
   TextField,
   Typography,
+  Snackbar,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import axios from "axios";
 import CancelPresentationOutlinedIcon from "@mui/icons-material/CancelPresentationOutlined";
 import PdfInvoice from "../PDFInvoice/PdfInvoice";
+import Alert from "@mui/material/Alert";
 
 const columns = [
   { id: "type", label: "Type", minWidth: 170 },
@@ -66,6 +68,9 @@ const VehicleCard = ({
     city: "",
     province: "",
   });
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("");
 
   const getVehicleNumber = () => {
     const vehicle = vehiData.find((vehicle) => vehicle.id === clientId);
@@ -93,6 +98,11 @@ const VehicleCard = ({
   const getOwnerPhoneNo = () => {
     const vehicle = vehiData.find((vehicle) => vehicle.id === clientId);
     return vehicle ? vehicle.owner_contact : null;
+  };
+  const handleAlertClose = () => {
+    setAlertMessage("");
+    setAlertType("");
+    setOpenAlert(false);
   };
 
   const handleClickOpen = () => {
@@ -203,6 +213,11 @@ const VehicleCard = ({
 
       // Handle error here
     }
+    setAlertMessage(
+      `Successfully Saved Service Dedtails For ${getVehicleNumber()}!`
+    );
+    setAlertType("success");
+    setOpenAlert(true);
   };
 
   // const calculateTotalCost = (tableData) => {
@@ -468,6 +483,11 @@ const VehicleCard = ({
     });
 
     console.log("in genarate invoiceData", invoiceData);
+    setAlertMessage(
+      `Successfully Generated Invoice For ${getVehicleNumber()} !`
+    );
+    setAlertType("success");
+    setOpenAlert(true);
   };
 
   // const handleGenerateInvoice = () => {
@@ -480,6 +500,11 @@ const VehicleCard = ({
     handleSaveClick();
     handleClose();
     disableOngoingService();
+    setAlertMessage(
+      `Successfully Finished Service for ${getVehicleNumber()} !`
+    );
+    setAlertType("success");
+    setOpenAlert(true);
   };
 
   useEffect(() => {
@@ -488,6 +513,16 @@ const VehicleCard = ({
 
   return (
     <div>
+      {openAlert && (
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleAlertClose}
+        >
+          <Alert severity={alertType}>{alertMessage}</Alert>
+        </Snackbar>
+      )}
       <Button onClick={handleClickOpen}>
         <Card sx={{ width: 350, height: 200, position: "relative" }}>
           {selected && <div className="selected-overlay"></div>}

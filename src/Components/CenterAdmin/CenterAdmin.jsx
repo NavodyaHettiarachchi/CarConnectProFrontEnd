@@ -25,6 +25,8 @@ import EditEmployee from './EditEmployee';
 import AddEditRole from './AddEditRole';
 import AddEditServiceType from './AddEditServiceType';
 import Tooltip from '@mui/material/Tooltip';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 
 const allowedRoles = new Set(['sp:ad', 's:ad']);
@@ -35,6 +37,9 @@ function CenterAdmin() {
 	const [isUpdated, setIsUpdated] = useState(false);
 	const [isEditVal, setIsEditVal] = useState(false);
 	const [editRole, setEditRole] = useState(false);
+	const [openAlert, setOpenAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
+	const [alertType, setAlertType] = useState("");
 	// roles
 	const [roles, setRoleData] = useState([]);
 	const [searchRole, setSearchRole] = useState("");
@@ -61,19 +66,19 @@ function CenterAdmin() {
 		{ id: 'roles', label: 'Role', minWidth: 100, format: (value) => setRoleName(value) },
 		{ id: 'isActive', label: 'Status', minWidth: 80, maxWidth: 80 },
 		{ id: 'actions', label: 'Actions', minWidth: 70, maxWidth: 70 }
-	]
+	];
 
 	const setManagerValue = (value) => {
 		if (value?.manager_id) {
 			return `${value.manager_name}, ${value.manager_designation}`;
 		}
 		return '';
-	}
+	};
 
 	const setRoleName = (value) => {
 		const role = roles.find((role) => role.id === value.roles);
 		return role?.name || '';
-	}
+	};
 
 	let filteredempRows = empData ? empData.filter((user) =>
 		user.name.toLowerCase().includes(searchName.toLowerCase()) &&
@@ -87,13 +92,19 @@ function CenterAdmin() {
 	const roleCols = [
 		{ id: 'name', label: 'Role', minWidth: 200, maxWidth: 200 },
 		{ id: 'actions', label: 'Actions', minWidth: 70, maxWidth: 70 }
-	]
+	];
 
 	const serviceCols = [
 		{ id: 'name', label: 'Service', minWidth: 130, maxWidth: 130 },
 		{ id: 'cost', label: 'Cost', minWidth: 100, maxWidth: 100 },
 		{ id: 'actions', label: 'Actions', minWidth: 70, maxWidth: 70 }
-	]
+	];
+
+	const handleAlertClose = () => { 
+		setAlertMessage("");
+		setAlertType("");
+		setOpenAlert(false);
+	}
 
 	useEffect(() => {
 		const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
@@ -165,12 +176,18 @@ function CenterAdmin() {
 			.then((res) => {
 				if (res.ok) {
 					setRoleData((prevRoles) => prevRoles.filter((role) => role.id !== roleId));
+					setAlertMessage("Successfully deleted role");
+					setAlertType("success");
+					setOpenAlert(true);
 					console.log('Role deleted successfully.');
 				} else {
 					console.error('Failed to delete role.');
 				}
 			})
 			.catch((error) => {
+				setAlertMessage("Failed to delete role");
+				setAlertType("error");
+				setOpenAlert(true);
 				console.error('Error deleting a role: ', error);
 			})
 	};
@@ -206,7 +223,13 @@ function CenterAdmin() {
 		}).then((res) => {
 			if (res.ok) {
 				setServiceTypeData((prevData) => prevData.filter((service) => service.id !== id));
+				setAlertMessage("Successfully deleted service type");
+				setAlertType("success");
+				setOpenAlert(true);
 			} else {
+				setAlertMessage("Failed to delete service type");
+				setAlertType("error");
+				setOpenAlert(true);
 				console.error('Failed to delete service.');
 			}
 		}).catch((error) => {
@@ -229,8 +252,14 @@ function CenterAdmin() {
 			.then((res) => {
 				if (res.ok) {
 					console.log('Employee status updated successfully.');
+					setAlertMessage("Successfully updated employee");
+					setAlertType("success");
+					setOpenAlert(true);
 					setIsUpdated(!isUpdated);
 				} else {
+					setAlertMessage("Failed to update employee");
+					setAlertType("error");
+					setOpenAlert(true);
 					console.error('Failed to update employee status.');
 				}
 			})
@@ -241,6 +270,19 @@ function CenterAdmin() {
 
 	return (
 		<div>
+			{
+				openAlert &&
+				<Snackbar
+						anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+						open={openAlert}
+						autoHideDuration={3000}
+						onClose={handleAlertClose}
+				>
+						<Alert severity={alertType}>
+							{alertMessage}
+						</Alert>
+				</Snackbar>
+			}
 			<div style={{ display: 'flex', justifyContent: 'space-around', paddingTop: '50px' }}>
 				<div>
 					<Card sx={{ width: '21vw', height: '40vh', marginRight: '20px', marginBottom: '20px' }}>
