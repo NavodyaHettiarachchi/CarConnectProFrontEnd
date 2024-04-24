@@ -118,16 +118,16 @@ export default function Header({ Role }) {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 2 }}>
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style={{ background: '#7758D1' }} className="header">
         <Toolbar style={{ marginTop: '-5px' }}>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1,marginBottom:2}}>
             CarConnectPro
           </Typography>
           {auth && (
-            <div>
-              <Tooltip title={getNotificationSummary()}>
-                <IconButton
+            <div style={{marginBottom:14}}  >
+              <Tooltip  title={getNotificationSummary()}>
+                <IconButton  sx={{ flexGrow: 1}}
                   size="large"
                   aria-label="account of current user"
                   aria-controls="menu-appbar"
@@ -135,15 +135,15 @@ export default function Header({ Role }) {
                   onClick={openNotifD}
                   color="inherit"
                 >
-                  <NotificationsNoneIcon />
+                  <NotificationsNoneIcon  />
                   {notifData.length > 0 && (
-                    <Badge badgeContent={notifData.length} color="secondary">
+                    <Badge badgeContent={notifData.length}   color="secondary">
                       {/* <span style={{ marginLeft: '4px' }}>{notifData.length}</span> */}
-                    </Badge>
+                    </Badge >
                   )}
                 </IconButton>
               </Tooltip>
-              <Menu
+              <Menu 
                 id="menu-appbar"
                 anchorEl={anchorEl}
                 anchorOrigin={{
