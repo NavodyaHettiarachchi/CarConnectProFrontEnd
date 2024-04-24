@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Grid, TextField } from '@mui/material';
+import { Schema } from '@mui/icons-material';
 
 function ChangePassword() {
     const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,7 @@ function ChangePassword() {
 
     const [userID, setUserID] = useState(null);
     const [userType, setUserType] = useState('');
+    const [SchemaValue, setschema] = useState('');
 
     useEffect(() => {
         const storedUserType = sessionStorage.getItem('userType');
@@ -19,6 +21,10 @@ function ChangePassword() {
 
         const storedUserID = sessionStorage.getItem('userId');
         setUserID(JSON.parse(storedUserID));
+
+        const storedschema = sessionStorage.getItem('schema');
+        setschema(storedschema);
+
     }, []);
 
     const openPopup = () => {
@@ -64,6 +70,7 @@ function ChangePassword() {
               prevPassword,
               userType,
               userID,
+              SchemaValue,
           });
   
           // Check the response
