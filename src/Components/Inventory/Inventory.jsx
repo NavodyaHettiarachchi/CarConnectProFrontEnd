@@ -33,9 +33,9 @@ import {
 const allowedRoles = new Set(["s:ad", "ip:ad"]);
 const columns = [
   { id: "name", label: "Item Name", minWidth: 170 },
-
   { id: "price", label: "Price", minWidth: 170 },
   { id: "quantity", label: "Quantity", minWidth: 170 },
+  { id: "Total Price", label: "Total Price", minWidth: 170 },
   { id: "reorder_quantity", label: 'Reorder Quantity', minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 }
 ];
@@ -116,6 +116,14 @@ function Inventory() {
       .then((data) => setInventory(data.data.inventory))
       .catch((error) => console.error("Error fetching inventory data:", error));
   }, [isUpdated]);
+
+  const calculatePrice = (price) => {
+    const newPrice = price;
+    console.log("newPrice: ", newPrice);
+    return newPrice.toLocaleString({
+      style: "currency",
+    });
+  }
 
   const calculateTotal = (price, quantity) => {
     const newTotal = price * quantity;
@@ -307,7 +315,14 @@ function Inventory() {
                         >
                           {columns.map((col) => {
                             const value = row[col.id];
-                            return col.id === "price" ? (
+                            return col.id === "Price" ? (
+                              <TableCell>
+                                 Rs.{" "}
+                                {calculatePrice(
+                                  parseFloat(row.price.replace("Rs. ", ""))
+                                )}
+                              </TableCell>
+                            ) : col.id === "Total Price" ? (
                               <TableCell>
                                 Rs.{" "}
                                 {calculateTotal(
