@@ -39,7 +39,7 @@ function App() {
   const sep_roles = userRole?.split(', ');
   let menuItems = menu.filter((subItem) => {
     for (let i = 0; i <= sep_roles?.length; i++) {
-      return islogged && subItem.allowedRoles.includes(sep_roles[i]);
+      return islogged && subItem.allowedRoles.some((role) => sep_roles.includes(role));
     }
   });
   const userData = JSON.parse(window.sessionStorage.getItem('user'));
