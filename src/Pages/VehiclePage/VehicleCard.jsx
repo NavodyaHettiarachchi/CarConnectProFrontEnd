@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
   },
   divs: {
-    backgroundColor: 'white', height: 220, marginBottom: 40
+    backgroundColor: 'white', height: 220, marginBottom: -15
     , padding: '20px'
   }
 }));
@@ -65,7 +65,7 @@ function VehicleCard(props) {
   const [isUpdated, setIsUpdated] = useState(false);
   const [openAddEditVehicle, setOpenAddEditVehicle] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
-
+  const [picture, setPicture] = useState(null);
   const openPopupHistory = () => {
     setOpenHistory(true);
   }
@@ -94,14 +94,14 @@ function VehicleCard(props) {
       .then((res) => res.json())
       .then((data) => {
         console.log('data', data.data);
-        let vehi = data.data.vehicles.map((vehicle) => { 
+        let vehi = data.data.vehicles.map((vehicle) => {
           return {
             ...vehicle,
             photo_1: handleImageLoad(vehicle.photo_1),
           }
         });
         setvehicleData(vehi);
-        console.log('vehicle' , vehicleData);
+        console.log('vehicle', vehicleData);
       })
       .catch((error => { console.log(error) }));
   }, [isUpdated]);
@@ -109,6 +109,7 @@ function VehicleCard(props) {
   const functionopenpopup = async (vehicle) => {
     console.log(vehicle);
     setSelectedVehicle(vehicle);
+
     openchange(true);
   };
   const closepopup = () => {
@@ -121,16 +122,29 @@ function VehicleCard(props) {
     // setopenAddVehicle(true);
     setOpenAddEditVehicle(true);
   };
-  
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const handleImageLoad = (imageData) => {
     // Convert Buffer to Blob URL
-    const blob = new Blob([imageData], { type: 'image/png' }); // Adjust the type according to your image format
-    const url = URL.createObjectURL(blob);
-    return url;
+
+    try {
+      console.log(imageData?.data);
+      const blob = new Blob([imageData]);
+      // Create Object URL from Blob
+      const objectURL = URL.createObjectURL(blob);
+      return objectURL;
+    } catch (error) {
+      console.log(error);
+    }
+
+
+    // console.log(imageData);
+    // const blob = new Blob([imageData], { type: 'image/png' }); // Adjust the type according to your image format
+    // const url = URL.createObjectURL(blob);
+    // return url;
   };
 
   return (
@@ -169,9 +183,9 @@ function VehicleCard(props) {
           return (
             <Grid item xs={4} position={"relative"}>
               <Item>
-                <CardContent style={cardStyle}> 
+                <CardContent style={cardStyle}>
 
-                {item.photo_1 ? (
+                  {item.photo_1 ? (
                     <img
                       src={item.photo_1}
                       alt="Buffer"
@@ -181,20 +195,20 @@ function VehicleCard(props) {
                         e.target.src = 'placeholder-image-url'; // Replace with a placeholder image URL
                       }}
                     />
-                ) : (
-                  <p>Loading...</p>
-                )}
-               
-                <Typography sx={{ fontSize: 30 }} color="text.secondary" gutterBottom>
-                  {item.number_plate}
-                </Typography>
-                <Button onClick={togglemodal}>
-                  <Typography vehicle={item?.make} onClick={() => functionopenpopup(item)}>
-                    View
+                  ) : (
+                    <p>Loading...</p>
+                  )}
+
+                  <Typography sx={{ fontSize: 30 }} color="text.secondary" gutterBottom>
+                    {item.number_plate}
                   </Typography>
-                </Button>
-               
-              </CardContent></Item>
+                  <Button onClick={togglemodal}>
+                    <Typography vehicle={item?.make} onClick={() => functionopenpopup(item)}>
+                      View
+                    </Typography>
+                  </Button>
+
+                </CardContent></Item>
             </Grid>
           )
         })}
@@ -220,18 +234,18 @@ function VehicleCard(props) {
               </Skeleton>
             ) : (
               <Image style={{
-                width: 640,
-                height: 400, marginLeft: 20
+                width: 620,
+                height: 380, marginLeft: 60, marginTop: 20
               }}
-                src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhcnN8ZW58MHx8MHx8fDA%3D"
+                src={selectedVehicle?.photo_1}
                 alt=""
               />
             )
             }
-              <Box sx={{ height: 10, width: '100%', marginTop: 4, marginLeft: 2 }}>
+              <Box sx={{ height: 10, width: '100%', marginTop: 1, marginLeft: 2 }}>
 
                 <div className={classes.divs}>
-                  <h2>Major Information</h2>
+                  <h4>Major Information</h4>
 
                   <div >
                     <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
@@ -243,8 +257,12 @@ function VehicleCard(props) {
                         variant="standard"
                         onChange={handleChange}
                         value={selectedVehicle?.make}
-                      /></div>
-                    <div style={{ display: 'flex' }}>
+                      />
+                       <Button variant="contained" onClick={openPopupHistory} color="primary" className='Button' sx={{ height:40,marginTop:6,right: 0, left: 70 }}>
+                      View history
+                    </Button>
+                    </div>
+                    <div style={{ display: 'flex' ,marginTop:-20}}>
                       <Typography sx={{ marginRight: 3, padding: 2 }}>
                         Model
                       </Typography>
@@ -256,20 +274,18 @@ function VehicleCard(props) {
                         value={selectedVehicle?.model}
                       />
                     </div>
-                    <Button variant="contained" onClick={openPopupHistory} color="primary" className='Button' sx={{ right: 0, left: 'auto' }}>
-                      View history
-                    </Button>
+
                   </div>
                 </div>
 
 
               </Box>
             </div>
-            <div style={{ marginLeft: 150, marginTop: 15, height: '80vh', width: '40%' }}>
+            <div style={{ marginLeft: 125, marginTop: 15, height: '80vh', width: '40%' }}>
               <div className={classes.divs}>
-                <h2>Chassis and Engine No</h2>
+                <h4>Chassis and Engine No</h4>
                 <div >
-                  <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
+                  <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2, marginTop: 1 }}>
                     Chassis number
                   </Typography>
                     <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
@@ -280,10 +296,10 @@ function VehicleCard(props) {
                       value={selectedVehicle?.chassis_number}
                     /></div>
                   <div style={{ display: 'flex' }}>
-                    <Typography sx={{ marginRight: 3, padding: 2 }}>
+                    <Typography sx={{ marginRight: 3, padding: 2, marginTop: 1 }}>
                       Enginer Number
                     </Typography>
-                    <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                    <TextField sx={{ width: 300, padding: 2, marginLeft: 4 }} className='TextField1'
                       id="standard-basic"
                       disabled
                       variant="standard"
@@ -294,21 +310,21 @@ function VehicleCard(props) {
               </div>
 
               <div className={classes.divs}>
-                <h2>Mileage</h2>
-                <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
+                <h4>Mileage</h4>
+                <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2, marginTop: 1 }}>
                   Current
                 </Typography>
-                  <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                  <TextField sx={{ width: 300, padding: 2, marginLeft: 6 }} className='TextField1'
                     id="standard-basic"
                     disabled
                     variant="standard"
                     onChange={handleChange}
                   /></div>
                 <div style={{ display: 'flex' }}>
-                  <Typography sx={{ marginRight: 3, padding: 2 }}>
+                  <Typography sx={{ marginRight: 3, padding: 2, marginTop: 1 }}>
                     Last Update
                   </Typography>
-                  <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                  <TextField sx={{ width: 300, padding: 2, marginLeft: 6 }} className='TextField1'
                     id="standard-basic"
                     disabled
                     variant="standard"
@@ -321,7 +337,7 @@ function VehicleCard(props) {
                 <div style={{ display: 'flex' }}> <Typography sx={{ marginRight: 7, padding: 2 }}>
                   Manufactured year
                 </Typography>
-                  <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                  <TextField sx={{ width: 300, padding: 2, marginLeft: -4 }} className='TextField1'
                     id="standard-basic"
                     disabled
                     variant="standard"
@@ -331,7 +347,7 @@ function VehicleCard(props) {
                   <Typography sx={{ marginRight: 3, padding: 2 }}>
                     Registered year
                   </Typography>
-                  <TextField sx={{ width: 300, padding: 2 }} className='TextField1'
+                  <TextField sx={{ width: 300, padding: 2, marginLeft: 2 }} className='TextField1'
                     id="standard-basic"
                     disabled
                     variant="standard"
@@ -348,6 +364,7 @@ function VehicleCard(props) {
 
       <VehicleHistory
         open={openHistory}
+
         vehicleId={1}
         closeVehicleHistory={() => { setOpenHistory(false) }}
       />

@@ -87,6 +87,7 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
       // const userId = window.sessionStorage.getItem('userId');
       // console.log("userid:", userId);
       const userId = 4;
+      console.log(vehicleId);
       await axios.post(`http://localhost:5000/owner/vehicles/${vehicleId}`, { id: userId })
       .then((res) => {
         setVehicleData(res.data.data.vehicles);
