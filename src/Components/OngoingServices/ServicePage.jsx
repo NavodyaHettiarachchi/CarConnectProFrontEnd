@@ -31,7 +31,7 @@ import PdfInvoice from "../PDFInvoice/PdfInvoice";
 import IconButton from "@mui/material/IconButton";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import axios from 'axios';
+import axios from "axios";
 
 const columns = [
   { id: "type", label: "Type", minWidth: 170 },
@@ -169,29 +169,35 @@ const ServicePage = () => {
   };
 
   const handleSaveClick = async () => {
-      try {
-        const vehicleId = selectedVehicle.vehicle_id;
-        const schema = JSON.parse(window.sessionStorage.getItem("schema"));
-        await axios.post(`http://localhost:5000/center/service/mileage`, {schema: schema, vehicleId: vehicleId})
+    try {
+      const vehicleId = selectedVehicle.vehicle_id;
+      const schema = JSON.parse(window.sessionStorage.getItem("schema"));
+      await axios
+        .post(`http://localhost:5000/center/service/mileage`, {
+          schema: schema,
+          vehicleId: vehicleId,
+        })
         .then((res) => {
           const mileage_on_last_service_date = res.data;
           setPrevMileage(mileage_on_last_service_date);
           console.log("mileage: ", prevMileage);
         })
         .catch((err) => console.log(err));
-
-      } catch (error) {
-        console.log(error);
-
-      }
+    } catch (error) {
+      console.log(error);
+    }
 
     const mileage_on_last_service = 5000;
-    if (!milage || isNaN(milage) || parseFloat(milage) <= mileage_on_last_service) {
+    if (
+      !milage ||
+      isNaN(milage) ||
+      parseFloat(milage) <= mileage_on_last_service
+    ) {
       setAlertMessage("Please enter the mileage.");
       setAlertType("success");
       setOpenAlert(true);
       return;
-     }
+    }
 
     if (selectedVehicle) {
       const newCard = (
@@ -270,10 +276,11 @@ const ServicePage = () => {
       document.dispatchEvent(new Event("customUpdateEvent"));
       getAllOngoingServices();
     }
-    setAlertMessage( `Successfully Created Ongoing Service for ${selectedVehicle.number} !` );
+    setAlertMessage(
+      `Successfully Created Ongoing Service for ${selectedVehicle.number} !`
+    );
     setAlertType("success");
     setOpenAlert(true);
-
   };
   useEffect(() => {
     // Calculate the full amount
