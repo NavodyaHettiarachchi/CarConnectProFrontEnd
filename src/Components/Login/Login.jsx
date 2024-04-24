@@ -26,7 +26,7 @@ function Login() {
 
       const response = await axios.post('http://localhost:5000/login/', { username, password });
       if (response.status === 200) {
-        const loginData = response.data.data;
+        const loginData = response?.data.data;
         navigate('/');
         window.sessionStorage.setItem('schema', JSON.stringify(loginData.schema));
         window.sessionStorage.setItem('roles', JSON.stringify(loginData.user.roles));

@@ -25,21 +25,26 @@ import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
-import PdfInvoice from "../PDFInvoice/PdfInvoice";
+import HistoryInvoice from './HistoryInvoice';
 
 function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
   //vehicle State
   const [vehicleHistory, setVehicleHistory] = useState([]);
   const [filteredHistory, setFilteredHistory] = useState([]);
+  const [historyData ,setHistoryData] = useState([]);
+
+  //invoice states
   const [invoiceData, setInvoiceData] = useState(null);
-  
+  const [openInvoiceGenarate, setOpenInvoiceGenarate] = useState(false);
   const [vehicleData, setVehicleData] = useState({
     vehicle_id: '',
     number_plate: '',
     model: '',
     make: '',
     reg_year: '',
-    mileage: 0
+    mileage: 0,
+    phone: '',
+    fuel_type: ''
   });
   // filter State
   const [openFilter, setOpenFilter] = useState(false);
@@ -123,6 +128,10 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
     setOpenFilter(true);
   };
 
+  const handleInvoicePopup = () => {
+    setOpenInvoiceGenarate(true)
+  };
+
   const handleClose = () => {
     setVehicleData({
       vehicle_id: '',
@@ -148,6 +157,7 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
 
   const groupByYear = () => {
     const historyToGroup = filteredHistory.length > 0 ? filteredHistory : vehicleHistory;
+    setHistoryData(historyToGroup)
     let years = Array.from(new Set(historyToGroup.map((service) => handleYearConversion(service.service_date))));
     years=  years.sort((a, b) => b - a);  // Sort the years in ascending order
 
@@ -176,6 +186,23 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
    //pdfInvoice genaration
   //collect final values
 
+  const getFuelType = (fueltype) => {
+    switch (fueltype) {
+      case "P":
+        return "Petrol";
+      case "D":
+        return "Diesel";
+      case "DE":
+        return "Diesel Electric";
+      case "E":
+        return "Electric";
+      case "PE":
+        return "Petrol Electric"; 
+      default:
+          return "Unknown";       
+    }
+  };
+
   const getCenterData = async () => {
     try {
       await axios.post(`http://localhost:5000/owner/vehicle/pdf`, { schema: getSchema })
@@ -191,24 +218,29 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
 
 
   const handleRowClick = (details) => {
-    // Check if details object exists
-    if (details && details.details) {
+ 
+      if (details && details.details) {
         let s_details = details.details[0];
         let s_item = s_details.item;
         let s_type = s_details.type;
         let s_price = s_details.price;
         let s_quantity = s_details.quantity;
-
-        generateInvoiceData(s_item, s_type, s_price, s_quantity);
+  
+        generateInvoiceData(
+          s_item,
+          s_type,
+          s_price,
+          s_quantity,
+        );
         getCenterData();
-    } else {
+      } else {
         console.log("Details not found or invalid format");
-    }
+      }
 };
 
   const generateInvoiceData = (s_item, s_type, s_price, s_quantity) => {
     const owner_name = vehicleData.name;
-    const owner_phoneNo = "_";
+    const owner_phoneNo = vehicleData.phone;
     const CompanyName = centerData.name;
     const street_1 = centerData.street_1;
     const street_2 = centerData.street_2;
@@ -217,7 +249,7 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
     const phone = centerData.phone;
     const email = centerData.email;
     const vehicle_id = vehicleData.number_plate;
-    const fuel_type = "_";
+    const fuel_type = getFuelType(vehicleData.fuel_type);
     const model = vehicleData.model;
     const mileage = vehicleData.mileage;
     const selectedItems = [{
@@ -259,9 +291,9 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
         onClose={handleClose}
         fullWidth
         maxWidth="cl"
-        style={{ margin: '50px' }}
+        style={{ margin: '31px' }}
       >
-        <DialogTitle>
+        <DialogTitle sx={{ mb: 2.5 }}>
           {`VEHICLE HISTORY : ${vehicleData.number_plate}`}
           <IconButton onClick={handleClose} style={{ float: "right" }}>
             <CloseIcon color="primary"></CloseIcon>
@@ -346,9 +378,6 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
                                 <TableCell style={{ fontWeight: 'bold' }}>
                                   
                                 </TableCell>
-                                <TableCell style={{ fontWeight: 'bold' }}>
-                                  
-                                </TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
@@ -358,15 +387,14 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
                                   <TableCell>{service.description}</TableCell>
                                   <TableCell>{service.mileage}</TableCell>
                                   <TableCell>{`Rs. ${parseFloat(service.cost).toFixed(2)}`}</TableCell>
-                                  {invoiceData === null &&  (
                                   <TableCell align='right'>
-                                    <IconButton aria-label="delete" sx={{fontSize: 'small'}}>
+                                    <IconButton aria-label="delete" sx={{fontSize: 'small'}} onClick={handleInvoicePopup}>
                                       Genarate Invoice <RestartAltRoundedIcon sx={{marginLeft: 1}} color="primary"/>
                                     </IconButton>
-                                  </TableCell>)}
-                                  <TableCell align='right'>
-                                    {invoiceData &&<PdfInvoice invoiceData={invoiceData} />}
                                   </TableCell>
+                                  {/* <TableCell align='right'>
+                                    {invoiceData &&<PdfInvoice invoiceData={invoiceData} />}
+                                  </TableCell> */}
                                 </TableRow>
                               ))}
                             </TableBody>
@@ -389,6 +417,12 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
         vehicleData={vehicleData}
         onFilteredHistory={handleFilteredHistory}
         closeFilterPopup={() => setOpenFilter(false)}
+      />
+
+      <HistoryInvoice 
+        openInvoice={openInvoiceGenarate}
+        InvoiceData={invoiceData}
+        closeInvoice={() => setOpenInvoiceGenarate(false)}
       />
     </div>
   );
