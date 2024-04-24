@@ -73,15 +73,21 @@ const ServicePage = () => {
   const [isUpdated, setIsUpdated] = useState(false);
 
   const VehicleAutocomplete = ({ filterData, vehiData }) => {
-    const options = vehiData.map((vehicle) => ({
-      client_id: vehicle.id,
-      vehicle_id: vehicle.vehicle_id,
-      number: vehicle.number_plate,
-      model: vehicle.model,
-      fuel: vehicle.fuel_type,
-      milage: vehicle.mileage_on_reg,
-      // image: vehicle.image,
-    }));
+    const options = vehiData
+      .filter((vehicle) => {
+        return !allOngoingServices.some(
+          (service) => service.client_id === vehicle.id
+        );
+      })
+      .map((vehicle) => ({
+        client_id: vehicle.id,
+        vehicle_id: vehicle.vehicle_id,
+        number: vehicle.number_plate,
+        model: vehicle.model,
+        fuel: vehicle.fuel_type,
+        milage: vehicle.mileage_on_reg,
+        // image: vehicle.image,
+      }));
 
     return !selectedVehicle ? (
       <Autocomplete
@@ -214,24 +220,28 @@ const ServicePage = () => {
 
       let inventoryArr = inputFields.filter((obj) => obj.type === "Inventory");
 
-      for (let i = 0; i < inventoryArr.length; i++) { 
-        let q = (parts.filter((part) => part.part_id === inventoryArr[i].id))[0].quantity;
-        await fetch(`http://localhost:5000/center/inventory/${inventoryArr[i].id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem("schema")),
-            quantity: q - inventoryArr[i].quantity,
-          }),
-        });
+      for (let i = 0; i < inventoryArr.length; i++) {
+        let q = parts.filter((part) => part.part_id === inventoryArr[i].id)[0]
+          .quantity;
+        await fetch(
+          `http://localhost:5000/center/inventory/${inventoryArr[i].id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              schema: JSON.parse(window.sessionStorage.getItem("schema")),
+              quantity: q - inventoryArr[i].quantity,
+            }),
+          }
+        );
       }
 
       handleClose();
       setMilage("");
       setSelectedEmployee([]);
-      document.dispatchEvent(new Event('customUpdateEvent'));
+      document.dispatchEvent(new Event("customUpdateEvent"));
       getAllOngoingServices();
     }
     setAlertMessage(
@@ -489,6 +499,13 @@ const ServicePage = () => {
     }
   };
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+  const filteredServices = allOngoingServices.filter((service) =>
+    String(service.client_id).toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
       {openAlert && (
@@ -507,7 +524,7 @@ const ServicePage = () => {
           size="small"
           label="Search Vehicles"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleSearch}
           sx={{ ml: 2 }}
         />
       </Grid>
@@ -516,7 +533,7 @@ const ServicePage = () => {
           <Grid item xs={3}>
             <AddButtonCard onAdd={handleClickOpen} editRole={editRole} />
           </Grid>
-          {allOngoingServices.map((item, index) => (
+          {filteredServices.map((item, index) => (
             <Grid item xs={3} key={item.client_id}>
               <VehicleCard
                 clientId={item.client_id}
