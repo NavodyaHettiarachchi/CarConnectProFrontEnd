@@ -39,7 +39,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs, { Dayjs } from 'dayjs';
-import VehicleHistory from '../Vehicle/VehicleHistory';
+
 
 const columns = [
   { id: 'profile_pic', label: '', minWidth: 50, maxWidth: 50 },
@@ -301,9 +301,6 @@ function Employees() {
             <Button variant="contained" onClick={openPopupNewEmp} color="primary" className='Button' sx={{ right: 0, left: 'auto' }} disabled={!editRole}>
               New Employee
             </Button>
-            <Button variant="contained" onClick={openPopupHistory} color="primary" className='Button' sx={{ right: 0, left: 'auto' }}>
-              View history
-            </Button>
             {/* Add employee popup  */}
             <Dialog
               fullScreen
@@ -487,12 +484,6 @@ function Employees() {
           </div>
         </CardContent>
       </Card>
-
-      <VehicleHistory
-        open={openHistory}
-        vehicleId={1}
-        closeVehicleHistory={() => {setOpenHistory(false)}}
-      />
     </div>
   )
 }

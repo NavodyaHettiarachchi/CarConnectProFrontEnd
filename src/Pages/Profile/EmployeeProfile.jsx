@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { TextField, Button, Grid, Paper, FormControl, Select, MenuItem, InputLabel, Avatar } from '@mui/material';
+import React, { useState } from 'react';
+import { TextField, Button, Grid, Paper, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import Headerfile from '../../Components/Page-Header/CardHeader';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useEffect } from 'react';
 
+import Avatar from '@mui/material/Avatar';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import AccountIcon from '@mui/icons-material/AccountCircle';
 
 import ChangePassword from './ChangePassword';
-import axios from 'axios';
 
 const allowedRoles = new Set(["pp:ad", "s:ad"]);
 
@@ -17,11 +19,52 @@ function EmployeeForm() {
   const initialUserID = JSON.parse(window.sessionStorage.getItem('userId')) || null;
   const [UserID] = useState(initialUserID);
   const [editRole, setEditRole] = useState(false);
+  const [schema, setschema] = useState('');
 
-  useEffect(() => {
-    const roles = (JSON.parse(window.sessionStorage.getItem('roles'))).split(", ");
-    setEditRole(allowedRoles.has(roles.find(role => role === 'pp:ad' || role === 's:ad')));
-  }, []);
+ // store form data
+ const [formData, setformData] = useState({
+  username: '',
+  email: '',
+  contact: '',
+  name: '',
+  dob: '',
+  gender: '',
+  nic: '',
+  manager_name: '', 
+  designation: '',
+  profile_pic: ''
+});
+     
+useEffect(() => {
+  const roles = (JSON.parse(window.sessionStorage.getItem('roles')) || '').split(", ");
+  setEditRole(allowedRoles.has(roles.find(role => role === 'pp:ad' || role === 's:ad')));
+
+  const storedschema = sessionStorage.getItem('schema');
+  setschema(storedschema);
+  // Fetch employee data when UserID and schema are available
+  if (UserID && storedschema) {
+    axios.get(`http://localhost:5000/center/employee/profile/${UserID}?schema=${storedschema}`)
+      .then(response => {
+        const { username, email, name, dob, gender, nic, contact, profile_pic, manager_name, designation } = response.data.data.empData;
+        const dateOnly = dob.split('T')[0];
+        setformData({
+          username,
+          email,
+          contact,
+          name,
+          dob: dateOnly,
+          gender,
+          nic,
+          profile_pic,
+          manager_name,
+          designation
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+      });
+  }
+}, [UserID, schema]); 
 
   const mapGender = (value) => {
     switch (value) {
@@ -36,7 +79,7 @@ function EmployeeForm() {
     }
   };
 
-  //Mapping function to convert "Male", "Female", "Other" to "M", "F", "O"
+  // Mapping function to convert "Male", "Female", "Other" to "M", "F", "O"
   const mapGenderReverse = (value) => {
     switch (value) {
       case "male":
@@ -50,101 +93,81 @@ function EmployeeForm() {
     }
   };
 
-  // store form data
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    phone: '',
-    name: '',
-    dob: '',
-    gender: '',
-    nic: '',
-    managerName: '',
-    designation: '',
-    profile_pic: ''
-  });
 
-  // Fetch user data when component mounts
-  useEffect(() => {
-    axios.get(`http://localhost:5000/center/employee/` + UserID)
-      .then(response => {
-        const { username, email, name, dob, gender, nic, managerName, designation, phone, profile_pic } = response.data.data.userData;
-        const dateOnly = dob.split('T')[0]; // Format date of birth to YYYY-MM-DD
-        console.log(response.data);
-        setFormData({
-          username,
-          email,
-          phone,
-          name,
-          dob: dateOnly,
-          gender,
-          nic,
-          managerName,
-          designation,
-          profile_pic
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching user data:', error);
-      });
-  }, [UserID]);
+  // const MAX_VISIBLE_CHARACTERS = 4;
+  // const [email, domain] = formData.email.split('@');
+  // const truncatedEmail = email.slice(0, MAX_VISIBLE_CHARACTERS) + '*****';
 
-  // Handle changes in the form fields
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+    setformData({
+      ...formData,
       [name]: value
-    }));
+    });
   };
 
-  // Handle image file upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file instanceof Blob) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData((prevData) => ({
-          ...prevData,
+        setformData({
+          ...formData,
           profile_pic: reader.result
-        }));
+        });
       };
       reader.readAsDataURL(file);
     } else {
-      console.error('Selected file is not a Blob object');
+      console.error("Selected file is not a Blob object");
     }
   };
 
-  // Handle image deletion
   const handleDeleteImage = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      profile_pic: '' // Remove the image
-    }));
+    setformData({
+      ...formData,
+      profile_pic: ''
+    });
 
-    // Clear the file input value
+    // Clear file input value
     const fileInput = document.getElementById('contained-button-file');
     if (fileInput) {
       fileInput.value = '';
     }
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.patch(`http://localhost:5000/center/employee/` + UserID, formData)
-      .then(response => {
-        console.log('Profile updated successfully:', response.data);
-      })
-      .catch(error => {
-        console.error('Error updating profile:', error);
-      });
+    // Check if UserID and schema are available
+    if (UserID && schema) {
+      const url = `http://localhost:5000/center/employee/profile/${UserID}?schema=${schema}`; 
+      axios.patch(url, formData)
+        .then(response => {
+          console.log('Profile updated successfully:', response.data);
+        })
+        .catch(error => {
+          console.error('Error updating profile:', error);
+          if (error.response) {
+            // Server responded with an error status code
+            console.error('Server responded with status code:', error.response.status);
+            console.error('Error response data:', error.response.data);
+          } else if (error.request) {
+            // The request was made but no response was received
+            console.error('No response received from server');
+          } else {
+            // Something else happened while setting up the request
+            console.error('Error setting up the request:', error.message);
+          }
+        });
+    } else {
+      console.error('UserID or schema is missing');
+    }
   };
+  
 
   return (
     <div>
       <Headerfile title="Employee Profile" />
-      <Paper style={{ padding: 15, maxWidth: 1200 }}>
+      <Paper style={{ padding: 15, top: 5, maxWidth: 1200, display: 'flex' }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <form onSubmit={handleSubmit}>
@@ -169,7 +192,7 @@ function EmployeeForm() {
                         <Avatar alt="Avatar" style={{ width: '100%', height: '100%' }}><AccountIcon style={{ width: '100%', height: '100%', color: '#f0f0f0' }} /></Avatar>
                       )}
                       {formData.profile_pic && (
-                        <Button onClick={handleDeleteImage} variant="contained" disabled={!editRole} color="secondary" style={{ position: 'absolute', top: 345, left: 780 }}><DeleteIcon /></Button>
+                        <Button disabled={!editRole} onClick={handleDeleteImage} variant="contained" color="secondary" style={{ position: 'absolute', top: 345, left: 780 }}><DeleteIcon /></Button>
                       )}
                     </div>
                     <input
@@ -185,14 +208,14 @@ function EmployeeForm() {
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
-                  <Grid container spacing={2}>
+                  <Grid container spacing={4.8} sx={{ paddingTop: 2 }}>
                     <Grid item xs={12}>
                       <TextField
                         fullWidth
                         label="Username"
                         name="username"
-                        disabled={!editRole}
                         value={formData.username}
+                        disabled={!editRole}
                         InputProps={{
                           readOnly: true,
                         }}
@@ -203,8 +226,9 @@ function EmployeeForm() {
                         fullWidth
                         label="Email"
                         name="email"
-                        type="email"
                         disabled={!editRole}
+                        type="email"
+                        // value={truncatedEmail + '@' + domain}
                         value={formData.email}
                         InputProps={{
                           readOnly: true,
@@ -215,9 +239,9 @@ function EmployeeForm() {
                       <TextField
                         fullWidth
                         label="Phone"
-                        name="phone"
+                        name="contact"
                         disabled={!editRole}
-                        value={formData.phone}
+                        value={formData.contact}
                         onChange={handleChange}
                         required
                       />
@@ -229,97 +253,137 @@ function EmployeeForm() {
                   <TextField
                     fullWidth
                     label="Name"
-                    name="name"
                     disabled={!editRole}
+                    name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
                     label="Date of Birth"
                     name="dob"
                     type="date"
-                    disabled={!editRole}
                     value={formData.dob}
                     onChange={handleChange}
+                    disabled={!editRole}
                     required
                     InputLabelProps={{
                       shrink: true,
                     }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel>Gender</InputLabel>
-                    <Select
-                      value={mapGender(formData.gender)}
-                      onChange={(e) => handleChange({ target: { name: "gender", value: mapGenderReverse(e.target.value) } })}
-                      name="gender"
-                      disabled={!editRole}
-                      required
-                    >
-
-                      <MenuItem value="male">Male</MenuItem>
-                      <MenuItem value="female">Female</MenuItem>
-                      <MenuItem value="other">Other</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="NIC"
-                    name="nic"
-                    disabled={!editRole}
-                    value={formData.nic}
                     InputProps={{
-                      readOnly: true,
+                      ...(formData.dob && { inputProps: { placeholder: '' } })
                     }}
                   />
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Designation Details"
-                    value={`${formData.managerName} | ${formData.designation}`}
-                    disabled={!editRole}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+
+                      <FormControl fullWidth>
+                        <InputLabel>Gender</InputLabel>
+                        <Select
+                          value={mapGender(formData.gender)}
+                          onChange={(e) => handleChange({ target: { name: "gender", value: mapGenderReverse(e.target.value) } })}
+                          name="gender"
+                          disabled={!editRole}
+                          required
+                        >
+                          <MenuItem value="male">Male</MenuItem>
+                          <MenuItem value="female">Female</MenuItem>
+                          <MenuItem value="other">Other</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        label="NIC"
+                        disabled={!editRole}
+                        name="nic"
+                        value={formData.nic}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
 
-                <Grid item xs={12}>
-                  <Grid container justifyContent="flex-end" spacing={2}>
-                    <Grid item>
+                <Grid item xs={12} sm={6}>
+
+                  
+
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        label="Manager Name"
+                        disabled={!editRole}
+                        name="manager_name"
+                        value={formData.manager_name}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        label="Designation"
+                        disabled={!editRole}
+                        name="designation"
+                        value={formData.designation}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                      />
+                    </Grid>   
+                </Grid>
+
+                </Grid>
+
+
+                <div style={{ marginLeft: '68%', marginTop: '1%' }}>
+                  <Grid container spacing={5}>
+                    <Grid item xs={6}>
                       <Button variant="contained" disabled={!editRole} color="primary" type="submit">
                         Save
                       </Button>
                     </Grid>
-                    <Grid item>
-                      <Button variant="contained" color="secondary" component={Link} to="/">
+
+                    <Grid item xs={6}>
+                      <Button variant="contained" color="secondary" type="button" component={Link} to="/">
                         Back
                       </Button>
                     </Grid>
+
                   </Grid>
-                </Grid>
+                </div>
+
               </Grid>
             </form>
           </Grid>
 
-          <Grid container justifyContent="center">
-            <Grid item xs={12}>
+          <div style={{ marginLeft: '18%', marginTop: '-3%' }}>
+            <Grid item xs={12} sm={12}>
               {editRole && <ChangePassword />}
             </Grid>
-          </Grid>
+          </div>
+
         </Grid>
       </Paper>
+
     </div>
   );
 }
 
-export default EmployeeForm;
+export default  EmployeeForm;
