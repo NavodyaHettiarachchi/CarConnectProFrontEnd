@@ -31,6 +31,7 @@ import PdfInvoice from "../PDFInvoice/PdfInvoice";
 import IconButton from "@mui/material/IconButton";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import axios from 'axios';
 
 const columns = [
   { id: "type", label: "Type", minWidth: 170 },
@@ -71,6 +72,7 @@ const ServicePage = () => {
   const [selectedEmployee, setSelectedEmployee] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
+  const [prevMileage, setPrevMileage] = useState("");
 
   const VehicleAutocomplete = ({ filterData, vehiData }) => {
     const options = vehiData.map((vehicle) => ({
@@ -161,6 +163,30 @@ const ServicePage = () => {
   };
 
   const handleSaveClick = async () => {
+      try {
+        const vehicleId = selectedVehicle.vehicle_id;
+        const schema = JSON.parse(window.sessionStorage.getItem("schema"));
+        await axios.post(`http://localhost:5000/center/service/mileage`, {schema: schema, vehicleId: vehicleId})
+        .then((res) => {
+          const mileage_on_last_service_date = res.data;
+          setPrevMileage(mileage_on_last_service_date);
+          console.log("mileage: ", prevMileage);
+        })
+        .catch((err) => console.log(err));
+
+      } catch (error) {
+        console.log(error);
+
+      }
+
+    const mileage_on_last_service = 5000;
+    if (!milage || isNaN(milage) || parseFloat(milage) <= mileage_on_last_service) {
+      setAlertMessage("Please enter the mileage.");
+      setAlertType("success");
+      setOpenAlert(true);
+      return;
+     }
+
     if (selectedVehicle) {
       const newCard = (
         <Grid item key={selectedVehicle.vehicle_id}>
@@ -234,11 +260,10 @@ const ServicePage = () => {
       document.dispatchEvent(new Event('customUpdateEvent'));
       getAllOngoingServices();
     }
-    setAlertMessage(
-      `Successfully Created Ongoing Service for ${selectedVehicle.number} !`
-    );
+    setAlertMessage( `Successfully Created Ongoing Service for ${selectedVehicle.number} !` );
     setAlertType("success");
     setOpenAlert(true);
+
   };
   useEffect(() => {
     // Calculate the full amount
@@ -267,7 +292,9 @@ const ServicePage = () => {
       }
 
       const data = await response.json();
+      console.log("vehiData.ID", data.data.clients.vehicle_id);
       setVehiData(data.data.clients);
+      console.log("vehiData", vehiData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
