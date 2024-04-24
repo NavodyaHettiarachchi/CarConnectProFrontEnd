@@ -33,12 +33,12 @@ function App() {
 
     const userType = window.sessionStorage.getItem('userType');//@Harindu Ashen 
     setUserType(JSON.parse(userType));
-  },[]);
+  },[location]);
 
   const islogged = window.sessionStorage.getItem('IsLoggedIn');
   const sep_roles = userRole?.split(', ');
   let menuItems = menu.filter((subItem) => {
-    for (let i = 0; i <= sep_roles?.length; i++) {
+    for (let i = 0; i < sep_roles?.length; i++) {
       return islogged && subItem.allowedRoles.some((role) => sep_roles.includes(role));
     }
   });

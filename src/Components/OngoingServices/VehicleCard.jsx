@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   CardContent,
-  CardMedia,
   Dialog,
   DialogActions,
   DialogContent,
@@ -21,11 +20,13 @@ import {
   TableCell,
   TextField,
   Typography,
+  Snackbar,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import axios from "axios";
 import CancelPresentationOutlinedIcon from "@mui/icons-material/CancelPresentationOutlined";
 import PdfInvoice from "../PDFInvoice/PdfInvoice";
+import Alert from "@mui/material/Alert";
 
 const columns = [
   { id: "type", label: "Type", minWidth: 170 },
@@ -43,10 +44,14 @@ const VehicleCard = ({
   // milage,
   clientId,
   selected,
+  isUpdated
 }) => {
   const [open, setOpen] = useState(false);
+
   const [data, setData] = useState([]);
   const [inputFields, setInputFields] = useState([]);
+  const [previousData, setPreviousData] = useState([]);
+  const [isDisable, setIsDisable] = useState(false);
   const [fullAmount, setFullAmount] = useState(0);
   const [tableData, setTableData] = useState([]);
   const [serviceItems, setServiceItems] = useState([]);
@@ -66,6 +71,9 @@ const VehicleCard = ({
     city: "",
     province: "",
   });
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("");
 
   const getVehicleNumber = () => {
     const vehicle = vehiData.find((vehicle) => vehicle.id === clientId);
@@ -93,6 +101,11 @@ const VehicleCard = ({
   const getOwnerPhoneNo = () => {
     const vehicle = vehiData.find((vehicle) => vehicle.id === clientId);
     return vehicle ? vehicle.owner_contact : null;
+  };
+  const handleAlertClose = () => {
+    setAlertMessage("");
+    setAlertType("");
+    setOpenAlert(false);
   };
 
   const handleClickOpen = () => {
@@ -137,6 +150,7 @@ const VehicleCard = ({
       setOngoingServices(clientData);
 
       setInputFields(clientData.details);
+      setPreviousData(clientData.details);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -179,7 +193,6 @@ const VehicleCard = ({
     const updatedClientData = { ...ongoingServices, details: validInputFields };
     setOngoingServices(updatedClientData);
     handleClose();
-    console.log("updated:", updatedClientData);
     try {
       const response = await fetch(
         `http://localhost:5000/center/onGoingServices/${ongoingServices.id}`,
@@ -195,23 +208,42 @@ const VehicleCard = ({
         }
       );
 
-      const data = await response.json();
+      await response.json();
+
+      let inventoryArr = updatedClientData.details.filter((item) => {
+        return (
+          !previousData.some((obj) => obj.id === item.id) && item.type === 'Inventory'
+        );
+      });
+
+      for (let i = 0; i < inventoryArr.length; i++) {
+        let q = (parts.filter((part) => part.part_id === inventoryArr[i].id))[0].quantity;
+        await fetch(`http://localhost:5000/center/inventory/${inventoryArr[i].id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            schema: JSON.parse(window.sessionStorage.getItem("schema")),
+            quantity: q - inventoryArr[i].quantity,
+          }),
+        });
+      }
 
       // Handle successful response here
+      document.dispatchEvent(new Event('customUpdateEvent'));
     } catch (error) {
       console.log(error);
 
       // Handle error here
     }
+    setAlertMessage(
+      `Successfully Saved Service Dedtails For ${getVehicleNumber()}!`
+    );
+    setAlertType("success");
+    setOpenAlert(true);
   };
 
-  // const calculateTotalCost = (tableData) => {
-  //   return tableData.reduce((acc, curr) => {
-  //     const price = parseFloat(curr.price.replace("Rs. ", ""));
-  //     const quantity = parseFloat(curr.quantity);
-  //     return isNaN(price) || isNaN(quantity) ? acc : acc + price * quantity;
-  //   }, 0);
-  // };
   useEffect(() => {
     // Calculate the full amount
     const totalAmount = inputFields.reduce((acc, curr) => {
@@ -221,6 +253,26 @@ const VehicleCard = ({
 
     setFullAmount(totalAmount);
   }, [inputFields]);
+
+  const checkMatched = (index) => {
+    const values = [...inputFields];
+    // Compare with previousData
+    const isMatched = previousData.some(
+      (prevItem) =>
+        prevItem.type === values[index].type &&
+        prevItem.item === values[index].item &&
+        prevItem.price === values[index].price &&
+        prevItem.quantity === values[index].quantity
+    );
+
+    // If matched, disable the input fields
+    if (isMatched) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
 
   const handleInputChange = (index, event) => {
     const values = [...inputFields];
@@ -233,6 +285,7 @@ const VehicleCard = ({
       );
       if (selectedService) {
         values[index].price = "Rs. " + selectedService.cost;
+        values[index].id = selectedService.id;
       }
     }
     if (event.target.name === "item" && values[index].type === "Inventory") {
@@ -241,6 +294,7 @@ const VehicleCard = ({
       );
       if (selectedService) {
         values[index].price = "Rs. " + selectedService.price;
+        values[index].id = selectedService.part_id;
       }
     }
 
@@ -258,16 +312,6 @@ const VehicleCard = ({
     } else {
       values[index].total = "";
     }
-
-    // else {
-    //   values[index].total = "";
-    // }
-    // if (values[index].tax) {
-    //   values[index].tax = "Rs. " + values[index].tax;
-    // }
-    // Calculate the total of all the total fields
-
-    // Set the fullAmount state with the total cost
 
     setInputFields(values);
 
@@ -328,15 +372,18 @@ const VehicleCard = ({
       setSelectedItems(inputFields.map((item) => item.item));
     }
   }, [open, inputFields]);
+
   const handleRemoveClick = (index) => {
     const values = [...inputFields];
-    values.splice(index, 1);
-    setInputFields(values);
-    const updatedDetails = ongoingServices.details.filter(
-      (detail, i) => i !== index
-    );
-    const updatedClientData = { ...ongoingServices, details: updatedDetails };
-    setOngoingServices(updatedClientData);
+    if (!checkMatched(index)) {
+      values.splice(index, 1);
+      setInputFields(values);
+      const updatedDetails = ongoingServices.details.filter(
+        (detail, i) => i !== index
+      );
+      const updatedClientData = { ...ongoingServices, details: updatedDetails };
+      setOngoingServices(updatedClientData);
+    }
   };
 
   const getAllInventory = async () => {
@@ -356,7 +403,8 @@ const VehicleCard = ({
       }
 
       const data = await response.json();
-      setParts(data.data.inventory);
+
+      setParts(data.data.inventory.filter((item) => item.quantity !== 0));
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -468,18 +516,23 @@ const VehicleCard = ({
     });
 
     console.log("in genarate invoiceData", invoiceData);
+    setAlertMessage(
+      `Successfully Generated Invoice For ${getVehicleNumber()} !`
+    );
+    setAlertType("success");
+    setOpenAlert(true);
   };
 
-  // const handleGenerateInvoice = () => {
-  //   generateInvoiceData();
-  //   console.log("in handle genarate invoiceData" , invoiceData);
-  // };
-
   const handleFinish = () => {
-    console.log("finish clicked");
     handleSaveClick();
     handleClose();
     disableOngoingService();
+    isUpdated();
+    setAlertMessage(
+      `Successfully Finished Service for ${getVehicleNumber()} !`
+    );
+    setAlertType("success");
+    setOpenAlert(true);
   };
 
   useEffect(() => {
@@ -488,6 +541,16 @@ const VehicleCard = ({
 
   return (
     <div>
+      {openAlert && (
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleAlertClose}
+        >
+          <Alert severity={alertType}>{alertMessage}</Alert>
+        </Snackbar>
+      )}
       <Button onClick={handleClickOpen}>
         <Card sx={{ width: 350, height: 200, position: "relative" }}>
           {selected && <div className="selected-overlay"></div>}
@@ -567,6 +630,7 @@ const VehicleCard = ({
                               handleInputChange(index, event)
                             }
                             sx={{ width: "200px", mr: "10px" }}
+                            disabled={checkMatched(index)}
                           >
                             <MenuItem value="Service">Service</MenuItem>
                             <MenuItem value="Inventory">Amenity</MenuItem>
@@ -584,6 +648,7 @@ const VehicleCard = ({
                               handleInputChange(index, event)
                             }
                             sx={{ width: "200px", mr: "10px" }}
+                            disabled={checkMatched(index)}
                           >
                             {inputField.type === "Service" &&
                               serviceItems.map((item) => (
@@ -616,6 +681,7 @@ const VehicleCard = ({
                           name="price"
                           onChange={(event) => handleInputChange(index, event)}
                           sx={{ width: "200px", mr: "10px" }}
+                          disabled={checkMatched(index)}
                         />
                       </TableCell>
                       <TableCell>
@@ -625,6 +691,7 @@ const VehicleCard = ({
                           name="quantity"
                           onChange={(event) => handleInputChange(index, event)}
                           sx={{ width: "200px", mr: "10px" }}
+                          disabled={checkMatched(index)}
                         />
                       </TableCell>
                       <TableCell>{inputField.total}</TableCell>
@@ -635,6 +702,7 @@ const VehicleCard = ({
                           onClick={() => handleRemoveClick(index)}
                           fontSize="large"
                           sx={{ cursor: "pointer" }}
+                          disabled={checkMatched(index)}
                         />
                       </TableCell>
                     </TableRow>

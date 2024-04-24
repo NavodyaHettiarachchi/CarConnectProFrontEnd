@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
-  DialogTitle,
   useMediaQuery,
   useTheme,
   IconButton,
@@ -22,6 +21,8 @@ import 'dayjs/locale/en-gb';
 import axios from 'axios';
 import Autocomplete from '@mui/material/Autocomplete';
 import Slider from '@mui/material/Slider';
+import FilterAltOffOutlinedIcon from '@mui/icons-material/FilterAltOffOutlined';
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 
 const useStyles = makeStyles({
   dialogContent: {
@@ -37,7 +38,7 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // states
+  // State to store filter data
   const [filterData, setFilterData] = useState({
     fromDate: dayjs("01-01-1990"),
     toDate: dayjs(),
@@ -62,7 +63,7 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
   }, [openFilter])
 
 
-
+  // Function to handle mileage change
   const handleMileageChange = (event, newValue, activeThumb) => { 
     if (!Array.isArray(newValue)) {
       return;
@@ -93,6 +94,7 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
     }
   }
 
+  // Function to handle other filter changes
   const handleChange = (event, value, property) => {
     if (property === 'fromDate' || property === 'toDate') {
       const value = event;
@@ -110,9 +112,9 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
   };
 
   const fetchFilteredHistory = async () => {
+    console.log("filter data: ", filterData);
     try {
-      const response = await axios.post(`http://localhost:5000/owner/vehicles/${vehicleId}/filter`, { filterData })
-      
+      await axios.post(`http://localhost:5000/owner/vehicles/${vehicleId}/filter`, { filterData })
       .then((res) => {
         const filteredHistory = res.data.data.filteredHistory[0];
         console.log('Response data:', res.data.data.filteredHistory[0]);
@@ -134,13 +136,25 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
 
 
   const handleClose = () => { 
-    setFilterData({
+    // setFilterData({
+    //   fromDate: dayjs("01-01-1990"),
+    //   toDate: dayjs(),
+    //   center: null,
+    //   mileage: [0, 300000]
+    // });
+    // setCenterData([]);
+    closeFilterPopup();
+  }
+
+  const handleClearFilter = () => {
+     setFilterData({
       fromDate: dayjs("01-01-1990"),
       toDate: dayjs(),
       center: null,
       mileage: [0, 300000]
     });
     setCenterData([]);
+    onFilteredHistory(filterData);
     closeFilterPopup();
   }
 
@@ -165,7 +179,7 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
         }}
       >
         <DialogContent classes={{ root: classes.dialogContent }} style={{ padding: '0px', overflowX: 'hidden' }} >
-          <div style={{ backgroundColor: '#843fc5', height: '20%', paddingLeft: '20px', position: 'relative' }}>
+          <div style={{ backgroundColor: '#00BFFF', height: '20%', paddingLeft: '20px', position: 'relative' }}>
             <IconButton onClick={handleClose} style={{ position: 'absolute', top: '10px', right: '10px' }}>
               <CloseIcon color="black"></CloseIcon>
             </IconButton>
@@ -253,8 +267,8 @@ function VehicleHistoryFilter({ openFilter, vehicleId, onFilteredHistory, vehicl
 
         </DialogContent>
 
-        <Button onClick={handleFilterSubmit}>Apply Filter</Button>
-        <Button onClick={handleFilterSubmit}>Clear Filter</Button>
+        <Button sx={{ mb: 0.5 }} onClick={handleFilterSubmit}>Apply Filter  <FilterAltOutlinedIcon /></Button>
+        <Button sx={{ mb: 1.5 }} onClick={handleClearFilter}>Clear Filter<FilterAltOffOutlinedIcon /></Button>
       </Dialog>
     </div>
   );
