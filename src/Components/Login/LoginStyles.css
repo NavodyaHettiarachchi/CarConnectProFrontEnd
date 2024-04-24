@@ -16,6 +16,16 @@
     /* justify-content: space-around; */
 }
 
+.toggle{
+    margin-right: 0;
+    right: auto;
+    text-decoration: none;
+}
+
+.toggle:hover{
+   cursor: pointer;
+}
+
 .hero-img img {
     right: 0;
 }

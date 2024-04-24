@@ -13,6 +13,7 @@ function Login() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -20,11 +21,22 @@ function Login() {
     setError(null);
   }
 
+  const handlePasswordChange = (e) => {
+  
+   
+    togglePasswordVisibility();
+    
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
 
       const response = await axios.post('http://localhost:5000/login/', { username, password });
+      console.log(username,password);
       if (response.status === 200) {
         const loginData = response?.data.data;
         navigate('/');
@@ -42,7 +54,7 @@ function Login() {
           const isAdmin = roles.filter((role) => role === 's:ad' || role === 'sp:ad' || role === 'sp:v');
           if (isAdmin.length > 0) {
             navigate('/dashboard');
-          } else { 
+          } else {
             navigate('/service/');
           }
         }
@@ -74,7 +86,7 @@ function Login() {
       <div className='hero-img'>
         <img src={landingimg} alt="" />
       </div>
-      <div className="hero-form module-border-wrap" style={{position: 'relative'}}>
+      <div className="hero-form module-border-wrap" style={{ position: 'relative' }}>
         <div className='module' >
           <img src={Minilogo} alt="" />
           <Heading title="Welcome to Car Connect Pro" />
@@ -85,7 +97,12 @@ function Login() {
             <br />
             <label htmlFor="" className=' left-aligned top-spacer'>Enter your Password</label>
             <br />
-            <input type="password" onChange={(e) => { setPassword(e.target.value) }} className='name-field ' />
+            <input type={showPassword ? 'text' : 'password'} 
+           onChange={(e) => { setPassword(e.target.value) }} className='name-field ' />
+            <br />
+            <a className='toggle' onClick={(e) => {handlePasswordChange(e?.target?.value) }} >
+              {showPassword ? 'Hide' : 'Show'} Password
+            </a>
             <br />
             {/* <span className='left-aligned'>
               <div>
