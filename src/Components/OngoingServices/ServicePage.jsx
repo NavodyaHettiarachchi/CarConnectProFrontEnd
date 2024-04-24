@@ -31,6 +31,7 @@ import PdfInvoice from "../PDFInvoice/PdfInvoice";
 import IconButton from "@mui/material/IconButton";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import axios from 'axios';
 
 const columns = [
   { id: "type", label: "Type", minWidth: 170 },
@@ -71,17 +72,24 @@ const ServicePage = () => {
   const [selectedEmployee, setSelectedEmployee] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
+  const [prevMileage, setPrevMileage] = useState("");
 
   const VehicleAutocomplete = ({ filterData, vehiData }) => {
-    const options = vehiData.map((vehicle) => ({
-      client_id: vehicle.id,
-      vehicle_id: vehicle.vehicle_id,
-      number: vehicle.number_plate,
-      model: vehicle.model,
-      fuel: vehicle.fuel_type,
-      milage: vehicle.mileage_on_reg,
-      // image: vehicle.image,
-    }));
+    const options = vehiData
+      .filter((vehicle) => {
+        return !allOngoingServices.some(
+          (service) => service.client_id === vehicle.id
+        );
+      })
+      .map((vehicle) => ({
+        client_id: vehicle.id,
+        vehicle_id: vehicle.vehicle_id,
+        number: vehicle.number_plate,
+        model: vehicle.model,
+        fuel: vehicle.fuel_type,
+        milage: vehicle.mileage_on_reg,
+        // image: vehicle.image,
+      }));
 
     return !selectedVehicle ? (
       <Autocomplete
@@ -161,6 +169,30 @@ const ServicePage = () => {
   };
 
   const handleSaveClick = async () => {
+      try {
+        const vehicleId = selectedVehicle.vehicle_id;
+        const schema = JSON.parse(window.sessionStorage.getItem("schema"));
+        await axios.post(`http://localhost:5000/center/service/mileage`, {schema: schema, vehicleId: vehicleId})
+        .then((res) => {
+          const mileage_on_last_service_date = res.data;
+          setPrevMileage(mileage_on_last_service_date);
+          console.log("mileage: ", prevMileage);
+        })
+        .catch((err) => console.log(err));
+
+      } catch (error) {
+        console.log(error);
+
+      }
+
+    const mileage_on_last_service = 5000;
+    if (!milage || isNaN(milage) || parseFloat(milage) <= mileage_on_last_service) {
+      setAlertMessage("Please enter the mileage.");
+      setAlertType("success");
+      setOpenAlert(true);
+      return;
+     }
+
     if (selectedVehicle) {
       const newCard = (
         <Grid item key={selectedVehicle.vehicle_id}>
@@ -214,31 +246,34 @@ const ServicePage = () => {
 
       let inventoryArr = inputFields.filter((obj) => obj.type === "Inventory");
 
-      for (let i = 0; i < inventoryArr.length; i++) { 
-        let q = (parts.filter((part) => part.part_id === inventoryArr[i].id))[0].quantity;
-        await fetch(`http://localhost:5000/center/inventory/${inventoryArr[i].id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem("schema")),
-            quantity: q - inventoryArr[i].quantity,
-          }),
-        });
+      for (let i = 0; i < inventoryArr.length; i++) {
+        let q = parts.filter((part) => part.part_id === inventoryArr[i].id)[0]
+          .quantity;
+        await fetch(
+          `http://localhost:5000/center/inventory/${inventoryArr[i].id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              schema: JSON.parse(window.sessionStorage.getItem("schema")),
+              quantity: q - inventoryArr[i].quantity,
+            }),
+          }
+        );
       }
 
       handleClose();
       setMilage("");
       setSelectedEmployee([]);
-      document.dispatchEvent(new Event('customUpdateEvent'));
+      document.dispatchEvent(new Event("customUpdateEvent"));
       getAllOngoingServices();
     }
-    setAlertMessage(
-      `Successfully Created Ongoing Service for ${selectedVehicle.number} !`
-    );
+    setAlertMessage( `Successfully Created Ongoing Service for ${selectedVehicle.number} !` );
     setAlertType("success");
     setOpenAlert(true);
+
   };
   useEffect(() => {
     // Calculate the full amount
@@ -267,7 +302,9 @@ const ServicePage = () => {
       }
 
       const data = await response.json();
+      console.log("vehiData.ID", data.data.clients.vehicle_id);
       setVehiData(data.data.clients);
+      console.log("vehiData", vehiData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -489,6 +526,13 @@ const ServicePage = () => {
     }
   };
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+  const filteredServices = allOngoingServices.filter((service) =>
+    String(service.client_id).toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
       {openAlert && (
@@ -507,7 +551,7 @@ const ServicePage = () => {
           size="small"
           label="Search Vehicles"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleSearch}
           sx={{ ml: 2 }}
         />
       </Grid>
@@ -516,7 +560,7 @@ const ServicePage = () => {
           <Grid item xs={3}>
             <AddButtonCard onAdd={handleClickOpen} editRole={editRole} />
           </Grid>
-          {allOngoingServices.map((item, index) => (
+          {filteredServices.map((item, index) => (
             <Grid item xs={3} key={item.client_id}>
               <VehicleCard
                 clientId={item.client_id}
