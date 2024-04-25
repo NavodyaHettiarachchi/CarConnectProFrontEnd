@@ -21,6 +21,7 @@ import {
   TextField,
   Typography,
   Snackbar,
+  DialogContentText,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import axios from "axios";
@@ -44,7 +45,7 @@ const VehicleCard = ({
   // milage,
   clientId,
   selected,
-  isUpdated
+  isUpdated,
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -74,6 +75,7 @@ const VehicleCard = ({
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
+  const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
 
   const getVehicleNumber = () => {
     const vehicle = vehiData.find((vehicle) => vehicle.id === clientId);
@@ -212,26 +214,31 @@ const VehicleCard = ({
 
       let inventoryArr = updatedClientData.details.filter((item) => {
         return (
-          !previousData.some((obj) => obj.id === item.id) && item.type === 'Inventory'
+          !previousData.some((obj) => obj.id === item.id) &&
+          item.type === "Inventory"
         );
       });
 
       for (let i = 0; i < inventoryArr.length; i++) {
-        let q = (parts.filter((part) => part.part_id === inventoryArr[i].id))[0].quantity;
-        await fetch(`http://localhost:5000/center/inventory/${inventoryArr[i].id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            schema: JSON.parse(window.sessionStorage.getItem("schema")),
-            quantity: q - inventoryArr[i].quantity,
-          }),
-        });
+        let q = parts.filter((part) => part.part_id === inventoryArr[i].id)[0]
+          .quantity;
+        await fetch(
+          `http://localhost:5000/center/inventory/${inventoryArr[i].id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              schema: JSON.parse(window.sessionStorage.getItem("schema")),
+              quantity: q - inventoryArr[i].quantity,
+            }),
+          }
+        );
       }
 
       // Handle successful response here
-      document.dispatchEvent(new Event('customUpdateEvent'));
+      document.dispatchEvent(new Event("customUpdateEvent"));
     } catch (error) {
       console.log(error);
 
@@ -272,7 +279,6 @@ const VehicleCard = ({
       return false;
     }
   };
-
 
   const handleInputChange = (index, event) => {
     const values = [...inputFields];
@@ -538,7 +544,9 @@ const VehicleCard = ({
   useEffect(() => {
     getAllVehicles();
   }, []);
-
+  const handleFinishDialog = () => {
+    setOpenConfirmDialog(true);
+  };
   return (
     <div>
       {openAlert && (
@@ -733,7 +741,11 @@ const VehicleCard = ({
           <Button variant="contained" color="primary" onClick={handleSaveClick}>
             Save
           </Button>
-          <Button variant="contained" color="primary" onClick={handleFinish}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleFinishDialog}
+          >
             Finish
           </Button>
           <Button
@@ -749,6 +761,33 @@ const VehicleCard = ({
         </DialogActions>
         <DialogActions>
           {invoiceData && <PdfInvoice invoiceData={invoiceData} />}
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openConfirmDialog}
+        onClose={() => setOpenConfirmDialog(false)}
+      >
+        <DialogTitle>Confirm Finish Service</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to finish the service for vehicle{" "}
+            {getVehicleNumber()}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenConfirmDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              setOpenConfirmDialog(false);
+
+              handleFinish();
+            }}
+            color="primary"
+          >
+            Confirm
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
