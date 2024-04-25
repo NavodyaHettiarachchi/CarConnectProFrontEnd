@@ -12,6 +12,7 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Tooltip from '@mui/material/Tooltip';
 import Badge from '@mui/material/Badge';
 import LogoutConfirmation from '../../Pages/Profile/LogoutConfirmation';
+import Alert from '@mui/material/Alert';
 
 export default function Header({ Role }) {
  
@@ -20,7 +21,9 @@ export default function Header({ Role }) {
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const [rolePerms, setRolePerms] = useState(false);
   const [openNotifs, setOpenNotifs] = useState(false);
+  const [serviceData, setServiceData] = useState([]);
   const [notifData, setNotifData] = useState([]);
+  const [isCenter, setIsCenter] = useState(false);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -40,37 +43,87 @@ export default function Header({ Role }) {
 
   useEffect(() => {
     console.log('Custom update event received');
+    const userType = JSON.parse(window.sessionStorage.getItem('userType'));
+    switch (userType) {
+      case 'center':
+        const roles = JSON.parse(window.sessionStorage.getItem('roles'));
+        const found = roles.split(", ").some((role) => role === 'ip:v' || role === 'ip:ad' || role === 's:ad');
+        if (found) {
+          setRolePerms(true);
+          setIsCenter(true);
+          getNotifications();
+        } else {
+          setRolePerms(false);
+        }
+        break;
+      case 'owner':
+        const userId = JSON.parse(window.sessionStorage.getItem('user')).id;
+        setRolePerms(true);
+        setIsCenter(false);
+        getServiceNotifs(userId);
+        break;
+      default:
+        break;
+    };
     // Perform actions to re-run useEffect
-    const roles = JSON.parse(window.sessionStorage.getItem('roles'));
-    const found = roles.split(", ").some((role) => role === 'ip:v' || role === 'ip:ad' || role === 's:ad');
-    if (found) {
-      setRolePerms(true);
-      getNotifications();
-    } else {
-      setRolePerms(false);
-    }
     const handleCustomUpdate = () => {
       console.log('Custom update event received');
       // Perform actions to re-run useEffect
-      const roles = JSON.parse(window.sessionStorage.getItem('roles'));
-      const found = roles.split(", ").some((role) => role === 'ip:v' || role === 'ip:ad' || role === 's:ad');
-      if (found) {
-        setRolePerms(true);
-        getNotifications();
-      } else {
-        setRolePerms(false);
-      }
+      const userType = JSON.parse(window.sessionStorage.getItem('userType'));
+      switch (userType) { 
+        case 'center':
+          const roles = JSON.parse(window.sessionStorage.getItem('roles'));
+          const found = roles.split(", ").some((role) => role === 'ip:v' || role === 'ip:ad' || role === 's:ad');
+          if (found) {
+            setRolePerms(true);
+            setIsCenter(true);
+            getNotifications();
+          } else {
+            setRolePerms(false);
+          }
+          break;
+        case 'owner':
+          const userId = JSON.parse(window.sessionStorage.getItem('user')).id;
+          setRolePerms(true);
+          setIsCenter(false);
+          getServiceNotifs(userId);
+          break;
+        default:
+          break;
+      };
     };
 
     // Listen for custom event
     document.addEventListener('customUpdateEvent', handleCustomUpdate);
-    
     // Clean up event listener
     return () => {
       document.removeEventListener('customUpdateEvent', handleCustomUpdate);
     };
 
   }, []);
+
+  const getServiceNotifs = async (ownerId) => {
+    fetch(`http://localhost:5000/owner/notifs/${ownerId}`, {
+      method: "POST",
+      headers: {
+        'Content-type': 'application/json'
+      },
+    }).then((res) => res.json())
+      .then((data) => {
+        const currentDate = new Date();
+        setServiceData(data.data.vehicleNotifs.map((notif) => {
+          const lastServiceDate = new Date(notif.last_service_date);
+          const monthsSinceLastService = (currentDate.getFullYear() - lastServiceDate.getFullYear()) * 12 + currentDate.getMonth() - lastServiceDate.getMonth();
+          const isOverdue = monthsSinceLastService >= 5;
+          return {
+            ...notif,
+            last_service_date: notif.last_service_date.split('T')[0],
+            is_overdue: isOverdue
+          };
+        }));
+      }).catch((error) => { console.log(error) });
+  };
+
 
   const getNotifications = async () => {
     fetch("http://localhost:5000/center/inventorys/reorder", {
@@ -83,9 +136,7 @@ export default function Header({ Role }) {
       })
     }).then((res) => res.json())
       .then((data) => { 
-        console.log('data ', data.data);
         setNotifData(data.data.parts);
-        console.log(' notif', notifData);
       }).catch((error => { console.log(error) }));
   };
 
@@ -112,9 +163,17 @@ export default function Header({ Role }) {
 
   const getNotificationSummary = () => {
     if (rolePerms) { 
-      return 'So many makes me wet';
+      if (isCenter) {
+        if (notifData.length > 0) {
+          return notifData.length;
+        }
+      } else { 
+        if (serviceData.length > 0) { 
+          return serviceData.length;
+        }
+      }
     }
-    return 'Dry as the sahara';
+    return 'No notifications';
   };
 
   return (
@@ -136,9 +195,8 @@ export default function Header({ Role }) {
                   color="inherit"
                 >
                   <NotificationsNoneIcon />
-                  {notifData.length > 0 && (
-                    <Badge badgeContent={notifData.length} color="secondary">
-                      {/* <span style={{ marginLeft: '4px' }}>{notifData.length}</span> */}
+                  {(notifData.length || serviceData.length) > 0 && (
+                    <Badge badgeContent={isCenter ? notifData.length : serviceData.filter((service) => service.isDue).length} color="secondary">
                     </Badge>
                   )}
                 </IconButton>
@@ -159,15 +217,28 @@ export default function Header({ Role }) {
                 onClose={handleNotifClose}
               >
                 <div style={{ padding: '8px', minWidth: '200px' }}>
-                  {notifData.map((notif, index) => (
-                    <div key={index} style={{ marginBottom: '8px' }}>
-                      <Typography variant="body1">
-                        Stocks low: {notif.name}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Remaining: {notif.quantity}
-                      </Typography>
-                    </div>
+                  {isCenter ? notifData.map((notif, index) => (
+                    <Alert severity="warning">
+                      <div key={index} style={{ marginBottom: '8px' }}>
+                        <Typography variant="body1">
+                          Stocks low: {notif.name}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          Remaining: {notif.quantity}
+                        </Typography>
+                      </div>
+                    </Alert>
+                  )) : serviceData.filter((service) => service.isDue).map((notif, index) => ( 
+                    <Alert severity="warning">
+                      <div key={index} style={{ marginBottom: '8px' }}>
+                        <Typography variant="body1">
+                          Upcoming service for: {notif.number_plate}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          Last service date: {notif.last_service_date}
+                        </Typography>
+                      </div>
+                    </Alert>
                   ))}
                 </div>
               </Menu>
