@@ -171,15 +171,12 @@ const ServicePage = () => {
   const handleSaveClick = async () => {
     try {
       const vehicleId = selectedVehicle.vehicle_id;
-      const schema = JSON.parse(window.sessionStorage.getItem("schema"));
       await axios
         .post(`http://localhost:5000/center/service/mileage`, {
-          schema: schema,
           vehicleId: vehicleId,
         })
         .then((res) => {
-          const mileage_on_last_service_date = res.data;
-          setPrevMileage(mileage_on_last_service_date);
+          setPrevMileage(res.data.data.Mileage);
           console.log("mileage: ", prevMileage);
         })
         .catch((err) => console.log(err));
@@ -187,14 +184,19 @@ const ServicePage = () => {
       console.log(error);
     }
 
-    const mileage_on_last_service = 5000;
-    if (
-      !milage ||
-      isNaN(milage) ||
-      parseFloat(milage) <= mileage_on_last_service
-    ) {
+    if (!milage) {
       setAlertMessage("Please enter the mileage.");
-      setAlertType("success");
+      setAlertType("error");
+      setOpenAlert(true);
+      return;
+     } else if (isNaN(milage)) {
+      setAlertMessage("Mileage must be a number.");
+      setAlertType("error");
+      setOpenAlert(true);
+      return;
+     } else if (milage <= prevMileage) {
+      setAlertMessage("Mileage must be greater than the previous mileage.");
+      setAlertType("error");
       setOpenAlert(true);
       return;
     }
@@ -539,9 +541,6 @@ const ServicePage = () => {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
-  const filteredServices = allOngoingServices.filter((service) =>
-    String(service.client_id).toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <>
@@ -555,7 +554,7 @@ const ServicePage = () => {
           <Alert severity={alertType}>{alertMessage}</Alert>
         </Snackbar>
       )}
-      <Grid>
+      {/* <Grid>
         <TextField
           type="search"
           size="small"
@@ -564,13 +563,13 @@ const ServicePage = () => {
           onChange={handleSearch}
           sx={{ ml: 2 }}
         />
-      </Grid>
+      </Grid> */}
       <Box sx={{ mt: 2 }}>
         <Grid container spacing={1}>
           <Grid item xs={3}>
             <AddButtonCard onAdd={handleClickOpen} editRole={editRole} />
           </Grid>
-          {filteredServices.map((item, index) => (
+          {allOngoingServices.map((item, index) => (
             <Grid item xs={3} key={item.client_id}>
               <VehicleCard
                 clientId={item.client_id}

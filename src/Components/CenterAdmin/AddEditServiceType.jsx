@@ -74,7 +74,7 @@ function AddEditServiceType({ open, serviceData, isEdit, closeEditServiceType, i
             schema: JSON.parse(window.sessionStorage.getItem('schema')),
             name: serviceD.name,
             description: serviceD.description,
-            cost: parseFloat(serviceD.cost)
+            cost: serviceD
           })
         });
 
