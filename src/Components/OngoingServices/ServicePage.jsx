@@ -536,9 +536,6 @@ const ServicePage = () => {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
-  const filteredServices = allOngoingServices.filter((service) =>
-    String(service.client_id).toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <>
@@ -552,7 +549,7 @@ const ServicePage = () => {
           <Alert severity={alertType}>{alertMessage}</Alert>
         </Snackbar>
       )}
-      <Grid>
+      {/* <Grid>
         <TextField
           type="search"
           size="small"
@@ -561,13 +558,13 @@ const ServicePage = () => {
           onChange={handleSearch}
           sx={{ ml: 2 }}
         />
-      </Grid>
+      </Grid> */}
       <Box sx={{ mt: 2 }}>
         <Grid container spacing={1}>
           <Grid item xs={3}>
             <AddButtonCard onAdd={handleClickOpen} editRole={editRole} />
           </Grid>
-          {filteredServices.map((item, index) => (
+          {allOngoingServices.map((item, index) => (
             <Grid item xs={3} key={item.client_id}>
               <VehicleCard
                 clientId={item.client_id}
