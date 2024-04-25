@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,39 +12,45 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper
-} from '@mui/material';
+  Paper,
+  Snackbar,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import MenuIcon from '@mui/icons-material/Menu';
-import axios from 'axios';
-import HistoryFilter from './VehicleHistoryFilter';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
-import HistoryInvoice from './HistoryInvoice';
+import MenuIcon from "@mui/icons-material/Menu";
+import axios from "axios";
+import HistoryFilter from "./VehicleHistoryFilter";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import Collapse from "@mui/material/Collapse";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
+import HistoryInvoice from "./HistoryInvoice";
+import Alert from "@mui/material/Alert";
 
 function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
   //vehicle State
   const [vehicleHistory, setVehicleHistory] = useState([]);
   const [filteredHistory, setFilteredHistory] = useState([]);
-  const [historyData ,setHistoryData] = useState([]);
+  const [historyData, setHistoryData] = useState([]);
+  //Alerts
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("");
 
   //invoice states
   const [invoiceData, setInvoiceData] = useState(null);
   const [openInvoiceGenarate, setOpenInvoiceGenarate] = useState(false);
   const [vehicleData, setVehicleData] = useState({
-    vehicle_id: '',
-    number_plate: '',
-    model: '',
-    make: '',
-    reg_year: '',
+    vehicle_id: "",
+    number_plate: "",
+    model: "",
+    make: "",
+    reg_year: "",
     mileage: 0,
-    phone: '',
-    fuel_type: ''
+    phone: "",
+    fuel_type: "",
   });
   // filter State
   const [openFilter, setOpenFilter] = useState(false);
@@ -53,7 +59,7 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
   const [sortedYears, setSortedYears] = useState([]);
   const [centerData, setCenterData] = useState([]);
   const [getSchema, setGetschema] = useState([]);
-  
+
   const handleFilteredHistory = (filteredHistoryData) => {
     setFilteredHistory(filteredHistoryData);
   };
@@ -72,9 +78,13 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
         return [...prevYears, year];
       }
     });
-  }
-
-
+  };
+  //Alerts
+  const handleAlertClose = () => {
+    setAlertMessage("");
+    setAlertType("");
+    setOpenAlert(false);
+  };
   // const filtersGiven = [
   //   { id: 'f_date', type: 'date', label: 'From Date', description: 'Filter history from this date' },
   //   { id: 't_date', type: 'date', label: 'To Date', description: 'Filter history to this date' },
@@ -89,27 +99,33 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
 
   const getInitialData = async () => {
     try {
+
       // const userId = window.sessionStorage.getItem('userId');
       // console.log("userid:", userId);
       const userId = 4;
       console.log(vehicleId);
+
+      const userId = window.sessionStorage.getItem('userId');
+      // const userId = 4;
+
       await axios.post(`http://localhost:5000/owner/vehicles/${vehicleId}`, { id: userId })
       .then((res) => {
         setVehicleData(res.data.data.vehicles);
       })
       .catch((err) => console.log(err));
 
-      await axios.post(`http://localhost:5000/owner/vehicles/${vehicleId}/history`)
-      .then((res) => {
-        const historyData = res.data.data.serviceHistory[0];
-        setVehicleHistory(historyData);
-        const schema = historyData[0].schema;
-        setGetschema(schema);
-      })
-      .catch((err) => console.log(err));
+      await axios
+        .post(`http://localhost:5000/owner/vehicles/${vehicleId}/history`)
+        .then((res) => {
+          const historyData = res.data.data.serviceHistory[0];
+          setVehicleHistory(historyData);
+          const schema = historyData[0].schema;
+          setGetschema(schema);
+        })
+        .catch((err) => console.log(err));
     } catch (error) {
       console.log(error);
-    };
+    }
     computeInitialData();
   };
 
@@ -118,10 +134,10 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
   }, [getSchema]);
 
   const computeInitialData = () => {
-    let mileage = Math.max(...vehicleHistory.map(o => o.mileage));
+    let mileage = Math.max(...vehicleHistory.map((o) => o.mileage));
     setVehicleData((prevState) => ({
       ...prevState,
-      mileage: mileage
+      mileage: mileage,
     }));
   };
 
@@ -130,17 +146,20 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
   };
 
   const handleInvoicePopup = () => {
-    setOpenInvoiceGenarate(true)
+    setOpenInvoiceGenarate(true);
+    setAlertMessage(`Successfully Generated Invoice !`);
+    setAlertType("success");
+    setOpenAlert(true);
   };
 
   const handleClose = () => {
     setVehicleData({
-      vehicle_id: '',
-      number_plate: '',
-      model: '',
-      make: '',
-      reg_year: '',
-      mileage: 0
+      vehicle_id: "",
+      number_plate: "",
+      model: "",
+      make: "",
+      reg_year: "",
+      mileage: 0,
     });
     setVehicleHistory([]);
     closeVehicleHistory();
@@ -154,19 +173,25 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
 
   const handleYearConversion = (date) => {
     return new Date(date).getFullYear();
-  }
+  };
 
   const groupByYear = () => {
-    const historyToGroup = filteredHistory.length > 0 ? filteredHistory : vehicleHistory;
-    setHistoryData(historyToGroup)
-    let years = Array.from(new Set(historyToGroup.map((service) => handleYearConversion(service.service_date))));
-    years=  years.sort((a, b) => b - a);  // Sort the years in ascending order
+    const historyToGroup =
+      filteredHistory.length > 0 ? filteredHistory : vehicleHistory;
+    setHistoryData(historyToGroup);
+    let years = Array.from(
+      new Set(
+        historyToGroup.map((service) =>
+          handleYearConversion(service.service_date)
+        )
+      )
+    );
+    years = years.sort((a, b) => b - a); // Sort the years in ascending order
 
     const groups = {};
-    
+
     years.forEach((year) => {
       groups[year] = [];
-      
     });
 
     historyToGroup.forEach((service, index) => {
@@ -178,13 +203,11 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
     setSortedYears(years);
   };
 
-
-
   const handleDateConversions = (date) => {
-    return date.split('T')[0];
-  }
+    return date.split("T")[0];
+  };
 
-   //pdfInvoice genaration
+  //pdfInvoice genaration
   //collect final values
 
   const getFuelType = (fueltype) => {
@@ -198,46 +221,40 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
       case "E":
         return "Electric";
       case "PE":
-        return "Petrol Electric"; 
+        return "Petrol Electric";
       default:
-          return "Unknown";       
+        return "Unknown";
     }
   };
 
   const getCenterData = async () => {
     try {
-      await axios.post(`http://localhost:5000/owner/vehicle/pdf`, { schema: getSchema })
-      .then((res) => {
-        const center_Data = res.data.data.centerData;
-        setCenterData(center_Data);
-      })
-      .catch((err) => console.log(err));
+      await axios
+        .post(`http://localhost:5000/owner/vehicle/pdf`, { schema: getSchema })
+        .then((res) => {
+          const center_Data = res.data.data.centerData;
+          setCenterData(center_Data);
+        })
+        .catch((err) => console.log(err));
     } catch (error) {
       console.log(error);
     }
-  }
-
+  };
 
   const handleRowClick = (details) => {
- 
-      if (details && details.details) {
-        let s_details = details.details[0];
-        let s_item = s_details.item;
-        let s_type = s_details.type;
-        let s_price = s_details.price;
-        let s_quantity = s_details.quantity;
-  
-        generateInvoiceData(
-          s_item,
-          s_type,
-          s_price,
-          s_quantity,
-        );
-        getCenterData();
-      } else {
-        console.log("Details not found or invalid format");
-      }
-};
+    if (details && details.details) {
+      let s_details = details.details[0];
+      let s_item = s_details.item;
+      let s_type = s_details.type;
+      let s_price = s_details.price;
+      let s_quantity = s_details.quantity;
+
+      generateInvoiceData(s_item, s_type, s_price, s_quantity);
+      getCenterData();
+    } else {
+      console.log("Details not found or invalid format");
+    }
+  };
 
   const generateInvoiceData = (s_item, s_type, s_price, s_quantity) => {
     const owner_name = vehicleData.name;
@@ -253,14 +270,16 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
     const fuel_type = getFuelType(vehicleData.fuel_type);
     const model = vehicleData.model;
     const mileage = vehicleData.mileage;
-    const selectedItems = [{
+    const selectedItems = [
+      {
         Type: s_type,
         Item: s_item,
         Price: `Rs. ${s_price}`,
         Quantity: s_quantity,
-        Total: `Rs. ${s_quantity*s_price}`,
-    }];
-    const full_Amount =  s_quantity * s_price;
+        Total: `Rs. ${s_quantity * s_price}`,
+      },
+    ];
+    const full_Amount = s_quantity * s_price;
 
     setInvoiceData({
       vehicle_id,
@@ -283,16 +302,25 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
     console.log("in genarate invoiceData", invoiceData);
   };
 
-
   return (
     <div>
+      {openAlert && (
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleAlertClose}
+        >
+          <Alert severity={alertType}>{alertMessage}</Alert>
+        </Snackbar>
+      )}
       <Dialog
         fullScreen
         open={open}
         onClose={handleClose}
         fullWidth
         maxWidth="cl"
-        style={{ margin: '31px' }}
+        style={{ margin: "31px" }}
       >
         <DialogTitle sx={{ mb: 2.5 }}>
           {`VEHICLE HISTORY : ${vehicleData.number_plate}`}
@@ -300,40 +328,50 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
             <CloseIcon color="primary"></CloseIcon>
           </IconButton>
         </DialogTitle>
-        <DialogContent style={{ 'margin': '30px' }}>
+        <DialogContent style={{ margin: "30px" }}>
           <div>
-            <Grid container spacing={3} justifyContent="center" bgcolor={'#CCD0FF'} padding={2}>
+            <Grid
+              container
+              spacing={3}
+              justifyContent="center"
+              bgcolor={"#CCD0FF"}
+              padding={2}
+            >
               <Grid item xs={6} sm={2}>
-                <Typography variant="button"  display="block" gutterBottom>
-                <strong>Owner :</strong>  {vehicleData.name}
+                <Typography variant="button" display="block" gutterBottom>
+                  <strong>Owner :</strong> {vehicleData.name}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="button"  display="block" gutterBottom>
-                  <strong>Date of register :</strong>  {handleDateConversions(vehicleData.reg_year)}
+                <Typography variant="button" display="block" gutterBottom>
+                  <strong>Date of register :</strong>{" "}
+                  {handleDateConversions(vehicleData.reg_year)}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="button"  display="block" gutterBottom>
-                <strong>Number Plate : </strong> {vehicleData.number_plate}
+                <Typography variant="button" display="block" gutterBottom>
+                  <strong>Number Plate : </strong> {vehicleData.number_plate}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="button"  display="block" gutterBottom>
-                <strong>Make : </strong> {vehicleData.make}
+                <Typography variant="button" display="block" gutterBottom>
+                  <strong>Make : </strong> {vehicleData.make}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={2}>
-                <Typography variant="button"  display="block" gutterBottom>
-                <strong>Model : </strong> {vehicleData.model}
+                <Typography variant="button" display="block" gutterBottom>
+                  <strong>Model : </strong> {vehicleData.model}
                 </Typography>
               </Grid>
-              <Grid item xs={6} sm={2} style={{position: 'relative'}}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography variant="button"  display="block" gutterBottom>
+              <Grid item xs={6} sm={2} style={{ position: "relative" }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Typography variant="button" display="block" gutterBottom>
                     <strong>Mileage : </strong> {vehicleData.mileage}
                   </Typography>
-                  <IconButton onClick={handleFilter} style={{ marginLeft: '30%', marginTop: '-2%' }}>
+                  <IconButton
+                    onClick={handleFilter}
+                    style={{ marginLeft: "30%", marginTop: "-2%" }}
+                  >
                     <MenuIcon color="primary"></MenuIcon>
                   </IconButton>
                 </div>
@@ -342,55 +380,100 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
           </div>
           <div>
             <List
-              sx={{width: '94%', minWidth: 300, marginTop: 5, marginLeft: 6, bgcolor: 'background.paper' }}
+              sx={{
+                width: "94%",
+                minWidth: 300,
+                marginTop: 5,
+                marginLeft: 6,
+                bgcolor: "background.paper",
+              }}
               component="nav"
               aria-labelledby="service-history-subheader"
               subheader={
-                <Typography variant="h6" gutterBottom component="div" id="service-history-subheader" sx={{marginBottom: 2 }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  component="div"
+                  id="service-history-subheader"
+                  sx={{ marginBottom: 2 }}
+                >
                   SERVICE HISTORY
                 </Typography>
               }
             >
-               {sortedYears.map((year) => (
+              {sortedYears.map((year) => (
                 <React.Fragment key={year}>
                   <ListItemButton onClick={() => handleYearClick(year)}>
                     <ListItemText primary={` ${year}`} />
                     {openm.includes(year) ? <ExpandLess /> : <ExpandMore />}
                   </ListItemButton>
-                  <Collapse in={openm.includes(year)} timeout="auto" unmountOnExit sx={{marginBottom: 2}}>
+                  <Collapse
+                    in={openm.includes(year)}
+                    timeout="auto"
+                    unmountOnExit
+                    sx={{ marginBottom: 2 }}
+                  >
                     <List disablePadding>
-                      <div style={{ overflowX: 'auto', position: 'relative' }}>
-                        <TableContainer  sx={{ minWidth: 400, marginTop: '1%' }} style={{ overflowX: 'auto' }}>
+                      <div style={{ overflowX: "auto", position: "relative" }}>
+                        <TableContainer
+                          sx={{ minWidth: 400, marginTop: "1%" }}
+                          style={{ overflowX: "auto" }}
+                        >
                           <Table>
-                            <TableHead component={Paper} sx={{minHeight: '3px', padding: 0, bgcolor: '#CCD0FF' , boxShadow: 'none' }}>
+                            <TableHead
+                              component={Paper}
+                              sx={{
+                                minHeight: "3px",
+                                padding: 0,
+                                bgcolor: "#CCD0FF",
+                                boxShadow: "none",
+                              }}
+                            >
                               <TableRow>
-                                <TableCell style={{ fontWeight: 'bold' }}>
+                                <TableCell style={{ fontWeight: "bold" }}>
                                   SERVICE DATE
                                 </TableCell>
-                                <TableCell style={{ fontWeight: 'bold' }}>
+                                <TableCell style={{ fontWeight: "bold" }}>
                                   DESCRIPTION
                                 </TableCell>
-                                <TableCell style={{ fontWeight: 'bold' }}>
+                                <TableCell style={{ fontWeight: "bold" }}>
                                   MILEAGE
                                 </TableCell>
-                                <TableCell style={{ fontWeight: 'bold' }}>
+                                <TableCell style={{ fontWeight: "bold" }}>
                                   COST
                                 </TableCell>
-                                <TableCell style={{ fontWeight: 'bold' }}>
-                                  
-                                </TableCell>
+                                <TableCell
+                                  style={{ fontWeight: "bold" }}
+                                ></TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
                               {group[year].map((service) => (
-                                <TableRow key={service.index} onClick={() => handleRowClick(service)}>
-                                  <TableCell>{handleDateConversions(service.service_date)}</TableCell>
+                                <TableRow
+                                  key={service.index}
+                                  onClick={() => handleRowClick(service)}
+                                >
+                                  <TableCell>
+                                    {handleDateConversions(
+                                      service.service_date
+                                    )}
+                                  </TableCell>
                                   <TableCell>{service.description}</TableCell>
                                   <TableCell>{service.mileage}</TableCell>
-                                  <TableCell>{`Rs. ${parseFloat(service.cost).toFixed(2)}`}</TableCell>
-                                  <TableCell align='right'>
-                                    <IconButton aria-label="delete" sx={{fontSize: 'small'}} onClick={handleInvoicePopup}>
-                                      Genarate Invoice <RestartAltRoundedIcon sx={{marginLeft: 1}} color="primary"/>
+                                  <TableCell>{`Rs. ${parseFloat(
+                                    service.cost
+                                  ).toFixed(2)}`}</TableCell>
+                                  <TableCell align="right">
+                                    <IconButton
+                                      aria-label="delete"
+                                      sx={{ fontSize: "small" }}
+                                      onClick={handleInvoicePopup}
+                                    >
+                                      Genarate Invoice{" "}
+                                      <RestartAltRoundedIcon
+                                        sx={{ marginLeft: 1 }}
+                                        color="primary"
+                                      />
                                     </IconButton>
                                   </TableCell>
                                   {/* <TableCell align='right'>
@@ -411,7 +494,6 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
         </DialogContent>
       </Dialog>
 
-        
       <HistoryFilter
         openFilter={openFilter}
         vehicleId={vehicleId}
@@ -420,14 +502,13 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
         closeFilterPopup={() => setOpenFilter(false)}
       />
 
-      <HistoryInvoice 
+      <HistoryInvoice
         openInvoice={openInvoiceGenarate}
         InvoiceData={invoiceData}
         closeInvoice={() => setOpenInvoiceGenarate(false)}
       />
     </div>
   );
-};
-
+}
 
 export default VehicleHistory;

@@ -94,12 +94,16 @@ function VehicleCard(props) {
       .then((res) => res.json())
       .then((data) => {
         console.log('data', data.data);
+
         let vehi = data.data.vehicles.map((vehicle) => {
           return {
             ...vehicle,
             photo_1: handleImageLoad(vehicle.photo_1),
           }
         });
+
+        let vehi = data.data.vehicles;
+
         setvehicleData(vehi);
         console.log('vehicle', vehicleData);
       })
@@ -127,6 +131,7 @@ function VehicleCard(props) {
     setValue(newValue);
   };
 
+
   const handleImageLoad = (imageData) => {
     // Convert Buffer to Blob URL
 
@@ -146,6 +151,14 @@ function VehicleCard(props) {
     // const url = URL.createObjectURL(blob);
     // return url;
   };
+
+  // const handleImageLoad = (imageData) => {
+  //   // Convert Buffer to Blob URL
+  //   const blob = new Blob([imageData], { type: 'image/png' }); // Adjust the type according to your image format
+  //   const url = URL.createObjectURL(blob);
+  //   return url;
+  // };
+
 
   return (
     <div><Headerfile title="My Vehicles" />
@@ -189,7 +202,7 @@ function VehicleCard(props) {
                     <img
                       src={item.photo_1}
                       alt="Buffer"
-                      onLoad={handleImageLoad}
+                      // onLoad={handleImageLoad}
                       style={{ maxWidth: '100%' }}
                       onError={(e) => {
                         e.target.src = 'placeholder-image-url'; // Replace with a placeholder image URL
