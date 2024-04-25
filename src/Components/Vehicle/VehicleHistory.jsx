@@ -99,17 +99,13 @@ function VehicleHistory({ open, vehicleId, closeVehicleHistory }) {
 
   const getInitialData = async () => {
     try {
-      // const userId = window.sessionStorage.getItem('userId');
-      // console.log("userid:", userId);
-      const userId = 4;
-      await axios
-        .post(`http://localhost:5000/owner/vehicles/${vehicleId}`, {
-          id: userId,
-        })
-        .then((res) => {
-          setVehicleData(res.data.data.vehicles);
-        })
-        .catch((err) => console.log(err));
+      const userId = window.sessionStorage.getItem('userId');
+      // const userId = 4;
+      await axios.post(`http://localhost:5000/owner/vehicles/${vehicleId}`, { id: userId })
+      .then((res) => {
+        setVehicleData(res.data.data.vehicles);
+      })
+      .catch((err) => console.log(err));
 
       await axios
         .post(`http://localhost:5000/owner/vehicles/${vehicleId}/history`)
