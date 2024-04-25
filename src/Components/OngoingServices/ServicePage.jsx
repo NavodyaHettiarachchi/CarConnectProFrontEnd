@@ -171,15 +171,12 @@ const ServicePage = () => {
   const handleSaveClick = async () => {
     try {
       const vehicleId = selectedVehicle.vehicle_id;
-      const schema = JSON.parse(window.sessionStorage.getItem("schema"));
       await axios
         .post(`http://localhost:5000/center/service/mileage`, {
-          schema: schema,
           vehicleId: vehicleId,
         })
         .then((res) => {
-          const mileage_on_last_service_date = res.data;
-          setPrevMileage(mileage_on_last_service_date);
+          setPrevMileage(res.data.data.Mileage);
           console.log("mileage: ", prevMileage);
         })
         .catch((err) => console.log(err));
@@ -187,14 +184,19 @@ const ServicePage = () => {
       console.log(error);
     }
 
-    const mileage_on_last_service = 5000;
-    if (
-      !milage ||
-      isNaN(milage) ||
-      parseFloat(milage) <= mileage_on_last_service
-    ) {
+    if (!milage) {
       setAlertMessage("Please enter the mileage.");
-      setAlertType("success");
+      setAlertType("error");
+      setOpenAlert(true);
+      return;
+     } else if (isNaN(milage)) {
+      setAlertMessage("Mileage must be a number.");
+      setAlertType("error");
+      setOpenAlert(true);
+      return;
+     } else if (milage <= prevMileage) {
+      setAlertMessage("Mileage must be greater than the previous mileage.");
+      setAlertType("error");
       setOpenAlert(true);
       return;
     }
@@ -213,6 +215,9 @@ const ServicePage = () => {
           />
         </Grid>
       );
+      const validInputFields = inputFields.filter(
+        (inputField) => inputField.type && inputField.item
+      );
       try {
         const response = await fetch(
           "http://localhost:5000/center/addOnGoingServices",
@@ -227,8 +232,8 @@ const ServicePage = () => {
               service_date: new Date().toISOString().split("T")[0],
               description: "Full Service",
               mileage: milage,
-              cost: calculateTotalCost(inputFields),
-              details: JSON.stringify(inputFields),
+              cost: calculateTotalCost(validInputFields),
+              details: JSON.stringify(validInputFields),
               technician_ids: [
                 selectedEmployee
                   ? selectedEmployee.map((employee) => employee.id)
