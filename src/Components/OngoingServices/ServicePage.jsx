@@ -31,7 +31,7 @@ import PdfInvoice from "../PDFInvoice/PdfInvoice";
 import IconButton from "@mui/material/IconButton";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import axios from 'axios';
+import axios from "axios";
 
 const columns = [
   { id: "type", label: "Type", minWidth: 170 },
@@ -169,20 +169,20 @@ const ServicePage = () => {
   };
 
   const handleSaveClick = async () => {
-      try {
-        const vehicleId = selectedVehicle.vehicle_id;
-        const schema = JSON.parse(window.sessionStorage.getItem("schema"));
-        await axios.post(`http://localhost:5000/center/service/mileage`, {schema: schema, vehicleId: vehicleId})
+    try {
+      const vehicleId = selectedVehicle.vehicle_id;
+      await axios
+        .post(`http://localhost:5000/center/service/mileage`, {
+          vehicleId: vehicleId,
+        })
         .then((res) => {
           setPrevMileage(res.data.data.Mileage);
           console.log("mileage: ", prevMileage);
         })
         .catch((err) => console.log(err));
-
-      } catch (error) {
-        console.log(error);
-
-      }
+    } catch (error) {
+      console.log(error);
+    }
 
     if (!milage) {
       setAlertMessage("Please enter the mileage.");
@@ -199,7 +199,7 @@ const ServicePage = () => {
       setAlertType("error");
       setOpenAlert(true);
       return;
-     }
+    }
 
     if (selectedVehicle) {
       const newCard = (
@@ -215,6 +215,9 @@ const ServicePage = () => {
           />
         </Grid>
       );
+      const validInputFields = inputFields.filter(
+        (inputField) => inputField.type && inputField.item
+      );
       try {
         const response = await fetch(
           "http://localhost:5000/center/addOnGoingServices",
@@ -229,8 +232,8 @@ const ServicePage = () => {
               service_date: new Date().toISOString().split("T")[0],
               description: "Full Service",
               mileage: milage,
-              cost: calculateTotalCost(inputFields),
-              details: JSON.stringify(inputFields),
+              cost: calculateTotalCost(validInputFields),
+              details: JSON.stringify(validInputFields),
               technician_ids: [
                 selectedEmployee
                   ? selectedEmployee.map((employee) => employee.id)
@@ -278,10 +281,11 @@ const ServicePage = () => {
       document.dispatchEvent(new Event("customUpdateEvent"));
       getAllOngoingServices();
     }
-    setAlertMessage( `Successfully Created Ongoing Service for ${selectedVehicle.number} !` );
+    setAlertMessage(
+      `Successfully Created Ongoing Service for ${selectedVehicle.number} !`
+    );
     setAlertType("success");
     setOpenAlert(true);
-
   };
   useEffect(() => {
     // Calculate the full amount
