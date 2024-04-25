@@ -109,7 +109,7 @@ function VehicleCard(props) {
   const functionopenpopup = async (vehicle) => {
     console.log(vehicle);
     setSelectedVehicle(vehicle);
-
+    
     openchange(true);
   };
   const closepopup = () => {
@@ -126,6 +126,14 @@ function VehicleCard(props) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const getRegyear = (year) =>{
+    if(year){
+      return year.split('T')[0]
+    }else{
+      return 0;
+    }
+  }
 
   const handleImageLoad = (imageData) => {
     // Convert Buffer to Blob URL
@@ -184,7 +192,7 @@ function VehicleCard(props) {
             <Grid item xs={4} position={"relative"}>
               <Item>
                 <CardContent style={cardStyle}>
-
+{/* 
                   {item.photo_1 ? (
                     <img
                       src={item.photo_1}
@@ -197,7 +205,7 @@ function VehicleCard(props) {
                     />
                   ) : (
                     <p>Loading...</p>
-                  )}
+                  )} */}
 
                   <Typography sx={{ fontSize: 30 }} color="text.secondary" gutterBottom>
                     {item.number_plate}
@@ -293,7 +301,7 @@ function VehicleCard(props) {
                       disabled
                       variant="standard"
                       onChange={handleChange}
-                      value={selectedVehicle?.chassis_number}
+                      value={selectedVehicle?.chassis_no}
                     /></div>
                   <div style={{ display: 'flex' }}>
                     <Typography sx={{ marginRight: 3, padding: 2, marginTop: 1 }}>
@@ -304,6 +312,7 @@ function VehicleCard(props) {
                       disabled
                       variant="standard"
                       onChange={handleChange}
+                      value={selectedVehicle?.engine_no}
                     />
                   </div>
                 </div>
@@ -319,6 +328,7 @@ function VehicleCard(props) {
                     disabled
                     variant="standard"
                     onChange={handleChange}
+                    value={selectedVehicle?.mileage}
                   /></div>
                 <div style={{ display: 'flex' }}>
                   <Typography sx={{ marginRight: 3, padding: 2, marginTop: 1 }}>
@@ -342,6 +352,7 @@ function VehicleCard(props) {
                     disabled
                     variant="standard"
                     onChange={handleChange}
+                    value={selectedVehicle?.mfd_year}
                   /></div>
                 <div style={{ display: 'flex' }}>
                   <Typography sx={{ marginRight: 3, padding: 2 }}>
@@ -352,7 +363,9 @@ function VehicleCard(props) {
                     disabled
                     variant="standard"
                     onChange={handleChange}
-                    value={selectedVehicle?.reg_year}
+
+                    value={getRegyear(selectedVehicle?.reg_year)}
+
                   />
                 </div>
               </div>

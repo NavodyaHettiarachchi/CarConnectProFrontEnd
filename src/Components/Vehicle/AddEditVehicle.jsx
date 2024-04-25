@@ -41,10 +41,12 @@ const fields = [
   { id: 'seating_capacity', label: 'Seating Capacity', type: 'number' },
   { id: 'reg_year', label: 'Year of Vehicle Register', type: 'date' },
   { id: 'mileage', label: 'Mileage', type: 'number' },
+  { id: 'mfd_year', label: 'Manufactured Year', type: 'number' },
   { id: 'photo_1', label: 'Photo 1', type: 'file' },
   { id: 'photo_2', label: 'Photo 2', type: 'file' },
   { id: 'photo_3', label: 'Photo 3', type: 'file' },
   { id: 'document', label: 'Document', type: 'file' }
+  
 ];
 
 function AddEditVehicle({ open, isUpdate, vehicleData, closeAddEditVehicle}) {
@@ -66,6 +68,7 @@ function AddEditVehicle({ open, isUpdate, vehicleData, closeAddEditVehicle}) {
     document: null,
     service_history: null,
     mileage: 0,
+    mfd_year:0,
     reg_year: dayjs(),
   });
 
@@ -137,6 +140,7 @@ function AddEditVehicle({ open, isUpdate, vehicleData, closeAddEditVehicle}) {
         document: null,
         service_history: null,
         mileage: 0,
+        mfd_year:0,
         reg_year: dayjs(),
         fuel_type: fuelTypes[0]?.type,
         transmission_type: transmissionTypes[0]?.type}
@@ -167,6 +171,7 @@ function AddEditVehicle({ open, isUpdate, vehicleData, closeAddEditVehicle}) {
     formData.append('mileage', vehicleD.mileage);
     formData.append('owner_id', JSON.parse(window.sessionStorage.getItem('userId')));
     formData.append('reg_year', dayjs(vehicleD.reg_year));
+    formData.append('mfd_year', vehicleD.mfd_year);
 
     try {
       const res = await axios.post('http://localhost:5000/owner/vehicle', formData, {

@@ -22,10 +22,8 @@ function Login() {
   }
 
   const handlePasswordChange = (e) => {
-  
-   
     togglePasswordVisibility();
-    
+
   };
 
   const togglePasswordVisibility = () => {
@@ -36,9 +34,9 @@ function Login() {
     try {
 
       const response = await axios.post('http://localhost:5000/login/', { username, password });
-      console.log(username,password);
+      console.log(username, password);
       if (response.status === 200) {
-        const loginData = response?.data.data;
+        const loginData = response?.data?.data;
         navigate('/');
         window.sessionStorage.setItem('schema', JSON.stringify(loginData.schema));
         window.sessionStorage.setItem('roles', JSON.stringify(loginData.user.roles));
@@ -64,7 +62,7 @@ function Login() {
       }
     } catch (e) {
       console.log('fuck', e);
-      setError(e.response.data.message ? e.response.data.message : 'An error occurred. Please try again.');
+      setError(e.response?.data?.message ? e.response?.data?.message : 'An error occurred. Please try again.');
     }
   };
 
@@ -97,10 +95,10 @@ function Login() {
             <br />
             <label htmlFor="" className=' left-aligned top-spacer'>Enter your Password</label>
             <br />
-            <input type={showPassword ? 'text' : 'password'} 
-           onChange={(e) => { setPassword(e.target.value) }} className='name-field ' />
+            <input type={showPassword ? 'text' : 'password'}
+              onChange={(e) => { setPassword(e.target.value) }} className='name-field ' />
             <br />
-            <a className='toggle' onClick={(e) => {handlePasswordChange(e?.target?.value) }} >
+            <a className='toggle' onClick={(e) => { handlePasswordChange(e?.target?.value) }} >
               {showPassword ? 'Hide' : 'Show'} Password
             </a>
             <br />
